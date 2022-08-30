@@ -52,7 +52,8 @@ RGBEyes.mod = 50
 -- vehicle options
 local dorctrl = func.add_feature("Door Control", "parent", vehopt.id)
 local lightctrl = func.add_feature("Light Control", "parent", vehopt.id)
- func.add_feature("Fix Vehicle", "action", vehopt.id, function()
+
+func.add_feature("Fix Vehicle", "action", vehopt.id, function()
 	vehicle.set_vehicle_fixed(player.get_player_vehicle(player.player_id()), true)
 end)
 
@@ -63,6 +64,7 @@ local dirtLevel = func.add_feature("Dirt Level", "autoaction_value_f", vehopt.id
         system.wait(0)
     end
 end)
+
 dirtLevel.min = 0.0
 dirtLevel.max = 15.0
 dirtLevel.mod = 1.0
@@ -72,7 +74,8 @@ dirtLevel.mod = 1.0
         system.wait(0)
     end
 end)
- func.add_feature("Brake Lights", "toggle", lightctrl.id, function(feat)
+
+func.add_feature("Brake Lights", "toggle", lightctrl.id, function(feat)
     while feat.on do
         vehicle.set_vehicle_brake_lights(player.get_player_vehicle(player.player_id()), true)
         system.wait(0)
@@ -89,22 +92,26 @@ end)
 grvty.min = -5.0
 grvty.max = 20.0
 grvty.mod = 1.0
- func.add_feature("Native Drifting", "toggle", vehopt.id, function(feat)
- func.notify("Slidy wheels equipped, Suspension dropped", "Femboy func")
+
+func.add_feature("Native Drifting", "toggle", vehopt.id, function(feat)
+menu.notify("Slidy wheels equipped, Suspension dropped", "Femboy func")
 	local veh = player.get_player_vehicle(player.player_id())
 		native.call(0x3A375167F5782A65, veh, feat.on) -- SET_REDUCE_DRIFT_VEHICLE_SUSPENSION(veh, bool) 
 		native.call(0x5AC79C98C5C17F05, veh, feat.on) -- SET_DRIFT_TYRES_ENABLED(veh, bool)
 end)
-		 func.add_feature("Drift Suspension", "toggle", vehopt.id, function(feat)
- func.notify("only works on vehicles released in the Tuners Update", "Femboy func")
+
+func.add_feature("Drift Suspension", "toggle", vehopt.id, function(feat)
+menu.notify("only works on vehicles released in the Tuners Update", "Femboy func")
 	local veh = player.get_player_vehicle(player.player_id())
 	native.call(0x3A375167F5782A65, veh, feat.on) -- SET_REDUCE_DRIFT_VEHICLE_SUSPENSION(veh, bool) 
 end) 
- func.add_feature("Drift Tyres", "toggle", vehopt.id, function(feat)
+
+func.add_feature("Drift Tyres", "toggle", vehopt.id, function(feat)
 	local veh = player.get_player_vehicle(player.player_id())
 	native.call(0x5AC79C98C5C17F05, veh, feat.on) -- SET_DRIFT_TYRES_ENABLED(veh, bool)
 end)
- func.add_feature("Launch Control", "toggle", vehopt.id, function(feat)
+
+func.add_feature("Launch Control", "toggle", vehopt.id, function(feat)
 	local veh = player.get_player_vehicle(player.player_id())
 	native.call(0xAA6A6098851C396F, feat.on)
 end)
@@ -130,7 +137,7 @@ fwdlaunch.max = 200.0
 fwdlaunch.mod = 10.0
 
 local rgbX = func.add_feature("RGB Xenon", "value_i", lightctrl.id, function(feat)
- func.notify("Xenon Lights Added, BEGIN THE RAVE")
+menu.notify("Xenon Lights Added, BEGIN THE RAVE")
     local veh = player.get_player_vehicle(player.player_id())
     native.call(0x2A1F4F37F95BAD08, veh, 22, feat.on) -- TOGGLE_VEHICLE_MOD
     while feat.on do
@@ -152,34 +159,38 @@ end)
 Hedlit.min = 0.0
 Hedlit.max = 100.0
 Hedlit.mod = 1.0
- func.add_feature("Turn engine off", "action", vehopt.id, function()
+menu.add_feature("Turn engine off", "action", vehopt.id, function()
 	local veh = player.get_player_vehicle(player.player_id())
 	native.call(0x2497C4717C8B881E, veh, 0, 0, true)
 end)
- func.add_feature("Disable auto start", "toggle", vehopt.id, function(feat)
+
+func.add_feature("Disable auto start", "toggle", vehopt.id, function(feat)
     local veh = player.get_player_vehicle(player.player_id())
     if feat.on then
         native.call(0x2497C4717C8B881E, veh, 0, 1, 1)
-     func.notify("auto start disabled, engine turned off" , "Femboy Script")
+    menu.notify("auto start disabled, engine turned off" , "Femboy Script")
     else 
         native.call(0x2497C4717C8B881E, veh, 0, 0, 0)
-     func.notify("auto start enabled" , "Femboy Script")
+    menu.notify("auto start enabled" , "Femboy Script")
     end
 end) -- thank you Toph
-	 func.add_feature("Kill engine", "action", vehopt.id, function()
- func.notify("next bit of damage will kill the car, gl", "Femboy func")
+
+func.add_feature("Kill engine", "action", vehopt.id, function()
+menu.notify("next bit of damage will kill the car, gl", "Femboy func")
 	local veh = player.get_player_vehicle(player.player_id())
 	native.call(0x45F6D8EEF34ABEF1, veh, 0)
 end)
- func.add_feature("Notify Engine Health" , "action" , vehopt.id, function(feat)
+
+func.add_feature("Notify Engine Health" , "action" , vehopt.id, function(feat)
     local veh = player.get_player_vehicle(player.player_id())
     local enginehealth = native.call(0xC45D23BAF168AAB8 , veh):__tonumber() --GET_VEHICLE_ENGINE_HEALTH
- func.notify("Engine health is " .. enginehealth .. ".", "Femboy func")
+menu.notify("Engine health is " .. enginehealth .. ".", "Femboy func")
 end) -- thank you Toph
- func.add_feature("Set Patriot Tyre Smoke", "action" , vehopt.id, function()
+
+func.add_feature("Set Patriot Tyre Smoke", "action" , vehopt.id, function()
     veh = player.get_player_vehicle(player.player_id())
     vehicle.set_vehicle_tire_smoke_color(veh, 0 , 0, 0)
- func.notify("Set tyre smoke color")
+menu.notify("Set tyre smoke color")
 end) -- thank you Toph
 
 -- door control 
@@ -189,11 +200,13 @@ func.add_feature("Open all doors", "action" , dorctrl.id, function(feat)
         vehicle.set_vehicle_door_open(veh , i , false , false)
     end
 end) -- thank you Toph
- func.add_feature("Close All Doors", "action" , dorctrl.id, function(feat)
+
+func.add_feature("Close All Doors", "action" , dorctrl.id, function(feat)
     local veh = player.get_player_vehicle(player.player_id())
     vehicle.set_vehicle_doors_shut(veh , false)
 end) -- thank you Toph
- func.add_feature("Remove All Doors", "action" , dorctrl.id, function(feat)
+
+func.add_feature("Remove All Doors", "action" , dorctrl.id, function(feat)
     local veh = player.get_player_vehicle(player.player_id())
     for i = 0, 5 do
         native.call(0xD4D4F6A4AB575A33 , veh , i , true) -- SET_VEHICLE_DOOR_BROKEN
@@ -224,7 +237,8 @@ end)
 wndwcol.min = 0
 wndwcol.max = 5
 wndwcol.mod = 1
- func.add_feature("Windows open/close", "toggle", dorctrl.id, function(feat)
+
+func.add_feature("Windows open/close", "toggle", dorctrl.id, function(feat)
 	local veh = player.get_player_vehicle(player.player_id())
 	if feat.on then
 		native.call(0x85796B0549DDE156, veh) -- ROLL_DOWN_WINDOWS
@@ -250,7 +264,8 @@ windspd.min = 0.0
 windspd.max = 12.0
 windspd.mod = 0.5
 
-func.add_feature("Really piss off Zeus (SEIZURE WARNING)", "toggle", wthopt.id, function(feat) func.notify("Way to go, you upset a God, feel like a big man huh? Big man with his big insults?")
+func.add_feature("Really piss off Zeus (SEIZURE WARNING)", "toggle", wthopt.id, function(feat) 
+menu.notify("Way to go, you upset a God, feel like a big man huh? Big man with his big insults?")
 while feat.on do
         native.call(0xF6062E089251C898, true) -- forces lightning
         system.wait(0)
@@ -263,7 +278,7 @@ while feat.on do
             native.call(0x643E26EA6E024D92, 0.0)
             native.call(0xEE09ECEDBABE47FC, 0.0)
             native.call(0xF6062E089251C898, false)
-         func.notify("Zeus accepts your apology")
+            menu.notify("Zeus accepts your apology")
             system.wait(0)
         end
     end   
@@ -279,12 +294,12 @@ func.add_feature("Show Player Talking", "toggle", miscopt.id, function(feat)
                 if player.is_player_valid(pid) then
                     if native.call(0x031E11F3D447647E, pid):__tointeger() == 1 then
                         if not IsTalking[pid] then
-                         func.notify(player.get_player_name(pid) .. " started talking", "Femboy Script")
+                         menu.notify(player.get_player_name(pid) .. " started talking", "Femboy Script")
                             IsTalking[pid] = true
                         end
                     else
                         if IsTalking[pid] then
-                         func.notify(player.get_player_name(pid) .. " stopped talking", "Femboy Script")
+                         menu.notify(player.get_player_name(pid) .. " stopped talking", "Femboy Script")
                             IsTalking[pid] = false
                         end
                     end
@@ -293,7 +308,8 @@ func.add_feature("Show Player Talking", "toggle", miscopt.id, function(feat)
         end
     end
 end, nil) -- thank you Ruly Pancake the whatever(th)
- func.add_feature("Make Nearby NPCs Riot", "toggle", miscopt.id, function(feat)
+
+func.add_feature("Make Nearby NPCs Riot", "toggle", miscopt.id, function(feat)
     native.call(0x2587A48BC88DFADF, feat.on)
 end)
 
@@ -311,12 +327,12 @@ mmdisco.max = 2500
 mmdisco.mod = 100
 mmdisco.value = 100 -- thank you Toph
 
- func.add_feature("Get All Achievements", "action", miscopt.id, function()
+func.add_feature("Get All Achievements", "action", miscopt.id, function()
     for i=1,77 do
         native.call(0xBEC7076D64130195, i)
     end
 end)
- func.add_feature("Hide HUD", "toggle", miscopt.id, function(feat)
+func.add_feature("Hide HUD", "toggle", miscopt.id, function(feat)
     if feat.on then
         native.call(0xA6294919E56FF02A, false)
         native.call(0xA0EBB943C300E693, false)
