@@ -213,7 +213,8 @@ end) -- thank you Toph
  func.notify("Set tyre smoke color")
 end) -- thank you Toph
 
--- door control func.add_feature("Open all doors", "action" , dorctrl.id, function(feat)
+-- door control 
+func.add_feature("Open all doors", "action" , dorctrl.id, function(feat)
     local veh = player.get_player_vehicle(player.player_id())
     for i = 0 , 5 do
         vehicle.set_vehicle_door_open(veh , i , false , false)
@@ -298,7 +299,8 @@ while feat.on do
     end   
 end)
 
---misc options func.add_feature("Show Player Talking", "toggle", miscopt.id, function(feat)
+--misc options 
+func.add_feature("Show Player Talking", "toggle", miscopt.id, function(feat)
     if feat.on then
         local IsTalking = {}
         while true do
@@ -338,6 +340,7 @@ mmdisco.min = 0
 mmdisco.max = 2500
 mmdisco.mod = 100
 mmdisco.value = 100 -- thank you Toph
+
  func.add_feature("Get All Achievements", "action", miscopt.id, function()
     for i=1,77 do
         native.call(0xBEC7076D64130195, i)
@@ -352,20 +355,3 @@ end)
         native.call(0xA0EBB943C300E693, true)
     end
 end)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
