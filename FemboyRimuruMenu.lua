@@ -7,6 +7,7 @@ local popt = func.add_feature("Player Options", "parent", main.id)
 local vehopt = func.add_feature("Vehicle Options", "parent", main.id)
 local wthopt = func.add_feature("Weather Options", "parent", main.id)
 local miscopt = func.add_feature("Misc Options", "parent", main.id)
+local heirarchy = func.get_feature_by_hierarchy_key(v)
 
 --player options
 local rgb = func.add_feature("RGB Player Features", "parent", popt.id)
@@ -49,6 +50,36 @@ RGBEyes.min = 0
 RGBEyes.max = 2000
 RGBEyes.mod = 50
 
+local OTR = func.get_feature_by_hierarchy_key("online.services.off_the_radar") func.add_feature("OTR", "toggle", popt.id, function(feat)
+    OTR:toggle()
+end)
+
+local BST = func.get_feature_by_hierarchy_key("online.services.bull_shark_testosterone") func.add_feature("BST", "toggle", popt.id, function(feat)
+    while feat.on do
+        BST:toggle()
+        system.wait(0)
+    end
+ func.notification("Will have to wait until the BST runs out")
+end)
+
+local fovVariable = func.get_feature_by_hierarchy_key("local.misc.fov_changer.third_person")
+local fov = func.add_feature("Field Of View", "value_i", popt.id, function(f)
+    if f.on then
+        fovVariable:toggle()
+            while f.on do
+	            fovVariable.value = f.value
+	            fovVariable:toggle()
+                fovVariable:toggle()
+                system.wait()
+            end    
+        fovVariable:toggle()
+    end
+end)
+fov.min = 1
+fov.mod = 2
+fov.value = 50
+fov.max = 130
+
 -- vehicle options
 local dorctrl = func.add_feature("Door Control", "parent", vehopt.id)
 local lightctrl = func.add_feature("Light Control", "parent", vehopt.id)
@@ -90,13 +121,13 @@ grvty.min = -5.0
 grvty.max = 20.0
 grvty.mod = 1.0
  func.add_feature("Native Drifting", "toggle", vehopt.id, function(feat)
- func.notify("Slidy wheels equipped, Suspension dropped", "Femboy func")
+ func.notification("Slidy wheels equipped, Suspension dropped")
 	local veh = player.get_player_vehicle(player.player_id())
 		native.call(0x3A375167F5782A65, veh, feat.on) -- SET_REDUCE_DRIFT_VEHICLE_SUSPENSION(veh, bool) 
 		native.call(0x5AC79C98C5C17F05, veh, feat.on) -- SET_DRIFT_TYRES_ENABLED(veh, bool)
 end)
 		 func.add_feature("Drift Suspension", "toggle", vehopt.id, function(feat)
- func.notify("only works on vehicles released in the Tuners Update", "Femboy func")
+ func.notification("only works on vehicles released in the Tuners Update")
 	local veh = player.get_player_vehicle(player.player_id())
 	native.call(0x3A375167F5782A65, veh, feat.on) -- SET_REDUCE_DRIFT_VEHICLE_SUSPENSION(veh, bool) 
 end) 
@@ -130,7 +161,7 @@ fwdlaunch.max = 200.0
 fwdlaunch.mod = 10.0
 
 local rgbX = func.add_feature("RGB Xenon", "value_i", lightctrl.id, function(feat)
- func.notify("Xenon Lights Added, BEGIN THE RAVE")
+ func.notification("Xenon Lights Added, BEGIN THE RAVE")
     local veh = player.get_player_vehicle(player.player_id())
     native.call(0x2A1F4F37F95BAD08, veh, 22, feat.on) -- TOGGLE_VEHICLE_MOD
     while feat.on do
@@ -160,26 +191,26 @@ end)
     local veh = player.get_player_vehicle(player.player_id())
     if feat.on then
         native.call(0x2497C4717C8B881E, veh, 0, 1, 1)
-     func.notify("auto start disabled, engine turned off" , "Femboy Script")
+     func.notification("auto start disabled, engine turned off")
     else 
         native.call(0x2497C4717C8B881E, veh, 0, 0, 0)
-     func.notify("auto start enabled" , "Femboy Script")
+     func.notification("auto start enabled")
     end
 end) -- thank you Toph
 	 func.add_feature("Kill engine", "action", vehopt.id, function()
- func.notify("next bit of damage will kill the car, gl", "Femboy func")
+ func.notification("next bit of damage will kill the car, gl")
 	local veh = player.get_player_vehicle(player.player_id())
 	native.call(0x45F6D8EEF34ABEF1, veh, 0)
 end)
  func.add_feature("Notify Engine Health" , "action" , vehopt.id, function(feat)
     local veh = player.get_player_vehicle(player.player_id())
     local enginehealth = native.call(0xC45D23BAF168AAB8 , veh):__tonumber() --GET_VEHICLE_ENGINE_HEALTH
- func.notify("Engine health is " .. enginehealth .. ".", "Femboy func")
+ func.notification("Engine health is " .. enginehealth .. ".")
 end) -- thank you Toph
  func.add_feature("Set Patriot Tyre Smoke", "action" , vehopt.id, function()
     veh = player.get_player_vehicle(player.player_id())
     vehicle.set_vehicle_tire_smoke_color(veh, 0 , 0, 0)
- func.notify("Set tyre smoke color")
+ func.notification("Set tyre smoke color")
 end) -- thank you Toph
 
 -- door control 
@@ -249,8 +280,7 @@ end)
 windspd.min = 0.0
 windspd.max = 12.0
 windspd.mod = 0.5
-
-func.add_feature("Really piss off Zeus (SEIZURE WARNING)", "toggle", wthopt.id, function(feat) func.notify("Way to go, you upset a God, feel like a big man huh? Big man with his big insults?")
+ func.add_feature("Really piss off Zeus (SEIZURE WARNING)", "toggle", wthopt.id, function(feat) func.notification("Way to go, you upset a God, feel like a big man huh? Big man with his big insults?")
 while feat.on do
         native.call(0xF6062E089251C898, true) -- forces lightning
         system.wait(0)
@@ -263,7 +293,7 @@ while feat.on do
             native.call(0x643E26EA6E024D92, 0.0)
             native.call(0xEE09ECEDBABE47FC, 0.0)
             native.call(0xF6062E089251C898, false)
-         func.notify("Zeus accepts your apology")
+         func.notification("Zeus accepts your apology")
             system.wait(0)
         end
     end   
@@ -279,12 +309,12 @@ func.add_feature("Show Player Talking", "toggle", miscopt.id, function(feat)
                 if player.is_player_valid(pid) then
                     if native.call(0x031E11F3D447647E, pid):__tointeger() == 1 then
                         if not IsTalking[pid] then
-                         func.notify(player.get_player_name(pid) .. " started talking", "Femboy Script")
+                         func.notification(player.get_player_name(pid) .. " started talking")
                             IsTalking[pid] = true
                         end
                     else
                         if IsTalking[pid] then
-                         func.notify(player.get_player_name(pid) .. " stopped talking", "Femboy Script")
+                         func.notification(player.get_player_name(pid) .. " stopped talking")
                             IsTalking[pid] = false
                         end
                     end
