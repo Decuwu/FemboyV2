@@ -7,7 +7,6 @@ local popt = func.add_feature("Player Options", "parent", main.id)
 local vehopt = func.add_feature("Vehicle Options", "parent", main.id)
 local wthopt = func.add_feature("Weather Options", "parent", main.id)
 local miscopt = func.add_feature("Misc Options", "parent", main.id)
-local heirarchy = func.get_feature_by_hierarchy_key(v)
 
 --player options
 local rgb = func.add_feature("RGB Player Features", "parent", popt.id)
@@ -49,36 +48,6 @@ end)
 RGBEyes.min = 0
 RGBEyes.max = 2000
 RGBEyes.mod = 50
-
-local OTR = func.get_feature_by_hierarchy_key("online.services.off_the_radar") func.add_feature("OTR", "toggle", popt.id, function(feat)
-    OTR:toggle()
-end)
-
-local BST = func.get_feature_by_hierarchy_key("online.services.bull_shark_testosterone") func.add_feature("BST", "toggle", popt.id, function(feat)
-    while feat.on do
-        BST:toggle()
-        system.wait(0)
-    end
- func.notify("Will have to wait until the BST runs out")
-end)
-
-local fovVariable = func.get_feature_by_hierarchy_key("local.misc.fov_changer.third_person")
-local fov = func.add_feature("Field Of View", "value_i", popt.id, function(f)
-    if f.on then
-        fovVariable:toggle()
-            while f.on do
-	            fovVariable.value = f.value
-	            fovVariable:toggle()
-                fovVariable:toggle()
-                system.wait()
-            end    
-        fovVariable:toggle()
-    end
-end)
-fov.min = 1
-fov.mod = 2
-fov.value = 50
-fov.max = 130
 
 -- vehicle options
 local dorctrl = func.add_feature("Door Control", "parent", vehopt.id)
@@ -280,7 +249,8 @@ end)
 windspd.min = 0.0
 windspd.max = 12.0
 windspd.mod = 0.5
- func.add_feature("Really piss off Zeus (SEIZURE WARNING)", "toggle", wthopt.id, function(feat) func.notify("Way to go, you upset a God, feel like a big man huh? Big man with his big insults?")
+
+func.add_feature("Really piss off Zeus (SEIZURE WARNING)", "toggle", wthopt.id, function(feat) func.notify("Way to go, you upset a God, feel like a big man huh? Big man with his big insults?")
 while feat.on do
         native.call(0xF6062E089251C898, true) -- forces lightning
         system.wait(0)
