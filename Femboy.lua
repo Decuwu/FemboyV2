@@ -50,38 +50,6 @@ RGBEyes.min = 0
 RGBEyes.max = 2000
 RGBEyes.mod = 50
 
-local OTR = menu.get_feature_by_hierarchy_key("online.services.off_the_radar")
-menu.add_feature("OTR", "toggle", popt.id, function(feat)
-    OTR:toggle()
-end)
-
-local BST = menu.get_feature_by_hierarchy_key("online.services.bull_shark_testosterone")
-menu.add_feature("BST", "toggle", popt.id, function(feat)
-    while feat.on do
-        BST:toggle()
-        system.wait(0)
-    end
-    menu.notify("Will have to wait until the BST runs out")
-end)
-
-local fovVariable = menu.get_feature_by_hierarchy_key("local.misc.fov_changer.third_person")
-local fov = menu.add_feature("Field Of View", "value_i", popt.id, function(f)
-    if f.on then
-        fovVariable:toggle()
-            while f.on do
-	            fovVariable.value = f.value
-	            fovVariable:toggle()
-                fovVariable:toggle()
-                system.wait()
-            end    
-        fovVariable:toggle()
-    end
-end)
-fov.min = 1
-fov.mod = 2
-fov.value = 50
-fov.max = 130
-
 -- vehicle options
 local dorctrl = menu.add_feature("Door Control", "parent", vehopt.id)
 local lightctrl = menu.add_feature("Light Control", "parent", vehopt.id)
