@@ -95,7 +95,6 @@ grvty.max = 20.0
 grvty.mod = 1.0
 
 menu.add_feature("Native Drifting", "toggle", vehopt.id, function(feat)
-	menu.notify("Slidy wheels equipped, Suspension dropped", "Femboy Menu")
 	local veh = player.get_player_vehicle(player.player_id())
 		native.call(0x3A375167F5782A65, veh, feat.on) -- SET_REDUCE_DRIFT_VEHICLE_SUSPENSION(veh, bool) 
 		native.call(0x5AC79C98C5C17F05, veh, feat.on) -- SET_DRIFT_TYRES_ENABLED(veh, bool)
