@@ -14,7 +14,8 @@ local heirarchy = menu.get_feature_by_hierarchy_key(v)
 local RapidFireWeapons = {
     [2982836145] = true,
     [1672152130] = true,
-    [2138347493] = true
+    [2138347493] = true,
+    [2726580491] = true
 }
 local rapidfire = menu.add_feature("RPG Rapid Fire", "value_i", popt.id, function(f)
     menu.notify("Thank you GhostOne for making very good feature")
