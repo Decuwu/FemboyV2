@@ -1,6 +1,7 @@
 -- so much credit to Toph for teaching me and working with me <3
 -- credit to Rimuru for letting me learn on her script and teaching me a few things <3 (slightly skidded from too :sus:)
 -- credit to Aren for teaching me Lua right at the start <3
+-- credit to GhostOne too because he nice af and wasn't mean to me when teaching me, unlike some others </3 <3
 
 local main = menu.add_feature("Femboy Script", "parent", 0)
 local popt = menu.add_feature("Player Options", "parent", main.id)
@@ -10,6 +11,28 @@ local miscopt = menu.add_feature("Misc Options", "parent", main.id)
 local heirarchy = menu.get_feature_by_hierarchy_key(v)
 
 --player options
+local RapidFireWeapons = {
+    [2982836145] = true
+}
+local rapidfire = menu.add_feature("RPG Rapid Fire", "value_i", popt.id, function(f)
+    menu.notify("Thank you GhostOne for making very good feature")
+    while f.on do
+        local player_ped = player.get_player_ped(player.player_id())
+        local old_player_weapon = ped.get_current_ped_weapon(player_ped)
+        if RapidFireWeapons[old_player_weapon] and controls.get_control_normal(0, 142) == 1 then
+            system.wait(100)
+            weapon.give_delayed_weapon_to_ped(player_ped, 741814745, 0, true)
+            system.wait(100)
+            weapon.give_delayed_weapon_to_ped(player_ped, old_player_weapon, 0, true)
+            system.wait(f.value)
+        end
+        system.wait(0)
+    end
+end)
+rapidfire.max = 2500
+rapidfire.mod = 25
+rapidfire.value = 400 ----- Thank you ghost cause you're smart af <3333333333
+
 local rgb = menu.add_feature("RGB Player Features", "parent", popt.id)
 
 local AllRGBHair = menu.add_feature("Loop All Hair Colors", "value_i", rgb.id, function(f)
@@ -344,19 +367,8 @@ menu.add_feature("Hide HUD", "toggle", miscopt.id, function(feat)
     end
 end)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+menu.add_feature("Weapon Hash", "action", miscopt.id, function()
+    local player_ped = player.get_player_ped(player.player_id())
+    print(ped.get_current_ped_weapon(player_ped))
+    menu.notify((ped.get_current_ped_weapon(player_ped)) .. " - Current Weapon Hash", "Femboy Menu")
+end)
