@@ -23,9 +23,9 @@ local rapidfire = menu.add_feature("RPG Rapid Fire", "value_i", popt.id, functio
         local player_ped = player.get_player_ped(player.player_id())
         local old_player_weapon = ped.get_current_ped_weapon(player_ped)
         if RapidFireWeapons[old_player_weapon] and controls.get_control_normal(0, 142) == 1 then
-            system.wait(100)
+            system.wait(0)
             weapon.give_delayed_weapon_to_ped(player_ped, 741814745, 0, true)
-            system.wait(100)
+            system.wait(0)
             weapon.give_delayed_weapon_to_ped(player_ped, old_player_weapon, 0, true)
             system.wait(f.value)
         end
