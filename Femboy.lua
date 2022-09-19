@@ -8,7 +8,6 @@ local popt = menu.add_feature("Player Options", "parent", main.id)
 local vehopt = menu.add_feature("Vehicle Options", "parent", main.id)
 local wthopt = menu.add_feature("Weather Options", "parent", main.id)
 local miscopt = menu.add_feature("Misc Options", "parent", main.id)
-local heirarchy = menu.get_feature_by_hierarchy_key(v)
 
 --player options
 local RapidFireWeapons = {
