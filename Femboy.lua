@@ -10,7 +10,7 @@ local function NotifyMap(title, subtitle, msg, iconname, intcolor)
     native.call(0x1CCD9A37359072CF, iconname, iconname, false, 0, title, subtitle) --END_TEXT_COMMAND_THEFEED_POST_MESSAGETEXT
     native.call(0x2ED7843F8F801023, true, true) --END_TEXT_COMMAND_THEFEED_POST_TICKER
 end
-NotifyMap("Femboy Lua", "~h~~r~Femboy Lua Script", "~b~Script Loaded, head to Script Repository", "CHAR_MP_STRIPCLUB_PR", 140) -- https://wiki.gtanet.work/index.php?title=Notification_Pictures
+NotifyMap("Femboy Lua", "~h~~r~Femboy Lua Script", "~b~Script Loaded, head to Script Features to use it", "CHAR_MP_STRIPCLUB_PR", 140) -- https://wiki.gtanet.work/index.php?title=Notification_Pictures
 -- Thank you again Toph for this ^^
 
 local main = menu.add_feature("Femboy Script", "parent", 0)
