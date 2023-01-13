@@ -1,4 +1,4 @@
-# v1.7.3
+# v1.8.0
 # Required Trusted Mode
 - Natives (optional)
     - Uses a lot of native.call for various features
@@ -16,6 +16,11 @@
 - Clumsy Player
 
 ### Online Player Script Features Options
+- Griefing Options
+    - Crush Player
+    - Taze Player
+    - Firework Player
+    - Atomize Player
 - IP Shits
     - Post IP Info In Chat (<Team>, <All>)
     - Copy IP To Clipboard 
@@ -62,6 +67,12 @@
 - Aim Karma
     - Notify If Aimed At 
     - Kick Player
+    - Taze Player
+    - Kill Player
+    - Explode Player
+    - Firework Player
+    - Atomize Player
+    - Crush Player
 - Moderation Options 
     - Auto Kicker By Modder Flags Options
     - Auto Kicker By IP Options
@@ -73,7 +84,9 @@
 
 # Let me know if there's any words you want adding or what kind of filters you would like
 
-### Weather Options
+### World Options
+- Distance Scaling
+- Blackout
 - Magic Puddles
 - Wind Speed
 - Wave Intensity 
@@ -88,7 +101,11 @@
 - Weapon Hash (Notifies player of the current weapons hash)
 
 ## Settings 
-- Save Settings (F8 to save settings too)
+- Save Settings 
 - F8 to save settings
+- Femboy Lua Changelog
+- Femboy Lua Feature List
 - Disable VPN Check
 - Force VPN Check
+# You can also just press F8 to save your settings too. 
+# Settings are loaded by default when loading the script
