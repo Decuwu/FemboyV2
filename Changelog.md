@@ -1,0 +1,22 @@
+# Changelog
+- Added to aim karma
+    - Taze Player
+    - Kill Player
+    - Explode Player
+    - Firework Player
+    - Atomize Player
+    - Crush Player 
+- Added Online Player Griefing Options
+    - Crush Player
+    - Taze Player
+    - Firework Player
+    - Atomize Player
+- Added Distance Scaler (dramatically effects fps)
+- Added Blackout 
+- Added link to changelog
+- Added link to feature list
+- Allowed Enable Modder Flag Kick to be saved on
+- Renamed Weather Options to World Options
+
+- Known issues
+    - VPN Flag making the bracket next to it a different colour
