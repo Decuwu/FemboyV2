@@ -88,12 +88,7 @@
 - Weapon Hash (Notifies player of the current weapons hash)
 
 ## Settings 
-- Save Settings 
+- Save Settings (F8 to save settings too)
 - F8 to save settings
 - Disable VPN Check
 - Force VPN Check
-# You can also just press F8 to save your settings too. 
-# Settings are loaded by default when loading the script
-
-# Changelog
-- Added Distance Scaler (dramatically effects fps)
