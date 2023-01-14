@@ -1,111 +1,126 @@
-# v1.8.0
-# Required Trusted Mode
+# v1.9.0 The Remake
+# Required Trusted Modes
+- Stats
+    - Required for Nightclub Loop and 300k loop
+- Globals/Locals
+    - Required for Nightclub Loop and 300k loop
 - Natives (optional)
     - Uses a lot of native.call for various features
 - Http (optional)
     - Uses Http for the auto kick by ip options, if left disabled these options will not work
 
-## Features
+# Features
 - VPN Checker
 - Auto Updater
 
-### Player Options
-- RGB Hair
-- Mobile Radio
-- Ragdoll On Q
-- Clumsy Player
-
-### Online Player Script Features Options
+# Online Script Features
 - Griefing Options
     - Crush Player
     - Taze Player
     - Firework Player
     - Atomize Player
-- IP Shits
-    - Post IP Info In Chat (<Team>, <All>)
-    - Copy IP To Clipboard 
-    - Full list of IP Info 
+- IP Shits 
+    - Post IP Info In Chat <Team Chat><All Chat>
+    - Copy IP To Clipboard
+    - List Of IP Info
 
-### Vehicle Options
-- Door Controls
-    - Open All Doors
-    - Close All Doors
+# Player Options
+- Money Features
+    - Nightclub Safe Loop
+    - 300k loop
+    - Auto Special Cargo Supplier
+- RGB Player
+    - Loop All Hair Colours
+    - Rainbow Hair (Better)
+- Mobile Radio
+- Ragdoll On Q <Narrow Leg Stumble><Wide Leg Stumble><Normal Ragdoll>
+- Clumsy Player
+
+# Vehicle Options
+- Door Control
+    - Open/Close All Doors
+    - Open Door
     - Remove All Doors
     - Remove Specific Door
-    - Window Colour
-    - Windows Open/Close
-- Vehicle Hex Colours
-    - Set/Get Primary Hex Colour
-    - Set/Get Secondary Hex Colour
-    - Set/Get Pearlescent Hex Colour
-    - Set/Get Wheel Hex Colour
-- Light Controls 
+    - Window Tint
+    - Window Open/Close
+- Vehicle Customisation
+    - Set/Keep Custom License Plate
+    - Colour Customisation
+        - Hex/RGB Primary/Seconday/Pearlescent/Wheel Colours
+- Light Control
     - Brake Lights When Stationary
     - RGB Xenon
     - Headlight Brightness
-- Auto Repair
-- Dirt Levels 
-- Homing Lockon To Players
-- Set/Keep Custom License Plates
+- Homing Lockon To Players (Originally By Ghostone)
+- Fix Vehicl / Auto Repair
+- Engine Rattle
+- Dirt Level / Stay Clean
 - Gravity
-- Air Suspension (like NFS - Tuner cars only - lower when stationary, raise when driving)
-- Drift Suspension (Tuner cars only)
+- Air Suspension
+- Drift Suspension
 - Drift Tyres
 - Launch Control
-- Exhaust Backfire (<Disable>, <Enable>)
-- Power Increasinator 
-- Speed Limiter (mph)
-- Speedometer
+- Exhaust Backfire <enable><disable>
+- Power Increasinator
+- Speed Limiter (Mph) 
+- Speedomoter <Mph><Kph><Knots><Mach><mps/Metres per second>
 - Launch Forward
 - Turn Engine Off
-- Kill Engine (hit one thing for it to fully break)
+- Kill Engine 
 - Notify Engine Health
-- Set Patriot Tyre Smoke
 
-### Online Options
+# Online Options
+- Moderation Options
+    - Auto Kicker By Modder Flags Options
+    - Auto Kicker By IP Options
+    - Chat Moderation Options
+        - Block Racism
+        - Block Homophobia
+        - Block Bot/Chat Spam
+        - Block French
+        - Block Dutch
+        - Block Russian
+        - Block Chinese
+        - Block English
 - Force Host
 - Aim Karma
-    - Notify If Aimed At 
+    - Notify If Aimed At
     - Kick Player
     - Taze Player
     - Kill Player
     - Explode Player
     - Firework Player
-    - Atomize Player
+    - Atomize Player 
     - Crush Player
-- Moderation Options 
-    - Auto Kicker By Modder Flags Options
-    - Auto Kicker By IP Options
-    - Chat Moderation options
-        - Block Racism In Chat (Kicks players that use blacklisted words)
-        - Block Homophobia In Chat (Kicks players that use blacklisted words)
-        - Block French, Dutch, Russian, Chinese, English in Chat
-        - Block Bot/Chat Spam In Chat
+- IP Lookup
 
-# Let me know if there's any words you want adding or what kind of filters you would like
-
-### World Options
-- Distance Scaling
+# World Options
+- Distance Scale
+- Make Nearby NPC's Riot
 - Blackout
 - Magic Puddles
 - Wind Speed
-- Wave Intensity 
+- Wave Intensity
 
-### Misc Options
-- Show Player Talking (Notifies you of who is speaking)
-- Make Nearby NPCs Riot
-- Auto Skip Cutscenes 
+# Misc Options
+- Show Player Talking
+- Bail To SP (singleplayer)
+- Auto Skip Cutscene
 - Minimap Disco
 - Get All Achievements
 - Hide HUD
-- Weapon Hash (Notifies player of the current weapons hash)
 
-## Settings 
-- Save Settings 
-- F8 to save settings
+# Settings
+- Save Settings
+- F8 To Save Settings
 - Femboy Lua Changelog
 - Femboy Lua Feature List
 - Disable VPN Check
-- Force VPN Check
-# You can also just press F8 to save your settings too. 
-# Settings are loaded by default when loading the script
+
+# Credits 
+- Toph
+- Rimuru
+- GhostOne
+- Aren
+- RulyPancake
