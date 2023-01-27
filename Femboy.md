@@ -1,4 +1,4 @@
-# v1.9.0 The Remake
+# v1.9.2
 # Required Trusted Modes
 - Stats
     - Required for Nightclub Loop and 300k loop
