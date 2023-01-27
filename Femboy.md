@@ -116,7 +116,6 @@
 - F8 To Save Settings
 - Femboy Lua Changelog
 - Femboy Lua Feature List
-- Disable VPN Check
 
 # Credits 
 - Toph
