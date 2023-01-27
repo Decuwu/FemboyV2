@@ -1,3 +1,7 @@
+# Changelog v1.9.2
+- removed disable vpn checker
+- removed weird subheader things
+
 # Changelog v1.9.0 The Remake
 - added money options
     - nightclub safe loop
