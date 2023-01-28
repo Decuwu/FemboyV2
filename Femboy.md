@@ -1,4 +1,4 @@
-# v1.9.2
+# v1.10.0
 # Required Trusted Modes
 - Stats
     - Required for Nightclub Loop and 300k loop
@@ -19,16 +19,14 @@
     - Taze Player
     - Firework Player
     - Atomize Player
+    - Kill Player
+    - Clone Player
 - IP Shits 
     - Post IP Info In Chat <Team Chat><All Chat>
     - Copy IP To Clipboard
     - List Of IP Info
 
 # Player Options
-- Money Features
-    - Nightclub Safe Loop
-    - 300k loop
-    - Auto Special Cargo Supplier
 - RGB Player
     - Loop All Hair Colours
     - Rainbow Hair (Better)
@@ -95,6 +93,19 @@
     - Crush Player
 - IP Lookup
 
+# Money Stuffs
+- Money Features
+    - Air Cargo Stuffs
+        - Sell Aircargo For 2.1b
+        - Disable Airfreight Cooldown
+        - Instant Finish Sell
+        - Instant Source
+    - Special Cargo
+        - Sell Special Cargo For 5m
+        - Auto Special Cargo Supplier
+    - Nightclub Safe Loop
+    - 300k loop
+    - remove transaction error
 # World Options
 - Distance Scale
 - Make Nearby NPC's Riot
@@ -116,6 +127,7 @@
 - F8 To Save Settings
 - Femboy Lua Changelog
 - Femboy Lua Feature List
+- Disable VPN Check
 
 # Credits 
 - Toph
@@ -123,3 +135,20 @@
 - GhostOne
 - Aren
 - RulyPancake
+        
+# Changelog v1.10.0
+- Added Griefing Options
+    - Kill Player 
+    - Clone Player
+- Added Supply Cargo stuff
+    - Sell Special Cargo For 5m
+- Added Remove Transaction Error
+- Added Air Cargo Stuffs
+    - Sell Aircargo For 2.1B
+    - Disable Airfreight Cooldown
+    - Instant Finish Sell
+    - Instant Source
+- Updated Changelog and Feature list notifies
+- Updated Crush Player
+- Improved Send IP info in chat 
+- Moved Money Options to the main submenu
