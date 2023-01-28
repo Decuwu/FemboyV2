@@ -1,16 +1,16 @@
-# Changelog v1.10.0
-- Added Griefing Options
-    - Kill Player 
-    - Clone Player
-- Added Supply Cargo stuff
-    - Sell Special Cargo For 5m
-- Added Remove Transaction Error
-- Added Air Cargo Stuffs
-    - Sell Aircargo For 2.1B
-    - Disable Airfreight Cooldown
-    - Instant Finish Sell
-    - Instant Source
-- Updated Changelog and Feature list notifies
-- Updated Crush Player
-- Improved Send IP info in chat 
+# Changelog v1.10.0,
+- Added Griefing Options,
+    - Kill Player,
+    - Clone Player,
+- Added Supply Cargo stuff,
+    - Sell Special Cargo For 5m,
+- Added Remove Transaction Error,
+- Added Air Cargo Stuffs,
+    - Sell Aircargo For 2.1B,
+    - Disable Airfreight Cooldown,
+    - Instant Finish Sell,
+    - Instant Source,
+- Updated Changelog and Feature list notifies,
+- Updated Crush Player,
+- Improved Send IP info in chat,
 - Moved Money Options to the main submenu
