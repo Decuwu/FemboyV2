@@ -84,7 +84,7 @@ local bunker_features = menu.add_feature("Bunker Options", "parent", recovery_fe
 
 local night_club = menu.add_feature("Nightclub Options", "parent", recovery_feature).id
 local vehicle_cargo = menu.add_feature("Vehicle Cargo Options", "parent", recovery_feature).id 
-local source_vehicle = menu.add_feature("Source Vehicle Options", "parent", recovery_feature).id 
+local source_vehicle = menu.add_feature("Source Vehicle Options", "parent", vehicle_cargo).id 
 local top_range_vehicle = menu.add_feature("Top Range Vehicles", "parent", source_vehicle).id 
 local mid_range_vehicles = menu.add_feature("Mid Range Vehicles", "parent", source_vehicle).id 
 local standard_range_vehicles = menu.add_feature("Standard Range Vehicles", "parent", source_vehicle).id 
@@ -173,15 +173,11 @@ local function check_vpn(pid)
 end
 
 local function NotifyMap(title, subtitle, msg, iconname, intcolor)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
-        menu.notify("Script loaded, head to Script Features", "Femboy Lua " .. version)
-    else
-        native.call(0x92F0DA1E27DB96DC, intcolor) --_THEFEED_SET_NEXT_POST_BACKGROUND_COLOR
-        native.call(0x202709F4C58A0424, "STRING") --BEGIN_TEXT_COMMAND_THEFEED_POST
-        native.call(0x6C188BE134E074AA, msg) --ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME
-        native.call(0x1CCD9A37359072CF, iconname, iconname, false, 0, title, subtitle) --END_TEXT_COMMAND_THEFEED_POST_MESSAGETEXT
-        native.call(0x2ED7843F8F801023, true, true) --END_TEXT_COMMAND_THEFEED_POST_TICKER
-    end
+    native.call(0x92F0DA1E27DB96DC, intcolor) --_THEFEED_SET_NEXT_POST_BACKGROUND_COLOR
+    native.call(0x202709F4C58A0424, "STRING") --BEGIN_TEXT_COMMAND_THEFEED_POST
+    native.call(0x6C188BE134E074AA, msg) --ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME
+    native.call(0x1CCD9A37359072CF, iconname, iconname, false, 0, title, subtitle) --END_TEXT_COMMAND_THEFEED_POST_MESSAGETEXT
+    native.call(0x2ED7843F8F801023, true, true) --END_TEXT_COMMAND_THEFEED_POST_TICKER
 end
 
 -- 
@@ -500,15 +496,20 @@ menu.add_feature("Set Patriot Tyre Smoke", "action", vehicle_customisation, func
 end)
 
 feats.rgb_neons = menu.add_feature("RGB Neons", "toggle", light_control, function(f)
-    while f.on do
-        local get_game_timer = native.call(0x9CD27B0045628463):__tointeger()
-        local rgb = RGBRainbow(get_game_timer, 2)
-        local veh = player.get_player_vehicle(player.player_id())
-        for i = 0,3 do
-            vehicle.set_vehicle_neon_light_enabled(veh, i, true) 
-            native.call(0x8E0A582209A62695, veh, rgb.r, rgb.g, rgb.b)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on = false
+    else
+        while f.on do
+            local get_game_timer = native.call(0x9CD27B0045628463):__tointeger()
+            local rgb = RGBRainbow(get_game_timer, 2)
+            local veh = player.get_player_vehicle(player.player_id())
+            for i = 0,3 do
+                vehicle.set_vehicle_neon_light_enabled(veh, i, true) 
+                native.call(0x8E0A582209A62695, veh, rgb.r, rgb.g, rgb.b)
+            end
+            system.wait()
         end
-        system.wait()
     end
 end)
 
@@ -524,15 +525,20 @@ feats.brake_lights = menu.add_feature("Brake Lights When Stationary", "toggle", 
 end)
 
 feat_tv.rgbX = menu.add_feature("RGB Xenon", "value_i", light_control, function(f)
-    menu.notify("Xenon Lights Added, BEGIN THE RAVE")
-    native.call(0x2A1F4F37F95BAD08, veh, 22, f.on) -- TOGGLE_VEHICLE_MOD
-    while f.on do
-        local veh = player.get_player_vehicle(player.player_id())
-        for i = 1, 12 do
-            native.call(0xE41033B25D003A07, veh, i) -- SET_VEHICLE_XENON_LIGHTS_COLOR
-            system.wait(f.value)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on = false
+    else
+        menu.notify("Xenon Lights Added, BEGIN THE RAVE")
+        native.call(0x2A1F4F37F95BAD08, veh, 22, f.on) -- TOGGLE_VEHICLE_MOD
+        while f.on do
+            local veh = player.get_player_vehicle(player.player_id())
+            for i = 1, 12 do
+                native.call(0xE41033B25D003A07, veh, i) -- SET_VEHICLE_XENON_LIGHTS_COLOR
+                system.wait(f.value)
+            end
+            system.wait(0)
         end
-        system.wait(0)
     end
 end)
 feat_tv.rgbX.min = 0
@@ -1739,157 +1745,210 @@ end)
 -- recovery_feature
 -- remote_business
 menu.add_feature("Start CEO", "action", remote_business, function()
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-end)
-
-menu.add_feature("Start MC", "action", remote_business, function()
-    script.set_global_i(274986, 32)
-    script.set_global_i(274894, 32)
-    script.set_global_i(1894584, 0)
-    script.set_global_i(1895012, 1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+    end
 end)
 
 menu.add_feature("Open Airfreight App","action", remote_business,function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "appsmuggler") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "appsmuggler") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "appsmuggler", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Natives and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1854376,-1)
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+        native.call(0x6EB5F71AA68F2E8E, "appsmuggler") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        native.call(0xE6CC9F3BA0FB9EF1, "appsmuggler") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        native.call(0xE81651AD79516E48, "appsmuggler", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    end
 end)
 
 menu.add_feature("Open Bunker App","action", remote_business,function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "appbunkerbusiness") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "appbunkerbusiness") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "appbunkerbusiness", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Natives and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1854376,-1)
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+        native.call(0x6EB5F71AA68F2E8E, "appbunkerbusiness") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        native.call(0xE6CC9F3BA0FB9EF1, "appbunkerbusiness") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        native.call(0xE81651AD79516E48, "appbunkerbusiness", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    end
 end)
 
 menu.add_feature("Franklin's Agency","action", remote_business,function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "appfixersecurity") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "appfixersecurity") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "appfixersecurity", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Natives and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1854376,-1)
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+        native.call(0x6EB5F71AA68F2E8E, "appfixersecurity") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        native.call(0xE6CC9F3BA0FB9EF1, "appfixersecurity") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        native.call(0xE81651AD79516E48, "appfixersecurity", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    end
 end)
 
 menu.add_feature("Master Control Terminal","action", remote_business,function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "apparcadebusinesshub") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "apparcadebusinesshub") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "apparcadebusinesshub", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Natives and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1854376,-1)
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+        native.call(0x6EB5F71AA68F2E8E, "apparcadebusinesshub") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        native.call(0xE6CC9F3BA0FB9EF1, "apparcadebusinesshub") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        native.call(0xE81651AD79516E48, "apparcadebusinesshub", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    end
 end)
 
 menu.add_feature("Nightclub App","action", remote_business,function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "appbusinesshub") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "appbusinesshub") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "appbusinesshub", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Natives and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1854376,-1)
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+        native.call(0x6EB5F71AA68F2E8E, "appbusinesshub") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        native.call(0xE6CC9F3BA0FB9EF1, "appbusinesshub") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        native.call(0xE81651AD79516E48, "appbusinesshub", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    end
 end)
 
 menu.add_feature("Terrobyte Touchscreen Terminal","action", remote_business,function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "apphackertruck") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "apphackertruck") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "apphackertruck", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Natives and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1854376,-1)
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+        native.call(0x6EB5F71AA68F2E8E, "apphackertruck") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        native.call(0xE6CC9F3BA0FB9EF1, "apphackertruck") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        native.call(0xE81651AD79516E48, "apphackertruck", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    end
 end)
 
 -- special_cargo
-menu.add_feature("special cargo = 5m", "toggle", special_cargo, function(f)
-    while f.on do
-        script.set_global_i(278133, 5780000)
-        script.set_global_i(278131, 5780000)
-        script.set_global_i(278135, 5780000)
-        script.set_global_i(278129, 5780000)
-        script.set_global_i(278127, 5780000)
-        script.set_global_i(278137, 5780000)
-        script.set_global_i(277933, 5791000)
-        script.set_global_i(277934, 2895500)
-        script.set_global_i(277935, 1930333)
-        script.set_global_i(277936, 1158200)
-        script.set_global_i(277937, 827285)
-        script.set_global_i(277938, 643444)
-        script.set_global_i(277939, 413642)
-        script.set_global_i(277940, 304789)
-        script.set_global_i(277941, 241291)
-        script.set_global_i(277942, 199689)
-        script.set_global_i(277943, 170323)
-        script.set_global_i(277944, 148487)
-        script.set_global_i(277945, 131613)
-        script.set_global_i(277946, 118183)
-        script.set_global_i(277947, 98152)
-        script.set_global_i(277948, 83927)
-        script.set_global_i(277949, 73303)
-        script.set_global_i(277950, 65067)
-        script.set_global_i(277951, 58494)
-        script.set_global_i(277952, 52645)
-        script.set_global_i(277953, 52171)
-        system.wait()
+menu.add_feature("Sell Cargo For 5 Million", "toggle", special_cargo, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(278133, 5780000)
+            script.set_global_i(278131, 5780000)
+            script.set_global_i(278135, 5780000)
+            script.set_global_i(278129, 5780000)
+            script.set_global_i(278127, 5780000)
+            script.set_global_i(278137, 5780000)
+            script.set_global_i(277933, 5791000)
+            script.set_global_i(277934, 2895500)
+            script.set_global_i(277935, 1930333)
+            script.set_global_i(277936, 1158200)
+            script.set_global_i(277937, 827285)
+            script.set_global_i(277938, 643444)
+            script.set_global_i(277939, 413642)
+            script.set_global_i(277940, 304789)
+            script.set_global_i(277941, 241291)
+            script.set_global_i(277942, 199689)
+            script.set_global_i(277943, 170323)
+            script.set_global_i(277944, 148487)
+            script.set_global_i(277945, 131613)
+            script.set_global_i(277946, 118183)
+            script.set_global_i(277947, 98152)
+            script.set_global_i(277948, 83927)
+            script.set_global_i(277949, 73303)
+            script.set_global_i(277950, 65067)
+            script.set_global_i(277951, 58494)
+            script.set_global_i(277952, 52645)
+            script.set_global_i(277953, 52171)
+            system.wait()
+        end
     end
 end)
 
 menu.add_feature("Instant Buy", "toggle", special_cargo, function(f)
-    while f.on do
-        script.set_local_i(3942964741,603,1)
-        script.set_local_i(3942964741,789,6)
-        script.set_local_i(3942964741,790,4)
-        system.wait(2500)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_local_i(3942964741,603,1)
+            script.set_local_i(3942964741,789,6)
+            script.set_local_i(3942964741,790,4)
+            system.wait(2500)
+        end
     end
 end)
 
 menu.add_feature("Instant Sell", "toggle", special_cargo, function(f)
-    while f.on do
-        script.set_local_i(2067673554,541,99999)
-        system.wait(2500)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_local_i(2067673554,541,99999)
+            system.wait(2500)
+        end
     end
 end)
 
 menu.add_feature("Get Max Crates w/ One Purchase", "toggle", special_cargo, function(f)
-    while f.on do
-        script.set_local_i(3942964741, 599, 111)
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_local_i(3942964741, 599, 111)
+            system.wait()
+        end
     end
 end)
 
-menu.add_feature("Ignore Special Cargo Cooldown", "toggle", special_cargo, function(f)
-    while f.on do
-        script.set_global_i(277698,0)
-        script.set_global_i(277699,0)        
-        system.wait(2500)
+menu.add_feature("Remove Special Cargo Cooldown", "toggle", special_cargo, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        while f.on do
+            script.set_global_i(277698,0)
+            script.set_global_i(277699,0)        
+            system.wait(2500)
+        end
     end
 end)
 
 menu.add_feature("Start CEO", "action", special_cargo, function()
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+    end
 end)
 
 menu.add_feature("Terrobyte Touchscreen Terminal","action", special_cargo,function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "apphackertruck") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "apphackertruck") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "apphackertruck", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Natives and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1854376,-1)
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+        native.call(0x6EB5F71AA68F2E8E, "apphackertruck") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        native.call(0xE6CC9F3BA0FB9EF1, "apphackertruck") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        native.call(0xE81651AD79516E48, "apphackertruck", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    end
 end)
 
 local normal_crates = {
@@ -1936,94 +1995,126 @@ end
 -- air_cargo 
 
 menu.add_feature("Set Air Cargo Price To 1 Billion", "toggle", air_cargo, function(f)
-    while f.on do
-        script.set_global_i(284955,1147483647)
-        script.set_global_i(284956,1147483647)
-        script.set_global_i(284957,1147483647)
-        script.set_global_i(284958,1147483647)
-        script.set_global_i(284959,1147483647)
-        script.set_global_i(284960,1147483647)
-        script.set_global_i(284961,1147483647)
-        script.set_global_i(284962,1147483647)
-        script.set_global_i(284963,1147483647)
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(284955,1147483647)
+            script.set_global_i(284956,1147483647)
+            script.set_global_i(284957,1147483647)
+            script.set_global_i(284958,1147483647)
+            script.set_global_i(284959,1147483647)
+            script.set_global_i(284960,1147483647)
+            script.set_global_i(284961,1147483647)
+            script.set_global_i(284962,1147483647)
+            script.set_global_i(284963,1147483647)
+            system.wait()
+        end
     end
 end)
 
 menu.add_feature("Set Air Cargo Price To 2 Billion", "toggle", air_cargo, function(f)
-    while f.on do
-        script.set_global_i(284955,2147483647)
-        script.set_global_i(284956,2147483647)
-        script.set_global_i(284957,2147483647)
-        script.set_global_i(284958,2147483647)
-        script.set_global_i(284959,2147483647)
-        script.set_global_i(284960,2147483647)
-        script.set_global_i(284961,2147483647)
-        script.set_global_i(284962,2147483647)
-        script.set_global_i(284963,2147483647)
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(284955,2147483647)
+            script.set_global_i(284956,2147483647)
+            script.set_global_i(284957,2147483647)
+            script.set_global_i(284958,2147483647)
+            script.set_global_i(284959,2147483647)
+            script.set_global_i(284960,2147483647)
+            script.set_global_i(284961,2147483647)
+            script.set_global_i(284962,2147483647)
+            script.set_global_i(284963,2147483647)
+            system.wait()
+        end
     end
 end)
 
 menu.add_feature("Open AirFrieght App", "action", air_cargo, function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "appsmuggler") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "appsmuggler") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "appsmuggler", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(1854376,-1)
+        script.set_global_i(1894584,0)
+        script.set_global_i(274986,32)
+        script.set_global_i(274984,32)
+        native.call(0x6EB5F71AA68F2E8E, "appsmuggler") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        native.call(0xE6CC9F3BA0FB9EF1, "appsmuggler") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        native.call(0xE81651AD79516E48, "appsmuggler", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+    end
 end)
 
 menu.add_feature("Instant Sell", "toggle", air_cargo, function(f)
-    while f.on do
-        script.set_local_i(2882788887,2963,0)
-        system.wait(1500)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_local_i(2882788887,2963,0)
+            system.wait(1500)
+        end
     end
 end)
 
 menu.add_feature("Instant Source", "toggle", air_cargo, function(f)
-    while f.on do
-        script.set_local_i(2882788887,1999,-1)
-        system.wait(1500)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_local_i(2882788887,1999,-1)
+            system.wait(1500)
+        end
     end
 end)
 
-menu.add_feature("Source Assistant", "toggle", air_cargo, function(f)
-    while f.on do
-        script.set_local_i(2882788887,2698,15)
-        script.set_global_i(2798615,25)
-        system.wait(1500)
-    end
-end)
-
-menu.add_feature("Remove Ron's Cut", "toggle", air_cargo, function(f)
-    while f.on do
-        script.set_global_i(284938,0)
-        system.wait(0)
+menu.add_feature("Source Cargo", "toggle", air_cargo, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_local_i(2882788887,2698,15)
+            script.set_global_i(2798615,25)
+            system.wait(1500)
+        end
     end
 end)
 
 menu.add_feature("Remove Sell Cooldown", "toggle", air_cargo, function(f)
-    while f.on do
-        script.set_global_i(2766148,0)
-        script.set_global_i(284896,0)
-        script.set_global_i(284897,0)
-        script.set_global_i(284898,0)
-        script.set_global_i(284899,0)
-        script.set_global_i(284900,0)
-        system.wait(0)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(2766148,0)
+            script.set_global_i(284896,0)
+            script.set_global_i(284897,0)
+            script.set_global_i(284898,0)
+            script.set_global_i(284899,0)
+            script.set_global_i(284900,0)
+            system.wait(0)
+        end
     end
 end)
 
 menu.add_feature("Alien Egg", "toggle", steal_missions_air, function(f) 
-    while f.on do
-        stats.stat_set_int(3550228704, 1200, true)
-        stats.stat_set_int(2531035799, 1200, true)
-        stats.stat_set_int(723574901, 1200, true)
-        stats.stat_set_int(295142111, 1200, true)
-        script.set_global_i(2798615, 2, true)
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Stats and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            stats.stat_set_int(3550228704, 1200, true)
+            stats.stat_set_int(2531035799, 1200, true)
+            stats.stat_set_int(723574901, 1200, true)
+            stats.stat_set_int(295142111, 1200, true)
+            script.set_global_i(2798615, 2, true)
+            system.wait()
+        end
     end
 end)
 
@@ -2068,63 +2159,42 @@ for _, v in ipairs(sell_missions) do
     end)
 end
 
--- bunker_features 
-menu.add_feature("Open Bunker App","action", bunker_features,function()
-    script.set_global_i(1854376,-1)
-    script.set_global_i(1894584,0)
-    script.set_global_i(274986,32)
-    script.set_global_i(274984,32)
-    native.call(0x6EB5F71AA68F2E8E, "appbunkerbusiness") -- VOID REQUEST_SCRIPT(const char* scriptName)
-    native.call(0xE6CC9F3BA0FB9EF1, "appbunkerbusiness") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-    native.call(0xE81651AD79516E48, "appbunkerbusiness", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
-end)
-
-menu.add_feature("Instant Sell", "toggle", bunker_features, function(f)
-    while f.on do 
-        script.set_local_i(2362490864,1979,0)
-        system.wait(1500)
-    end
-end)
-
-menu.add_feature("Instant Delivery for Ammu-Nation Mission", "toggle", bunker_features, function(f)
-    while f.on do
-        script.set_local_i(1161290954,229,0)
-        system.wait(1500)
-    end
-end)
-
-menu.add_feature("Disable Cooldown for Ammu-Nation Mission", "toggle", bunker_features, function(f)
-    while f.on do
-        stats.stat_set_int(240433318,-1,true)
-        system.wait(100)
-    end
-end)
-
-menu.add_feature("Instant Win Shooting Range", "action", bunker_features, function()
-    script.set_local_i(2855495932,1659,9000)
-end)
-
 -- night_club
 menu.add_feature("Instant Sell","toggle",night_club,function(f)
-    while f.on do
-        script.set_local_i(4093145562,2507,15)
-        script.set_local_i(4093145562,2508,15)
-        script.set_local_i(4093145562,2336,0)
-        system.wait(2500)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_local_i(4093145562,2507,15)
+            script.set_local_i(4093145562,2508,15)
+            script.set_local_i(4093145562,2336,0)
+            system.wait(2500)
+        end
     end
 end)
 
-menu.add_feature("Modify NightClub Sell to 4M","toggle",night_club,function(f)
-    while f.on do
-        script.set_local_i(3518909077,148,3870000)
-        system.wait()
+menu.add_feature("Sell Cargo For 4 Million","toggle",night_club,function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_local_i(3518909077,148,3870000)
+            system.wait()
+        end
     end
 end)
 
 menu.add_feature("Remove Nightclub Sell Cooldown","toggle",night_club,function(f)
-    while f.on do
-        script.set_global_i(1962972,-1)
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(1962972,-1)
+            system.wait()
+        end
     end
 end)
 
@@ -2179,41 +2249,61 @@ local positions = {
 }
 
 menu.add_feature("Real Estate Scam", "toggle", night_club_scam, function(f)
-    while f.on do
-        ezBan()
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Stats and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            ezBan()
+            system.wait()
+        end
     end
 end)
 
 menu.add_feature("move mouse", "toggle", night_club_scam, function(f)
-    while f.on do
-        for _, value in ipairs(positions) do
-            native_call(0xFC695459D4D0E219, value.x, value.y)
-            simulate_a_mouse_click()
-            simulate_an_enter_press_1()
-            simulate_an_enter_press_2()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            for _, value in ipairs(positions) do
+                native_call(0xFC695459D4D0E219, value.x, value.y)
+                simulate_a_mouse_click()
+                simulate_an_enter_press_1()
+                simulate_an_enter_press_2()
+            end
         end
     end
 end)
 
 -- vehicle_cargo 
 menu.add_feature("Disable Sell Cooldown", "toggle", vehicle_cargo, function(f)
-    while f.on do
-        script.set_global_i(281830,-1)
-        script.set_global_i(2766116,-1)
-        script.set_global_i(2766118,-1)
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(281830,-1)
+            script.set_global_i(2766116,-1)
+            script.set_global_i(2766118,-1)
+            system.wait()
+        end
     end
 end)
 
-menu.add_feature("Disable Vehicle Source Cooldown", "toggle", vehicle_cargo, function(f)
-    while f.on do
-        script.set_global_i(281459,0)
-        script.set_global_i(281827,0)
-        script.set_global_i(281828,0)
-        script.set_global_i(281829,0)
-        script.set_global_i(281830,0)
-        system.wait()
+menu.add_feature("Disable Source Cooldown", "toggle", vehicle_cargo, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(281459,0)
+            script.set_global_i(281827,0)
+            script.set_global_i(281828,0)
+            script.set_global_i(281829,0)
+            script.set_global_i(281830,0)
+            system.wait()
+        end
     end
 end)
  
@@ -2359,101 +2449,184 @@ end
 
 -- recovery_tool 
 menu.add_feature("Become a bad sport", "action", bad_sport_manager, function()
-    stats.stat_set_int(2829961636, 1, true)
-    stats.stat_set_int(2301392608, 1, true)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
+        menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
+    else
+        stats.stat_set_int(2829961636, 1, true)
+        stats.stat_set_int(2301392608, 1, true)
+    end
 end)
 
 menu.add_feature("Remove bad sport", "action", bad_sport_manager, function()
-    stats.stat_set_int(2301392608, 0, true)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
+        menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
+    else
+        stats.stat_set_int(2301392608, 0, true)
+    end
 end)
 
 menu.add_feature("Bail To SP", "action", misc_feature, function(f)
-    if native.call(0x580CE4438479CC61) then
-        native.call(0x95914459A87EBA28, 0, 0, 0)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        if native.call(0x580CE4438479CC61) then
+            native.call(0x95914459A87EBA28, 0, 0, 0)
+        end
     end
 end)
 
 menu.add_feature("Force Cloud Save", "action", recovery_tool, function(f)
-    native.call(0xE07BCA305B82D2FD, 0, 0, 3, 0)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        native.call(0xE07BCA305B82D2FD, 0, 0, 3, 0)
+    end
 end)
 
 menu.add_feature("Request Acid Lab", "action", recovery_tool, function(f)
-    script.set_global_i(2793984,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(2793984,1)
+    end
 end)
 
 menu.add_feature("Request Avenger", "action", recovery_tool, function(f)
-    script.set_global_i(2793979,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        cript.set_global_i(2793979,1)
+    end
 end)
 
 menu.add_feature("Request Ballistic Equipment", "action", recovery_tool, function(f)
-    script.set_global_i(2793942,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(2793942,1)
+    end
 end)
 
 menu.add_feature("Request Dinghy", "action", recovery_tool, function()
-    script.set_global_i(2794012,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(2794012,1)
+    end
 end)
 
 menu.add_feature("Request Kosatka", "action", recovery_tool, function()
-    script.set_global_i(2794000,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        cript.set_global_i(2794000,1)
+    end
 end)
 
 menu.add_feature("Request Motorcycle", "action", recovery_tool, function()
-    script.set_global_i(2794034,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(2794034,1)
+    end
 end)
 
 menu.add_feature("Request MOC", "action", recovery_tool, function()
-    script.set_global_i(2793971,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(2793971,1)
+    end
 end)
 
 menu.add_feature("Request Mini Tank", "action", recovery_tool, function()
-    script.set_global_i(2799921,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(2799921,1)
+    end
 end)
 
 menu.add_feature("Request RC Bandito", "action", recovery_tool, function()
-    script.set_global_i(2799920,1)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(2799920,1)
+    end
 end)
 
 menu.add_feature("Request Terrobyte", "action", recovery_tool, function()
-    script.set_global_i(2793983,1)
-end)
-
-feats.disable_transaction_error = menu.add_feature("Disable Transaction Error alert", "toggle", disable_tools, function()
-    if f.on then
-        native.call(0xA8733668D1047B51, -1)
-        native.call(0xA8733668D1047B51, 0, 0, 3, 0)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+    else
+        script.set_global_i(2793983,1)
     end
 end)
 
-feats.disable_kosatka_missiles_cd = menu.add_feature("Disable Kosatka Missiles CD", "toggle", disable_tools, function()
-    while f.on do
-        script.set_global_i(292332, 0)
-        script.set_global_i(292333, 99999)
-        system.wait()
+feats.disable_transaction_error = menu.add_feature("Remove Transaction Error", "toggle", disable_tools, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(4536673, 0)
+            script.set_global_i(4536674, 0)
+            script.set_global_i(4536675, 0)
+            system.wait()
+        end
     end
 end)
 
-feats.disable_mk2_cd = menu.add_feature("Disable MK2 CD", "toggle", disable_tools, function(f)
-    while f.on do
-        script.set_global_i(290553, 0)
-        system.wait()
+feats.disable_kosatka_missiles_cd = menu.add_feature("Disable Kosatka Missiles Cooldown", "toggle", disable_tools, function()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(292332, 0)
+            script.set_global_i(292333, 99999)
+            system.wait()
+        end
+    end
+end)
+
+feats.disable_mk2_cd = menu.add_feature("Disable MK2 Cooldown", "toggle", disable_tools, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(290553, 0)
+            system.wait()
+        end
     end
 end)
 
 menu.add_feature("Maximize nightclub popularity", "action", maximize_options, function()
-    stats.stat_set_int(2724973317, 1000, true)
-    stats.stat_set_int(2295992369, 1000, true)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
+        menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
+    else
+        stats.stat_set_int(2724973317, 1000, true)
+        stats.stat_set_int(2295992369, 1000, true)
+    end
 end)
 
 menu.add_feature("Maximize Inventory", "action", maximize_options, function()
-    stats.stat_set_int(3154358306, 30, true)
-    stats.stat_set_int(2983015990, 15, true)
-    stats.stat_set_int(2098164755, 5, true)
-    stats.stat_set_int(3097587663, 10, true)
-    stats.stat_set_int(853483879, 10, true)
-    stats.stat_set_int(2022518763, 20, true)
-    stats.stat_set_int(1031694059, 20, true)
-    stats.stat_set_int(1734518001, 11, true)
-    stats.stat_set_int(3689384104, 11, true)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
+        menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
+    else
+        stats.stat_set_int(3154358306, 30, true)
+        stats.stat_set_int(2983015990, 15, true)
+        stats.stat_set_int(2098164755, 5, true)
+        stats.stat_set_int(3097587663, 10, true)
+        stats.stat_set_int(853483879, 10, true)
+        stats.stat_set_int(2022518763, 20, true)
+        stats.stat_set_int(1031694059, 20, true)
+        stats.stat_set_int(1734518001, 11, true)
+        stats.stat_set_int(3689384104, 11, true)
+    end
 end)
 -- collectibles 
 local collect = {
@@ -2480,23 +2653,28 @@ end
 
 -- world_feature 
 local distancescale = menu.add_feature("Distance Scale", "value_f", world_feature, function(f)
-    menu.notify("This will effect your FPS massively", "Femboy Menu")
-    while f.on do
-        native.call(0xA76359FC80B2438E, f.value)
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        menu.notify("This will effect your FPS massively", "Femboy Menu")
+        while f.on do
+            native.call(0xA76359FC80B2438E, f.value)
+            system.wait()
+        end
+        native.call(0xA76359FC80B2438E, 1.0)
     end
-    native.call(0xA76359FC80B2438E, 1.0)
 end)
 distancescale.min = 0.0
 distancescale.max = 200.0
 distancescale.mod = 0.5
 
-menu.add_feature("Make Nearby NPC's Riot", "toggle", world_feature, function(feat)
+menu.add_feature("Make Nearby NPC's Riot", "toggle", world_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
-        native.call(0x2587A48BC88DFADF, feat.on)
+        native.call(0x2587A48BC88DFADF, f.on)
     end
 end)
 
@@ -2504,7 +2682,7 @@ menu.add_feature("Blackout", "toggle", world_feature, function(f)
     gameplay.set_blackout(f.on)
 end)
 
-local rainlvl = menu.add_feature("Magic puddles", "autoaction_value_f", world_feature, function(feat)
+local rainlvl = menu.add_feature("Magic puddles", "autoaction_value_f", world_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
@@ -2513,7 +2691,7 @@ local rainlvl = menu.add_feature("Magic puddles", "autoaction_value_f", world_fe
             menu.notify("Natives are required to be enabled to use this feature", "Femboy Menu")
             f.on = false
         else
-            native.call(0x643E26EA6E024D92, feat.value)
+            native.call(0x643E26EA6E024D92, f.value)
         end
     end
 end)
@@ -2521,12 +2699,12 @@ rainlvl.min = 0.0
 rainlvl.max = 10.0
 rainlvl.mod = 0.5
 
-local windspd = menu.add_feature("Wind speed", "autoaction_value_f", world_feature, function(feat)
+local windspd = menu.add_feature("Wind speed", "autoaction_value_f", world_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
-        native.call(0xEE09ECEDBABE47FC, feat.value)
+        native.call(0xEE09ECEDBABE47FC, f.value)
     end
 end)
 windspd.min = 0.0
@@ -2582,13 +2760,18 @@ menu.add_feature("Hide HUD", "toggle", misc_feature, function(f)
 end)
 
 menu.add_feature("Disable Above Map Notifs", "toggle", misc_feature, function(f)
-    while f.on do
-        native.call(0x32888337579A5970, f.on) -- hide feed
-        system.wait()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            native.call(0x32888337579A5970, f.on) -- hide feed
+            system.wait()
+        end
+        native.call(0x15CFA549788D35EF) -- THEFEED_SHOW
+        native.call(0xA8FDB297A8D25FBA) -- THEFEED_FLUSH_QUEUE
+        menu.notify("Notifications above map enabled", "Femboy Menu")
     end
-    native.call(0x15CFA549788D35EF) -- THEFEED_SHOW
-    native.call(0xA8FDB297A8D25FBA) -- THEFEED_FLUSH_QUEUE
-    menu.notify("Notifications above map enabled", "Femboy Menu")
 end)
 
 -- logging_feature
@@ -2872,11 +3055,16 @@ end)
 
 --- friendly_options
 menu.add_player_feature("RP Drop", "toggle", friendly_options, function(f, pid)
-    request_model(437412629)
-    while f.on do
-        local coords = player.get_player_coords(pid)
-        native.call(0x673966A0C0FD7171, 738282662, coords, 0, 1, 437412629, 0, 1)
-        system.wait(5)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        request_model(437412629)
+        while f.on do
+            local coords = player.get_player_coords(pid)
+            native.call(0x673966A0C0FD7171, 738282662, coords, 0, 1, 437412629, 0, 1)
+            system.wait(5)
+        end
     end
 end)
 
@@ -2915,7 +3103,7 @@ menu.create_thread(function()
                 local file = io.open(utils.get_appdata_path("PopstarDevs", "2Take1Menu").."\\scripts\\Femboy.luac", "w+b")
                 file:write(resPonsehody)
                 file:close()
-                menu.notify("Updated Femboy Luac, Restart the script to get the new version", "Femboy Lua Auto Updater")
+                menu.notify("Updated Femboy Lua, Restart the script to get the new version", "Femboy Lua Auto Updater")
                 menu.exit()
             end)
         end
