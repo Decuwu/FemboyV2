@@ -1,4 +1,4 @@
-local version = "2.0.0" 
+local version = "2.0.1" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
