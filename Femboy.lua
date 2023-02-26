@@ -3100,7 +3100,7 @@ menu.create_thread(function()
         if version_body == version then return
         elseif version ~= version_body then
                 menu.create_thread(function ()
-                local file = io.open(utils.get_appdata_path("PopstarDevs", "2Take1Menu").."\\scripts\\Femboy.luac", "w+b")
+                local file = io.open(utils.get_appdata_path("PopstarDevs", "2Take1Menu").."\\scripts\\Femboy.lua", "w+b")
                 file:write(resPonsehody)
                 file:close()
                 menu.notify("Updated Femboy Lua, Restart the script to get the new version", "Femboy Lua Auto Updater")
