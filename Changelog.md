@@ -1,16 +1,45 @@
-# Changelog v1.10.0,
-- Added Griefing Options
-    - Kill Player
-    - Clone Player
-- Added Supply Cargo stuff
-    - Sell Special Cargo For 5m
-- Added Remove Transaction Error
-- Added Air Cargo Stuffs
-    - Sell Aircargo For 2.1B
-    - Disable Airfreight Cooldown
-    - Instant Finish Sell
-    - Instant Source
-- Updated Changelog and Feature list notifies
-- Updated Crush Player
-- Improved Send IP info in chat
-- Moved Money Options to the main submenu
+# Changelog 
+- Added Friendly Options to online features
+    - Give Collectibles
+    - Drop RP
+- Added Change Engine Noise
+- Added RGB Tyre Smoke
+- Added RGB Neons
+- Added Script Hostaholic (may cause issues but meh)
+- Added Recovery Features 
+    - Collectibles
+    - Remote Business
+    - Special Cargo Options
+        - Specific Crate To Buy
+        - Sell Cargo For 5 Million (works with business manager)
+        - Instant Buy/Sell
+        - Get Max Crates w/ One Purchase
+        - Remove Special Cargo Cooldown
+    - Air Freight Cargo Options
+        - Specific Buy/Sell Missions
+        - Set Air Cargo Price 1 or 2 Billion
+        - Instant Buy/Sell
+        - Source Cargo 
+        - Remove Sell Cooldown
+    - NightClub Options
+        - Instant Sell
+        - Sell Cargo For 4 Million
+        - Nightclub Scam (lemone)
+    - Vehicle Cargo Options
+        - Instant Sell
+        - Sell Cargo For 4 Million
+        - Nightclub Scam (lemone)
+    - Tools/Services
+        - Bad Sport Manager
+        - Disable Options
+            - Remove Transaction Error
+            - Disable Kostaka Missiles Cooldown
+            - Disable MK2 Cooldown
+- Added Disable Above Map Notifs
+- Added Logging Features 
+    - Log Messages To Console
+    - Log Joins To Console
+    - Log Script Events To Cosnole
+- Removed Spam player from aim karma and griefing
+- Removed Get Current Vehicle Colour
+- Removed Kick for certain language (Kick by IP is just better)
