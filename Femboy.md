@@ -1,32 +1,30 @@
-# v1.10.0
+# v2.0.0
 # Required Trusted Modes
 - Stats
-    - Required for Nightclub Loop and 300k loop
 - Globals/Locals
-    - Required for Nightclub Loop and 300k loop
-- Natives (optional)
-    - Uses a lot of native.call for various features
-- Http (optional)
-    - Uses Http for the auto kick by ip options, if left disabled these options will not work
+- Natives 
+- Http 
 
 # Features
 - VPN Checker
 - Auto Updater
 
 # Online Script Features
-- Griefing Options
+- IP Shits 
+    - Post IP Info In Chat <Team Chat><All Chat>
+    - Copy IP To Clipboard
+    - List Of IP Info
+- Griefing Features
     - Crush Player
     - Taze Player
     - Firework Player
     - Atomize Player
     - Kill Player
-    - Clone Player
-- IP Shits 
-    - Post IP Info In Chat <Team Chat><All Chat>
-    - Copy IP To Clipboard
-    - List Of IP Info
+- Friendly Features
+    - Give Collectibles
+    - Drop RP
 
-# Player Options
+# Player Features
 - RGB Player
     - Loop All Hair Colours
     - Rainbow Hair (Better)
@@ -34,7 +32,7 @@
 - Ragdoll On Q <Narrow Leg Stumble><Wide Leg Stumble><Normal Ragdoll>
 - Clumsy Player
 
-# Vehicle Options
+# Vehicle Features
 - Door Control
     - Open/Close All Doors
     - Open Door
@@ -44,14 +42,16 @@
     - Window Open/Close
 - Vehicle Customisation
     - Set/Keep Custom License Plate
-    - Colour Customisation
-        - Hex/RGB Primary/Seconday/Pearlescent/Wheel Colours
+    - Hex Primary/Seconday/Pearlescent/Wheel Colours
+    - RGB Tyre Smoke
+    - Patriot Tyre Smoke
 - Light Control
+    - RGB Neon
     - Brake Lights When Stationary
     - RGB Xenon
     - Headlight Brightness
 - Homing Lockon To Players (Originally By Ghostone)
-- Fix Vehicl / Auto Repair
+- Fix Vehicle / Auto Repair
 - Engine Rattle
 - Dirt Level / Stay Clean
 - Gravity
@@ -68,7 +68,7 @@
 - Kill Engine 
 - Notify Engine Health
 
-# Online Options
+# Online Features
 - Moderation Options
     - Auto Kicker By Modder Flags Options
     - Auto Kicker By IP Options
@@ -76,12 +76,8 @@
         - Block Racism
         - Block Homophobia
         - Block Bot/Chat Spam
-        - Block French
-        - Block Dutch
-        - Block Russian
-        - Block Chinese
-        - Block English
 - Force Host
+- Script Hostaholic
 - Aim Karma
     - Notify If Aimed At
     - Kick Player
@@ -93,20 +89,37 @@
     - Crush Player
 - IP Lookup
 
-# Money Stuffs
-- Money Features
-    - Air Cargo Stuffs
-        - Sell Aircargo For 2.1b
-        - Disable Airfreight Cooldown
-        - Instant Finish Sell
-        - Instant Source
-    - Special Cargo
-        - Sell Special Cargo For 5m
-        - Auto Special Cargo Supplier
-    - Nightclub Safe Loop
-    - 300k loop
-    - remove transaction error
-# World Options
+# Recovery Features
+- Collectibles
+- Remote Business
+- Special Cargo Options 
+    - Specific Crate To Buy
+    - Sell Cargo For 5 Million (works with business manager)
+    - Instant Buy/Sell
+    - Get Max Crates w/ One Purchase
+    - Remove Special Cargo Cooldown
+- Air Freight Cargo Options
+    - Specific Buy/Sell Missions
+    - Set Air Cargo Price 1 or 2 Billion
+    - Instant Buy/Sell
+    - Source Cargo 
+    - Remove Sell Cooldown
+- Nightclub Options
+    - Instant Sell
+    - Sell Cargo For 4 Million
+    - Nightclub Scam (lemone)
+- Vehicle Cargo Options
+    - Instant Sell
+    - Sell Cargo For 4 Million
+    - Nightclub Scam (lemone)
+- Tools/Services
+    - Bad Sport Manager
+    - Disable Options
+        - Remove Transaction Error
+        - Disable Kostaka Missiles Cooldown
+        - Disable MK2 Cooldown
+
+# World Features
 - Distance Scale
 - Make Nearby NPC's Riot
 - Blackout
@@ -114,13 +127,19 @@
 - Wind Speed
 - Wave Intensity
 
-# Misc Options
+# Misc Features
 - Show Player Talking
 - Bail To SP (singleplayer)
 - Auto Skip Cutscene
 - Minimap Disco
 - Get All Achievements
 - Hide HUD
+- Disable Above Map Notifs
+
+# Logging Features
+- Log Messages To Console
+- Log Joins To Console
+- Log Script Events To Console
 
 # Settings
 - Save Settings
@@ -134,21 +153,49 @@
 - Rimuru
 - GhostOne
 - Aren
-- RulyPancake
         
-# Changelog v1.10.0
-- Added Griefing Options
-    - Kill Player 
-    - Clone Player
-- Added Supply Cargo stuff
-    - Sell Special Cargo For 5m
-- Added Remove Transaction Error
-- Added Air Cargo Stuffs
-    - Sell Aircargo For 2.1B
-    - Disable Airfreight Cooldown
-    - Instant Finish Sell
-    - Instant Source
-- Updated Changelog and Feature list notifies
-- Updated Crush Player
-- Improved Send IP info in chat 
-- Moved Money Options to the main submenu
+# Changelog 
+- Added Friendly Options to online features
+    - Give Collectibles
+    - Drop RP
+- Added Change Engine Noise
+- Added RGB Tyre Smoke
+- Added RGB Neons
+- Added Script Hostaholic (may cause issues but meh)
+- Added Recovery Features 
+    - Collectibles
+    - Remote Business
+    - Special Cargo Options
+        - Specific Crate To Buy
+        - Sell Cargo For 5 Million (works with business manager)
+        - Instant Buy/Sell
+        - Get Max Crates w/ One Purchase
+        - Remove Special Cargo Cooldown
+    - Air Freight Cargo Options
+        - Specific Buy/Sell Missions
+        - Set Air Cargo Price 1 or 2 Billion
+        - Instant Buy/Sell
+        - Source Cargo 
+        - Remove Sell Cooldown
+    - NightClub Options
+        - Instant Sell
+        - Sell Cargo For 4 Million
+        - Nightclub Scam (lemone)
+    - Vehicle Cargo Options
+        - Instant Sell
+        - Sell Cargo For 4 Million
+        - Nightclub Scam (lemone)
+    - Tools/Services
+        - Bad Sport Manager
+        - Disable Options
+            - Remove Transaction Error
+            - Disable Kostaka Missiles Cooldown
+            - Disable MK2 Cooldown
+- Added Disable Above Map Notifs
+- Added Logging Features 
+    - Log Messages To Console
+    - Log Joins To Console
+    - Log Script Events To Cosnole
+- Removed Spam player from aim karma and griefing
+- Removed Get Current Vehicle Colour
+- Removed Kick for certain language (Kick by IP is just better)
