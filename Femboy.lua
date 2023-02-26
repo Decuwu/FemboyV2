@@ -3,13 +3,6 @@ local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
 
-if not utils.file_exists("scripts/lib/DiscordHandler.lua") then
-    menu.notify("Missing required library: DiscordHandler.lua", ScriptName, 7, 0xFF0000FF)
-    menu.exit()
-    return
-end
-local DiscordHandler = require("DiscordHandler")
-
 local function SaveSettings()
     for k, v in pairs(feats) do
         INI:set_b("Toggles", k, v.on)
