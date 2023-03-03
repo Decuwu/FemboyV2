@@ -1,4 +1,4 @@
-local version = "2.1.0" 
+local version = "2.1.1" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
@@ -1512,6 +1512,7 @@ for _, v in pairs(cheese) do
         v.on = f.on
     end)
     country_features[#country_features].data = v
+    feats[v.code] = country_features[#country_features]
 end
 
 local racismfilter = {
@@ -2821,14 +2822,14 @@ menu.add_feature("Save Settings", "action", settings, function(f)
     SaveSettings()
 end)
 
-menu.add_feature("F8 To Save Settings", "toggle", settings, function(f)
+feats.f8_to_save = menu.add_feature("F8 To Save Settings", "toggle", settings, function(f)
     while f.on do
         if controls.is_control_just_pressed(0, 169) or controls.is_control_just_pressed(2, 169) and f.on then
             SaveSettings()
         end
         system.wait()
     end
-end).on = true
+end)
 
 menu.add_feature("Changelog", "action_value_str", settings, function(f)
     if f.value == 0 then
