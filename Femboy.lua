@@ -1,4 +1,4 @@
-local version = "2.1.1" 
+local version = "2.1.1.1" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
@@ -2573,7 +2573,7 @@ feats.disable_transaction_error = menu.add_feature("Remove Transaction Error", "
     end
 end)
 
-feats.disable_kosatka_missiles_cd = menu.add_feature("Disable Kosatka Missiles Cooldown", "toggle", disable_tools, function()
+feats.disable_kosatka_missiles_cd = menu.add_feature("Disable Kosatka Missiles Cooldown", "toggle", disable_tools, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
