@@ -1,3 +1,9 @@
+# Changelog v2.1.0
+- Removed Air Cargo Sell Prices (possibly detected)
+- Allowed Auto Kick Countries to be savable
+    - enable all is not saveable 
+- F8 to save settings is no longer auto enabled but is now a saveable toggle 
+
 # Changelog 
 - Added Friendly Options to online features
     - Give Collectibles
