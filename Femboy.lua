@@ -1,4 +1,4 @@
-local version = "2.1.1.1" 
+local version = "2.1.1.2" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
@@ -1446,7 +1446,7 @@ local cheese = {
     { name = "Aland Islands",                                        code = "AX" }
 }
 local country_features = {}
-menu.add_feature("Enable", "toggle", country_kick, function(f)
+feats.enable_auto_kick = menu.add_feature("Enable", "toggle", country_kick, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_HTTP) then
         menu.notify("HTTP trusted mode must be enabled to use this.", "Femboy Menu")
         f.on = false
