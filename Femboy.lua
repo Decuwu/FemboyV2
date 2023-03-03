@@ -1,4 +1,4 @@
-local version = "2.0.2" 
+local version = "2.1.0" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
@@ -1987,45 +1987,45 @@ end
 
 -- air_cargo 
 
-menu.add_feature("Set Air Cargo Price To 1 Billion", "toggle", air_cargo, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-        f.on=false
-    else
-        while f.on do
-            script.set_global_i(284955,1147483647)
-            script.set_global_i(284956,1147483647)
-            script.set_global_i(284957,1147483647)
-            script.set_global_i(284958,1147483647)
-            script.set_global_i(284959,1147483647)
-            script.set_global_i(284960,1147483647)
-            script.set_global_i(284961,1147483647)
-            script.set_global_i(284962,1147483647)
-            script.set_global_i(284963,1147483647)
-            system.wait()
-        end
-    end
-end)
+--menu.add_feature("Set Air Cargo Price To 1 Billion", "toggle", air_cargo, function(f)
+--    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+--        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+--        f.on=false
+--    else
+--        while f.on do
+--            script.set_global_i(284955,1147483647)
+--            script.set_global_i(284956,1147483647)
+--            script.set_global_i(284957,1147483647)
+--            script.set_global_i(284958,1147483647)
+--            script.set_global_i(284959,1147483647)
+--            script.set_global_i(284960,1147483647)
+--            script.set_global_i(284961,1147483647)
+--            script.set_global_i(284962,1147483647)
+--            script.set_global_i(284963,1147483647)
+--            system.wait()
+--        end
+--    end
+--end)
 
-menu.add_feature("Set Air Cargo Price To 2 Billion", "toggle", air_cargo, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-        f.on=false
-    else
-        while f.on do
-            script.set_global_i(284955,2147483647)
-            script.set_global_i(284956,2147483647)
-            script.set_global_i(284957,2147483647)
-            script.set_global_i(284958,2147483647)
-            script.set_global_i(284959,2147483647)
-            script.set_global_i(284960,2147483647)
-            script.set_global_i(284961,2147483647)
-            script.set_global_i(284962,2147483647)
-            script.set_global_i(284963,2147483647)
-            system.wait()
-        end
-    end
-end)
+--menu.add_feature("Set Air Cargo Price To 2 Billion", "toggle", air_cargo, function(f)
+--    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+--        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+--        f.on=false
+--    else
+--        while f.on do
+--            script.set_global_i(284955,2147483647)
+--            script.set_global_i(284956,2147483647)
+--            script.set_global_i(284957,2147483647)
+--            script.set_global_i(284958,2147483647)
+--            script.set_global_i(284959,2147483647)
+--            script.set_global_i(284960,2147483647)
+--            script.set_global_i(284961,2147483647)
+--            script.set_global_i(284962,2147483647)
+--            script.set_global_i(284963,2147483647)
+--            system.wait()
+--        end
+--    end
+--end)
 
 menu.add_feature("Open AirFrieght App", "action", air_cargo, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
