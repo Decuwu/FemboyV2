@@ -1,4 +1,4 @@
-# v2.0.0
+# v2.2.0
 # Required Trusted Modes
 - Stats
 - Globals/Locals
@@ -25,6 +25,7 @@
     - Drop RP
 
 # Player Features
+- Player Proofs
 - RGB Player
     - Loop All Hair Colours
     - Rainbow Hair (Better)
@@ -49,6 +50,7 @@
     - RGB Neon
     - Brake Lights When Stationary
     - RGB Xenon
+    - Change Xenon
     - Headlight Brightness
 - Homing Lockon To Players (Originally By Ghostone)
 - Fix Vehicle / Auto Repair
@@ -72,10 +74,6 @@
 - Moderation Options
     - Auto Kicker By Modder Flags Options
     - Auto Kicker By IP Options
-    - Chat Moderation Options
-        - Block Racism
-        - Block Homophobia
-        - Block Bot/Chat Spam
 - Force Host
 - Script Hostaholic
 - Aim Karma
@@ -95,6 +93,7 @@
 - Special Cargo Options 
     - Specific Crate To Buy
     - Sell Cargo For 5 Million (works with business manager)
+    - Auto Supplier
     - Instant Buy/Sell
     - Get Max Crates w/ One Purchase
     - Remove Special Cargo Cooldown
@@ -105,9 +104,9 @@
     - Source Cargo 
     - Remove Sell Cooldown
 - Nightclub Options
+    - 300k Safe Loop
     - Instant Sell
     - Sell Cargo For 4 Million
-    - Nightclub Scam (lemone)
 - Vehicle Cargo Options
     - Instant Sell
     - Sell Cargo For 4 Million
@@ -121,6 +120,10 @@
 
 # World Features
 - Distance Scale
+- Set Time Scale
+- Load Map
+    - SP Map
+    - MP Map
 - Make Nearby NPC's Riot
 - Blackout
 - Magic Puddles
@@ -128,16 +131,15 @@
 - Wave Intensity
 
 # Misc Features
-- Show Player Talking
-- Bail To SP (singleplayer)
 - Auto Skip Cutscene
-- Minimap Disco
 - Get All Achievements
+- Set Radar Angle
 - Hide HUD
+- Custom Error Message
 - Disable Above Map Notifs
+- Fix Weapon Wheel
 
 # Logging Features
-- Log Messages To Console
 - Log Joins To Console
 - Log Script Events To Console
 
@@ -153,49 +155,3 @@
 - Rimuru
 - GhostOne
 - Aren
-        
-# Changelog 
-- Added Friendly Options to online features
-    - Give Collectibles
-    - Drop RP
-- Added Change Engine Noise
-- Added RGB Tyre Smoke
-- Added RGB Neons
-- Added Script Hostaholic (may cause issues but meh)
-- Added Recovery Features 
-    - Collectibles
-    - Remote Business
-    - Special Cargo Options
-        - Specific Crate To Buy
-        - Sell Cargo For 5 Million (works with business manager)
-        - Instant Buy/Sell
-        - Get Max Crates w/ One Purchase
-        - Remove Special Cargo Cooldown
-    - Air Freight Cargo Options
-        - Specific Buy/Sell Missions
-        - Set Air Cargo Price 1 or 2 Billion
-        - Instant Buy/Sell
-        - Source Cargo 
-        - Remove Sell Cooldown
-    - NightClub Options
-        - Instant Sell
-        - Sell Cargo For 4 Million
-        - Nightclub Scam (lemone)
-    - Vehicle Cargo Options
-        - Instant Sell
-        - Sell Cargo For 4 Million
-        - Nightclub Scam (lemone)
-    - Tools/Services
-        - Bad Sport Manager
-        - Disable Options
-            - Remove Transaction Error
-            - Disable Kostaka Missiles Cooldown
-            - Disable MK2 Cooldown
-- Added Disable Above Map Notifs
-- Added Logging Features 
-    - Log Messages To Console
-    - Log Joins To Console
-    - Log Script Events To Cosnole
-- Removed Spam player from aim karma and griefing
-- Removed Get Current Vehicle Colour
-- Removed Kick for certain language (Kick by IP is just better)
