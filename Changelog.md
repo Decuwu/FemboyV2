@@ -1,51 +1,21 @@
-# Changelog v2.1.0
-- Removed Air Cargo Sell Prices (possibly detected)
-- Allowed Auto Kick Countries to be savable
-    - enable all is not saveable 
-- F8 to save settings is no longer auto enabled but is now a saveable toggle 
-
 # Changelog 
-- Added Friendly Options to online features
-    - Give Collectibles
-    - Drop RP
-- Added Change Engine Noise
-- Added RGB Tyre Smoke
-- Added RGB Neons
-- Added Script Hostaholic (may cause issues but meh)
-- Added Recovery Features 
-    - Collectibles
-    - Remote Business
-    - Special Cargo Options
-        - Specific Crate To Buy
-        - Sell Cargo For 5 Million (works with business manager)
-        - Instant Buy/Sell
-        - Get Max Crates w/ One Purchase
-        - Remove Special Cargo Cooldown
-    - Air Freight Cargo Options
-        - Specific Buy/Sell Missions
-        - Set Air Cargo Price 1 or 2 Billion
-        - Instant Buy/Sell
-        - Source Cargo 
-        - Remove Sell Cooldown
-    - NightClub Options
-        - Instant Sell
-        - Sell Cargo For 4 Million
-        - Nightclub Scam (lemone)
-    - Vehicle Cargo Options
-        - Instant Sell
-        - Sell Cargo For 4 Million
-        - Nightclub Scam (lemone)
-    - Tools/Services
-        - Bad Sport Manager
-        - Disable Options
-            - Remove Transaction Error
-            - Disable Kostaka Missiles Cooldown
-            - Disable MK2 Cooldown
-- Added Disable Above Map Notifs
-- Added Logging Features 
-    - Log Messages To Console
-    - Log Joins To Console
-    - Log Script Events To Cosnole
-- Removed Spam player from aim karma and griefing
-- Removed Get Current Vehicle Colour
-- Removed Kick for certain language (Kick by IP is just better)
+- Added Nightclub "safe" loop (From Rimuru)
+- Added Special cargo auto supplier
+- Added custom alert screen
+- Added player proofs
+- Added set time scale
+- Added set radar angle
+- Added fix weapon wheel
+- Added Change Xenon
+- Added Load Map 
+    - MP map
+    - SP map
+- Improved Auto Repair
+- Improved Credits
+- General Improvements
+- Removed Give Collectibles
+
+# Patched and removed
+- Removed Nightclub scam 
+- Removed Message Logging to console
+- Removed Chat Moderation
