@@ -1,4 +1,4 @@
-local version = "2.2.0" 
+local version = "2.3.0" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
@@ -48,32 +48,34 @@ local function LoadSettings()
 end
 
 local main = menu.add_feature("Femboy Lua", "parent", 0).id 
-local player_feature = menu.add_feature("Player Features", "parent", main).id 
+local player_feature = menu.add_feature("Player", "parent", main).id 
 local player_proof = menu.add_feature("Player Proofs", "parent", player_feature).id 
-local rgb_player_feature = menu.add_feature("RGB Player Features", "parent", player_feature).id 
-local vehicle_feature = menu.add_feature("Vehicle Feature", "parent", main).id
+local rgb_player_feature = menu.add_feature("RGB Player", "parent", player_feature).id
+
+local weapon_feature = menu.add_feature("Weapon", "parent", main).id
+
+local vehicle_feature = menu.add_feature("Vehicle", "parent", main).id
 local door_control = menu.add_feature("Door Controls", "parent", vehicle_feature).id 
 local vehicle_customisation = menu.add_feature("Vehicle Customisation", "parent", vehicle_feature).id
 local light_control = menu.add_feature("Light Controls", "parent", vehicle_feature).id
 
-local online_feature = menu.add_feature("Online Features", "parent", main).id 
-local friendly_feature = menu.add_feature("Friendly Options", "parent", online_feature).id 
+local online_feature = menu.add_feature("Online", "parent", main).id 
+local lobby_options = menu.add_feature("Lobby Options", "parent", online_feature).id
 local moderation_options = menu.add_feature("Moderation Options", "parent", online_feature).id 
 local auto_moderation = menu.add_feature("Auto Moderation", "parent", moderation_options).id 
 local country_kick = menu.add_feature("Country Kick", "parent", moderation_options).id 
+local chat_moderation_options = menu.add_feature("Chat Moderation Options", "parent", moderation_options).id 
 local ip_lookup = menu.add_feature("IP Lookup", "parent", online_feature).id
 
-local recovery_feature = menu.add_feature("Recovery Features", "parent", main).id
+local recovery_feature = menu.add_feature("Recovery", "parent", main).id
 local collectibles = menu.add_feature("Collectibles", "parent", recovery_feature).id
 local remote_business = menu.add_feature("Remote Business", "parent", recovery_feature).id
 local special_cargo = menu.add_feature("Special Cargo Options", "parent", recovery_feature).id 
 local normal_crate = menu.add_feature("Choose Normal Crate To Buy", "parent", special_cargo).id 
 local special_crate = menu.add_feature("Choose Special Crate To Buy", "parent", special_cargo).id 
-
 local air_cargo = menu.add_feature("Air Freight Cargo Options", "parent", recovery_feature).id
 local steal_missions_air = menu.add_feature("Steal Missions", "parent", air_cargo).id 
 local sell_missions_air = menu.add_feature("Sell Missions", "parent", air_cargo).id 
-
 local night_club = menu.add_feature("Nightclub Options", "parent", recovery_feature).id
 local vehicle_cargo = menu.add_feature("Vehicle Cargo Options", "parent", recovery_feature).id 
 local source_vehicle = menu.add_feature("Source Vehicle Options", "parent", vehicle_cargo).id 
@@ -81,26 +83,28 @@ local top_range_vehicle = menu.add_feature("Top Range Vehicles", "parent", sourc
 local mid_range_vehicles = menu.add_feature("Mid Range Vehicles", "parent", source_vehicle).id 
 local standard_range_vehicles = menu.add_feature("Standard Range Vehicles", "parent", source_vehicle).id 
 local unknown_range_vehicles  = menu.add_feature("Unknown Range Vehicles", "parent", source_vehicle).id 
-
 local recovery_tool = menu.add_feature("Tools/Services", "parent", recovery_feature).id 
 local bad_sport_manager = menu.add_feature("Bad Sport Manager", "parent", recovery_tool).id
 local disable_tools = menu.add_feature("Disable Options", "parent", recovery_tool).id
 local maximize_options = menu.add_feature("Maximize Options", "parent", recovery_tool).id
 
-local world_feature = menu.add_feature("World Features", "parent", main).id
-local misc_feature = menu.add_feature("Misc Features", "parent", main).id
-local logging_feature = menu.add_feature("Logging Features", "parent", main).id 
+local world_feature = menu.add_feature("World", "parent", main).id
+local misc_feature = menu.add_feature("Misc", "parent", main).id
+local alert_screen = menu.add_feature("Custom/Preset Alert Messages", "parent", misc_feature).id
+
 local settings = menu.add_feature("Settings", "parent", main).id 
+local logging_feature = menu.add_feature("Logging", "parent", settings).id 
+
 local credits = menu.add_feature("Credits", "parent", main).id
 
 --local dev_build_stuff = menu.add_feature("Dev Build Shit", "parent", main).id
 --local webhook = menu.add_feature("Discord Webhook", "parent", dev_build_stuff).id 
---local colour_list = menu.add_feature("Colour List", "parent", dev_build_stuff).id
 
 local main_online = menu.add_player_feature("Femboy Lua", "parent", 0).id
 --local ip_online_lookup = menu.add_player_feature("IP Lookup", "parent", main_online).id
-local griefing_options = menu.add_player_feature("Griefing Features", "parent", main_online).id 
-local friendly_options = menu.add_player_feature("Friendly Features", "parent", main_online).id 
+local griefing_options = menu.add_player_feature("Griefing", "parent", main_online).id 
+local friendly_options = menu.add_player_feature("Friendly", "parent", main_online).id 
+local weapon_options = menu.add_player_feature("Weapon", "parent", main_online).id
 
 -- functions
 function RGBRainbow(timer, frequency )
@@ -133,14 +137,27 @@ local function request_model(hash, timeout)
     return streaming.has_model_loaded(hash)
 end
 
+local function spawn_obect(feat, hash)
+    request_model(hash)
+    while feat.on do
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
+        if bool_rtn then 
+            local heading = entity.get_entity_heading(player.player_ped())
+            local obj = object.create_object(hash, v3_coord, true, false)
+            entity.set_entity_heading(obj, heading)
+        end
+        system.wait()
+    end
+end
+
 local function kickPlayersForFlag(flag)
     if not feats.automoder.on then return end
     for pid = 0, 31 do
         if player.is_player_modder(pid, flag) then
             network.force_remove_player(pid)
             menu.notify(
-                string.format("Player %s (ID: %d) has been kicked for having the %s modder flag",
-                    player.get_player_name(pid), pid, player.get_modder_flag_text(flag)), "Kick Player")
+            string.format("Player %s (ID: %d) has been kicked for having the %s modder flag",
+            player.get_player_name(pid), pid, player.get_modder_flag_text(flag)), "Kick Player")
         end
     end
 end
@@ -191,7 +208,7 @@ end
 
 -- 
 local name = player.get_player_name(player.player_id())
-NotifyMap("Femboy Lua ", version .. " ~h~~r~Femboy Lua Script", "~b~Script Loaded, head to Script Features\n\nCongratulations ~r~"..name.."~b~ you are now a femboy.", "CHAR_MP_STRIPCLUB_PR", 140)
+NotifyMap("Femboy Lua ", version .. " ~h~~r~Femboy Lua Script", "Script Loaded, head to Script Features\n\nCongratulations ~r~"..name.." ~w~you are now a femboy.", "CHAR_MP_STRIPCLUB_PR", 140)
 
 -- player_feature 
 local bullet_proof, fire_proof, explosion_proof, collision_proof, melee_proof, steam_proof, water_proof
@@ -326,6 +343,75 @@ feats.clumsy = menu.add_feature("Clumsy Player", "toggle", player_feature, funct
         end
     end
 end)
+
+-- weapon_feature
+menu.add_feature("Give All Weapons", "action", weapon_feature, function(f)
+    local weapon_hashes = weapon.get_all_weapon_hashes()
+    for _, hash in ipairs(weapon_hashes) do
+        weapon.give_delayed_weapon_to_ped(player.player_ped(), hash, 1000, false)
+    end
+end)
+
+menu.add_feature("Remove All Weapons", "action", weapon_feature, function(f)
+    weapon.remove_all_ped_weapons(player.player_ped())
+end)
+
+menu.add_feature("TP Gun", "toggle", weapon_feature, function(f)
+    while f.on do
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
+        local v2_coord = v2(v3_coord.x, v3_coord.y)
+
+        if v2_coord.x ~= 0 or v2_coord.y ~= 0 then
+            ui.set_new_waypoint(v2_coord)
+            menu.get_feature_by_hierarchy_key("local.teleport.waypoint"):toggle()
+        end
+        
+        system.wait()
+    end 
+end)
+
+menu.add_feature("Delete Gun", "toggle", weapon_feature, function(f)
+    while f.on do
+        local entity_to_delete = player.get_entity_player_is_aiming_at(player.player_id())
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
+        local is_entity_an_object = entity.is_an_entity(entity_to_delete)
+        network.request_control_of_entity(entity_to_delete)
+        if bool_rtn and is_entity_an_object then 
+            entity.delete_entity(entity_to_delete)
+        end
+        system.wait()
+    end
+end)
+
+menu.add_feature("Kick Gun", "toggle", weapon_feature, function(f)
+    while f.on do
+        for pid = 0, 31 do
+            if player.is_player_valid(pid) then 
+                local player_ped = player.get_player_ped(pid)
+                local entity_to_kick = player.get_entity_player_is_aiming_at(player.player_id())
+                local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
+                local player_coords = player.get_player_coords(pid)
+                if entity_to_kick == player_ped and bool_rtn then 
+                    network.force_remove_player(pid)
+                end
+            end
+        end
+        system.wait()
+    end
+end)
+
+menu.add_feature("RP Gun", "toggle", weapon_feature, function(f)
+    request_model(437412629)
+    while f.on do 
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
+        if bool_rtn then
+            native.call(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
+        end
+    system.wait()
+    end
+end)
+menu.add_feature("Wall Gun", "toggle", weapon_feature, spawn_obect).data = 0xA4D194D1
+menu.add_feature("Wellie Gun", "toggle", weapon_feature, spawn_obect).data = 0x9CAFCB2
 
 -- vehicle_feature 
 menu.add_feature("Open All Doors", "action", door_control, function(f)
@@ -1020,6 +1106,43 @@ menu.add_feature("Bail To SP", "action", online_feature, function(f)
     end
 end)
 
+--lobby_options
+menu.add_feature("Give RP Gun To All Players", "toggle", lobby_options, function(f)
+    while f.on do
+        for i = 0, 31 do 
+            if player.is_player_valid(i) then 
+                local player_ped = player.get_player_ped(i)
+                local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
+                if bool_rtn then
+                    native.call(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
+                end
+            end
+        end
+        system.wait()
+    end
+end)
+
+menu.add_feature("Give All Weapons To All Players", "action", lobby_options, function(f)
+    for i = 0, 31 do
+        if player.is_player_valid(i) then
+            local player_ped = player.get_player_ped(i)
+            local weapon_hashes = weapon.get_all_weapon_hashes()
+            for _, hash in ipairs(weapon_hashes) do
+                weapon.give_delayed_weapon_to_ped(player_ped, hash, 1000, false)
+            end
+        end 
+    end
+end)
+
+menu.add_feature("Remove All Weapons From All Players", "action", lobby_options, function(f)
+    for i = 0,31 do
+        if player.is_player_valid(i) and not player.player_id() then
+            local player_ped = player.get_player_ped(i)
+            weapon.remove_all_ped_weapons(player_ped)
+        end
+    end
+end)
+
 local aim_karma = menu.add_feature("Aim Karma", "parent", online_feature).id
 local function APv2(f)
     while f.on do
@@ -1034,6 +1157,17 @@ local function APv2(f)
                             menu.notify(player.get_player_name(pid) .. " aimed at you", "Femboy Menu")
                         end
 
+                        if removeheldweaponkarma then 
+                            local player_ped = player.get_player_ped(pid)
+                            local held_weapon = ped.get_current_ped_weapon(player_ped)
+                            weapon.remove_weapon_from_ped(player_ped, held_weapon)
+                        end
+
+                        if removeweaponkarma then
+                            local player_ped = player.get_player_ped(pid)
+                            weapon.remove_all_ped_weapons(player_ped)
+                        end
+
                         if kickkarma then
                             network.force_remove_player(pid)
                             menu.notify(player.get_player_name(pid) .. " was kicked for aiming at you", "Femboy Menu")
@@ -1042,36 +1176,31 @@ local function APv2(f)
                         if tazekarma then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
-                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 911657153,
-                                player.player_ped(), true, false, 100)
+                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 911657153, player.player_ped(), true, false, 100)
                         end
 
                         if killkarma then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
-                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 10000, 3219281620,
-                                player.player_ped(), true, false, 100)
+                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 10000, 3219281620, player.player_ped(), true, false, 100)
                         end
 
                         if explokarma then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
-                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 1672152130,
-                                player.player_ped(), true, false, 100)
+                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 1672152130, player.player_ped(), true, false, 100)
                         end
 
                         if firewrkkarma then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
-                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 2138347493,
-                                player.player_ped(), true, false, 100)
+                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 2138347493, player.player_ped(), true, false, 100)
                         end
 
                         if atomkarma then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
-                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 2939590305,
-                                player.player_ped(), true, false, 100)
+                            gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 2939590305, player.player_ped(), true, false, 100)
                         end
 
                         if tankkarma then
@@ -1102,6 +1231,8 @@ menu.add_feature("--------------------", "action", aim_karma)
 
 local aim_karma_table = {
     {name = "Notify If Aimed At", feat = "notifykarma"},
+    {name = "Remove Held Weapon", feat = "removeheldweaponkarma"},
+    {name = "Remove All Weapons", feat = "removeweaponkarma"},
     {name = "Kick Player", feat = "kickkarma"},
     {name = "Taze Player", feat = "tazekarma"},
     {name = "Kill Player", feat = "killkarma"},
@@ -1176,7 +1307,6 @@ for _,v in ipairs(modder_flags) do
             system.wait()
         end
     end)
-    feats[v.detection] = modder_flags[#modder_flags]
 end
 
 local cheese = {
@@ -1500,6 +1630,227 @@ for _, v in pairs(cheese) do
     feats[v.code] = country_features[#country_features]
 end
 
+-- chat_moderation_options
+local racismfilter = {
+    "assnigger",
+    "assnigga",
+    "Assnigger",
+    "Assnigga",
+    "beaner",
+    "Beaner",
+    "coon",
+    "Coon",
+    "chink",
+    "Chink",
+    "chinc",
+    "Chink",
+    "gook",
+    "Gook",
+    "guido",
+    "Guido",
+    "jap",
+    "Jap",
+    "jigaboo",
+    "Jigaboo",
+    "negro",
+    "Negro",
+    "nigaboo",
+    "Nigaboo",
+    "niggaboo",
+    "Niggaboo",
+    "nigga",
+    "Nigga",
+    "nigger",
+    "Nigger",
+    "niggerish",
+    "Niggerish",
+    "niggers",
+    "Niggers",
+    "niglet",
+    "nigglet",
+    "Niglet",
+    "Nigglet",
+    "nignog",
+    "Nignog",
+    "paki",
+    "Paki",
+    "porch monkey",
+    "Porch Monkey",
+    "porchmonkey",
+    "Porchmonkey",
+    "sand nigger",
+    "sandnigger",
+    "Sand Nigger",
+    "Sandnigger",
+    "spic",
+    "spick",
+    "Spic",
+    "Spick",
+    "wetback",
+    "Wetback",
+    "ASSNIGGER",
+    "ASSNIGGA",
+    "BEANER",
+    "COON",
+    "CHINK",
+    "CHINC",
+    "GOOK",
+    "JAP",
+    "JIGABOO",
+    "NEGRO",
+    "NIGABOO",
+    "NIGGABOO",
+    "NIGGA",
+    "NIGGER",
+    "NIGGERISH",
+    "NIGGERS",
+    "NIGLET",
+    "NIGGLET",
+    "NIGNOG",
+    "PAKI",
+    "PORCH MONKEY",
+    "PORCHMONKEY",
+    "SAND NIGGER",
+    "SANDNIGGER",
+    "SPIC",
+    "SPICK",
+    "WETBACK"
+}
+local f = function(s)
+    for k, v in pairs(racismfilter) do
+        if s:find(v .. " ") or s:find(" " .. v) or s:find("^" .. v .. "$") then
+            return true
+        end
+    end
+    return false
+end
+feats.blockracism = menu.add_feature("Block Racism", "toggle", chat_moderation_options, function(func)
+    if func.on then
+        racism = event.add_event_listener("chat", function(e)
+            if f(e.body) then
+                menu.notify(player.get_player_name(e.sender) .. " was removed for being too much of an edgelord",
+                    "Femboy Menu")
+                network.force_remove_player(e.sender)
+            end
+        end)
+    else
+        event.remove_event_listener("chat", racism)
+    end
+end)
+
+local homophobicfilter = {
+    "dike",
+    "dyke",
+    "fag",
+    "faggit",
+    "faggot",
+    "fagtard",
+    "fag tard",
+    "gay fuck",
+    "homo",
+    "tranny",
+    "DIKE",
+    "DYKE",
+    "FAG",
+    "FAGGIT",
+    "FAGGOT",
+    "FAGTARD",
+    "FAG TARD",
+    "GAY FUCK",
+    "HOMO",
+    "TRANNY",
+    "Dike",
+    "Dyke",
+    "Fag",
+    "Faggit",
+    "Faggot",
+    "Fagtard",
+    "Fag Tard",
+    "Gay Fuck",
+    "Homo",
+    "Tranny",
+    "dIKE",
+    "dYKE",
+    "fAG",
+    "fAGGIT",
+    "fAGGOT",
+    "fAGTARD",
+    "fAG tARD",
+    "gAY fUCK",
+    "hOMO",
+    "tRANNY"
+}
+local f = function(s)
+    for k, v in pairs(homophobicfilter) do
+        if s:find(v .. " ") or s:find(" " .. v) or s:find("^" .. v .. "$") then
+            return true
+        end
+    end
+    return false
+end
+feats.blockhomophobia = menu.add_feature("Block Homophobia", "toggle", chat_moderation_options, function(func)
+    if func.on then
+        homophobic = event.add_event_listener("chat", function(e)
+            if f(e.body) and not player.player_id() then
+                menu.notify(
+                    player.get_player_name(e.sender) .. " was removed for being too much of an edgelord, probably gets pegged :shrug:", "Femboy Menu")
+                network.force_remove_player(e.sender)
+            end
+        end)
+    else
+        event.remove_event_listener("chat", homophobic)
+    end
+end)
+
+local botspam = {
+    "gtagta.cc",
+    "discord.gg/"
+}
+local f = function(s)
+    for k, v in pairs(botspam) do
+        if s:find(v) then
+            return true
+        end
+    end
+    return false
+end
+local messages = {}
+local max_repeats = 2
+feats.chatspam = menu.add_feature("Block Bot/Chat Spam", "toggle", chat_moderation_options, function(func)
+    if func.on then
+        spam = event.add_event_listener("chat", function(e)
+            local sender = e.sender
+            local message = e.body
+            if e.sender then
+                if not messages[sender] then
+                    messages[sender] = {
+                        count = 0,
+                        last_message = ""
+                    }
+                end
+                if message == messages[sender].last_message then
+                    messages[sender].count = messages[sender].count + 1
+                else
+                    messages[sender].count = 0
+                    messages[sender].last_message = message
+                end
+                if f(message) or messages[sender].count >= max_repeats then
+                    for pid = 0, 31 do
+                        local name = player.get_player_name(e.sender)
+                        menu.notify(name .. " was removed for Chat Spam, likely an ad bot or just annoying",
+                            "Femboy Menu")
+                        network.force_remove_player(e.sender)
+                    end
+                    messages[sender].count = 0
+                    messages[sender].last_message = message
+                end
+            end
+        end)
+    else
+        event.remove_event_listener("chat", spam)
+    end
+end)
+
 -- recovery_feature
 -- remote_business
 menu.add_feature("Start CEO", "action", remote_business, function()
@@ -1537,7 +1888,7 @@ for _,v in ipairs(remote_business_table) do
 end
 
 -- special_cargo
-menu.add_feature("Sell Cargo For 5 Million", "toggle", special_cargo, function(f)
+feats.sell_cargo_for_5_million = menu.add_feature("Sell Cargo For 5 Million", "toggle", special_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -1575,7 +1926,7 @@ menu.add_feature("Sell Cargo For 5 Million", "toggle", special_cargo, function(f
     end
 end)
 
-menu.add_feature("Auto Supplier", "toggle", special_cargo, function(f)
+feats.auto_supplier = menu.add_feature("Auto Supplier", "toggle", special_cargo, function(f)
     while f.on do
         menu.get_feature_by_hierarchy_key("online.business.manual_actions.supply_special_cargo"):toggle()
         system.wait()
@@ -2296,7 +2647,7 @@ local distancescale = menu.add_feature("Distance Scale", "value_f", world_featur
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
     else
-        menu.notify("This will effect your FPS massively", "Femboy Menu")
+        menu.notify("This will affect your FPS massively", "Femboy Menu")
         while f.on do
             native.call(0xA76359FC80B2438E, f.value)
             system.wait()
@@ -2387,6 +2738,70 @@ waveint.value = 1
 waveint.mod = 10.0
 
 -- misc_feature 
+menu.add_feature("Custom Alert Message", "toggle", alert_screen, function(f)
+
+	local rtn, subtitle
+	repeat
+		rtn, body = input.get("Insert Message", "", 1000, eInputType.IT_ASCII)
+		if rtn == 2 then return end
+		system.wait()
+	until rtn == 0 
+
+	while f.on do 
+		AlertMessage(body)
+		system.wait()
+	end
+end)
+
+menu.add_feature("Custom Reason Ban Screen", "toggle", alert_screen, function(f)
+    
+    local rtn, subtitle
+    repeat
+        rtn, body = input.get("Insert Reason", "", 1000, eInputType.IT_ASCII)
+		if rtn == 2 then return end
+		system.wait()
+	until rtn == 0 
+
+    while f.on do
+        AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: "..body.."\nReturn to Grand Theft Auto V.")
+        system.wait()
+    end
+end)
+
+menu.add_feature("Ban Screen (no reason)", "toggle", alert_screen, function(f)
+    while f.on do
+        AlertMessage("You have been banned from Grand Theft Auto permanently.\nReturn to Grand Theft Auto V.")
+        system.wait()
+    end
+end)
+
+menu.add_feature("Ban Screen w/", "value_str", alert_screen, function(f)
+    while f.on do
+        if f.value == 0 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: Using the best mod menu.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 1 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: Cheating.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 2 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: Crasing idiots.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 3 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: Having too much fun.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 4 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: Not buying sharkcards.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 5 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: rawr xD.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 6 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: Take the L.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 7 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little 'clever' comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 8 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: w-what the fwickk did you just fwickking say about me,,, y-you wittle m-meanie? i-i’ll have you know i gwaduated t-top of my cwass in the navy seaws, and i’ve been invowved in numewous s-secwet w-waids on aw-quaeda, and i have o-over 300 confiwmed kills ☆⌒ヽ(“､)chu i am twained in g-gowiwwa w-wawfare and i’m the top sniper in the e-entire us a-awmed fowces〜☆ you are nothing t-to me b-but just a-another tawget ☆:・ﾟ i will wipe you the fwickk out with pwecision the wikes of which has never been seen before on this eawth, mawk my fwickking wowds-.- you think you can get away with saying that p-poopoo to me over the intewnet〜☆ t-think again (.).., f-fwickker ☆:・ﾟ a-as we speak i am contacting my secwet netwowk of spies acwoss the u-usa and youw i-ip is b-being twaced wight now so y-you better pwepare f-fow the s-stowm, maggot. the stowm t-that wipes out the pathetic wittle thing you call youw w-wife (≧◡≦) ur fwickking dead (⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄).. kid ☆⌒ヽ(“､)chu i c-can be anywhere uguu.., anytime (⁄ ⁄>⁄ ▽ ⁄<⁄ ⁄).. and i c-can k-kill y-you in over seven hundwed ways, and that’s j-just with my bare hands. not onwy am i extensivewy twained i-in u-unawmed c-combat, but i have access to t-the entire awsenaw of the united states mawine cowps and i w-will use it to its full extent to wipe y-youw misewable boi pussy off the face of the c-continent, you wittle p-poopoo. if onwy y-you couwd have k-known what unhowy wetwibution youw wittle “cwevew” c-comment w-was about to bwing d-down upon you, maybe you w-wouwd have hewd youw fwickking tongue. but you couwdn’t, you didn’tO.o and now ur p-paying the pwice, you goddamn idiot. i will poopoo fuwy all over y-you and you will dwown in it (≧◡≦) ur fwickking dead, k-kiddo.\nReturn to Grand Theft Auto V.")
+        elseif f.value == 9 then 
+            AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: 🧐 Why, indubitably you have won this debate and settled our little debacle. However, due to the fact that I am a petty man with no respect for honor, I have gathered your Internet Protocol address for my own usage. With this number, I have excellently triangulated your exact location and henceforth shall be travelling over there. I do suggest that you cower at least a great deal as I have had many weapons in my possession during my transferring from my previous location to your current one. At the present moment, I am exactly four hundred twenty-five metric lengths away from you, and closing the distance at a much considerable rate. 🧐\nReturn to Grand Theft Auto V.")
+        end
+        system.wait()
+    end
+end):set_str_data({"Using the best mod menu", "Cheating", "Crasing idiots", "Having too much fun", "Not buying sharkcards", "rawr xD", "Take the L", "Navy Seal Copypasta", "UwU Navy Seal Copypasta", "I have your IP Copypasta"})
+
 feats.skipcutscene = menu.add_feature("Auto Skip Cutscene", "toggle", misc_feature, function(f)
     while f.on do
         if cutscene.is_cutscene_playing() then
@@ -2433,21 +2848,6 @@ menu.add_feature("Hide HUD", "toggle", misc_feature, function(f)
     end
 end)
 
-menu.add_feature("Custom Error Message", "toggle", misc_feature, function(f)
-
-	local rtn, subtitle
-	repeat
-		rtn, body = input.get("Insert Message", "", 50, eInputType.IT_ASCII)
-		if rtn == 2 then return end
-		system.wait()
-	until rtn == 0 
-
-	while f.on do 
-		AlertMessage(body)
-		system.wait()
-	end
-end)
-
 menu.add_feature("Disable Above Map Notifs", "toggle", misc_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
@@ -2467,7 +2867,25 @@ menu.add_feature("Fix Weapon Wheel", "action", misc_feature, function(f)
 	native.call(0xEB354E5376BC81A7) -- HUD_FORCE_WEAPON_WHEEL
 end)
 
+menu.add_feature("Flush Notifcation Queue", "action", misc_feature, function(f)
+    native.call(0xA8FDB297A8D25FBA)
+end)
+
 -- logging_feature
+feats.log_messages_to_console = menu.add_feature("Log Messages To Console", "toggle", logging_feature, function(f)
+    if f.on then
+        messagelog = event.add_event_listener("chat", function(e)
+            local pid = player.get_player_name(e.player)
+            local time = os.time()
+            local badtime = os.time()
+            local goodtime = os.date("%A, %B %d %Y, %X", badtime)
+            print("[" .. goodtime .. "] " .. pid .. " > " .. e.body)
+        end)
+    else
+        event.remove_event_listener("chat", messagelog)
+    end
+end)
+
 feats.log_joins_to_console = menu.add_feature("Log Joins To Console", "toggle", logging_feature, function(f)
     if f.on then
         joinlog = event.add_event_listener("player_join", function(e)
@@ -2577,53 +2995,25 @@ menu.create_thread(function() -- check if the player has been flagged before, if
 end)
 
 -- credits 
-menu.add_feature("Toph", "action_value_str", credits, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
-        return menu.notify("Helped an absolute BUNCH with understanding the API and helped with a lot of features!","Toph")
-    else
+local credits_list = {
+    {name = "Toph", notify_map_sub_title = "The Gopher", notify_map = "Helped an absolute BUNCH with understanding the API and helped with a lot of features!", notify_map_pic = "CHAR_HAO", menu_notify = "#FFFFCC00#Credits:\n-#FFFFDD00#Made above map notification\n-#FFFFDD22#IP info function\n-#FFFFDD33#Aim Karma\n-#FFFFDD44#Air Suspension\n-#FFFFDD55#Chat Moderation\n-#FFFFDD66#Minimap Disco\n-#FFFFDD77#Save and Load settings function", menu_notify_name = "#FFFFCC00#Toph", menu_notify_colour = 0xFFFFCC00},
+    {name = "Rimuru", notify_map_sub_title = "Wannabe Welsh", notify_map = "'let' me learn LUA using her script and still continues to help me all the time", notify_map_pic = "CHAR_WENDY", menu_notify = "#FFFF55AA#Credits:\n-#FFFF4488#Made Auto Updater\n-#FFFF4499#Taught me how to use tables to make features\n-#FFFF44AA#Yelled at me for bad code\n-#FFFF44BB#Let me ask dumb af questions\n-#FFFF44CC#Gave the code for nightclub loop\n-#FFFF44DD#Gave the function for RGB Neon", menu_notify_name = "#FFFF55AA#Rimuru", menu_notify_colour = 0xFFFF55AA},
+    {name = "GhostOne", notify_map_sub_title = "Has Cheese", notify_map = "Makes zero sense when giving help but still helps a lot", notify_map_pic = "CHAR_TAXI", menu_notify = "#FF00FFEE#Credits:\n-#FF00EEFF#Made Auto Kick By Country\n-#FF00DDFF#Made VPN detection flag\n-#FF00CCFF#Made IP lookup\n-#FF00BBFF#Made a lot of different functions\n-#FF00AAFF#Taught me a lot to do with functions and tables\n-#FF0099FF#Cheese", menu_notify_name = "#FF00FFFF#GhostOne", menu_notify_colour = 0xFF00FFFF},
+    {name = "Aren", notify_map_sub_title = "Mostly Cringe", notify_map = "Helped me a lot with LUA at the beginning, taught me how to use natives", notify_map_pic = "CHAR_JIMMY", menu_notify = "#FFFF1100#Credits:\n-#FFFF2211#Taught me how to use natives\n-#FFFF3311#Taught me how to start making luas", menu_notify_name = "#FFFF1111#Aren", menu_notify_colour = 0xFFFF1111}
+}
+for _,v in ipairs(credits_list) do
+    menu.add_feature(v.name, "action_value_str", credits, function(f)
         if f.value == 0 then
-            NotifyMap("Topher", "~h~~r~The Gopher","~b~Helped an absolute BUNCH with understanding the API and helped with a lot of features!", "CHAR_HAO", 140)
-        elseif f.value == 1 then
-            menu.notify("#FFFFCC00#Credits:\n-#FFFFDD00#Made above map notification\n-#FFFFDD22#IP info function\n-#FFFFDD33#Aim Karma\n-#FFFFDD44#Air Suspension\n-#FFFFDD55#Chat Moderation\n-#FFFFDD66#Bail To SP\n-#FFFFDD77#Minimap Disco\n-#FFFFDD88#Save and Load settings function", "#FFFFCC00#Toph", 5, 0xFFFFCC00)
-        end
-    end
-end):set_str_data({"Credit", "Features Made/Helped With"})
-
-menu.add_feature("Rimuru", "action_value_str", credits, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
-        return menu.notify("'let' me learn LUA using her script and gave me many helpful tips", "Rimuru")
-    else
-        if f.value == 0 then
-            NotifyMap("Rimuru", "~h~~r~Wannabe Welsh", "~b~'let' me learn LUA using her script and still continues to help me all the time","CHAR_WENDY", 140) --no_u = invalid image / does not exist
-        elseif f.value == 1 then
-            menu.notify("#FFFF55AA#Credits:\n-#FFFF4488#Made Auto Updater\n-#FFFF4499#Taught me how to use tables to make features\n-#FFFF44AA#Yelled at me for bad code\n-#FFFF44BB#Let me ask dumb af questions\n-#FFFF44CC#Gave the code for nightclub loop\n-#FFFF44DD#Gave the function for RGB Neon", "#FFFF55AA#Rimuru", 5, 0xFFFF55AA)
-        end
-    end 
-end):set_str_data({"Credit", "Features Made/Helped With"})
-
-menu.add_feature("GhostOne", "action_value_str", credits, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
-        return menu.notify("Makes zero sense when giving help but still helps a lot. made: Homing lockon, VPN flag, IP info shit","GhostOne")
-    else
-        if f.value == 0 then
-            NotifyMap("GhostOne", "~h~~r~Has Cheese", "~b~Makes zero sense when giving help but still helps a lot. made: Homing lockon, VPN flag, IP info shit","CHAR_TAXI", 140) --no_u = invalid image / does not exist
-        elseif f.value == 1 then
-            menu.notify("#FF00FFEE#Credits:\n-#FF00EEFF#Made Auto Kick By Country\n-#FF00DDFF#Made VPN detection flag\n-#FF00CCFF#Made IP lookup\n-#FF00BBFF#Made a lot of different functions\n-#FF00AAFF#Taught me a lot to do with functions and tables\n-#FF0099FF#Cheese", "#FF00FFFF#GhostOne", 5, 0xFF00FFFF)
-        end
-    end
-end):set_str_data({"Credit", "Features Made/Helped With"})
-
-menu.add_feature("Aren", "action_value_str", credits, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
-        return menu.notify("Helped me a lot with LUA at the beginning, taught me how to use natives", "Aren")
-    else
-        if f.value == 0 then
-            NotifyMap("Aren", "~h~~r~Mostly Cringe", "~b~Helped me a lot with LUA at the beginning, taught me how to use natives","CHAR_JIMMY", 140) --no_u = invalid image / does not exist
-        elseif f.value == 1 then
-            menu.notify("#FFFF1100#Credits:\n-#FFFF2211#Taught me how to use natives\n-#FFFF3311#Taught me how to start making luas", "#FFFF1111#Aren", 5, 0xFFFF1111)
-        end
-    end 
-end):set_str_data({"Credit", "Features Made/Helped With"})
+            if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then 
+                return menu.notify(v.notify_map, v.name, 5, v.menu_notify_colour)
+            else
+                NotifyMap(v.name, "~h~~r~"..v.notify_map_sub_title, v.notify_map, v.notify_map_pic, 140)
+            end
+        elseif f.value == 1 then 
+            menu.notify(v.menu_notify, v.menu_notify_name, 5, v.menu_notify_colour)
+        end 
+    end):set_str_data({"Credit", "Features Made/Helped With"})
+end
 
 -- main_online 
 --- ip_online_lookup
@@ -2760,6 +3150,82 @@ menu.add_player_feature("RP Drop", "toggle", friendly_options, function(f, pid)
             native.call(0x673966A0C0FD7171, 738282662, coords, 0, 1, 437412629, 0, 1)
             system.wait(5)
         end
+    end
+end)
+
+--- weapon_options
+menu.add_player_feature("RP Gun", "toggle", weapon_options, function(f, pid)
+    request_model(437412629)
+    while f.on do 
+        local player_ped = player.get_player_ped(pid)
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
+        if bool_rtn then
+            native.call(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
+        end
+    system.wait()
+    end
+end)
+
+menu.add_player_feature("Kick Gun", "toggle", weapon_options, function(f, pid)
+    while f.on do
+        for i = 0, 31 do
+            if player.is_player_valid(i) then 
+                local i_ped = player.get_player_ped(i)
+                local player_ped = player.get_player_ped(pid)
+                local entity_to_kick = player.get_entity_player_is_aiming_at(pid)
+                local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
+
+                local kicker_name = player.get_player_name(pid)
+                local kickee_name = player.get_player_name(i)
+
+                if entity_to_kick == i_ped and bool_rtn then 
+                    if not player.player_id() then
+                        network.force_remove_player(i)
+                        menu.notify("Kicking "..kickee_name.." because "..kicker_name.." used Kick Gun on them", "Femboy Lua", 5, 0xFF00EE00)
+                    elseif player.player_id() then
+                        menu.notify(kicker_name.." tried to kick you using kick gun", "Femboy Lua", 5, 0xFF0000EE)
+                    end
+                end
+                
+            end
+        end
+        system.wait()
+    end
+end)
+
+menu.add_player_feature("Give All Weapons", "action", weapon_options, function(f,pid)
+    local player_ped = player.get_player_ped(pid)
+    local weapon_hashes = weapon.get_all_weapon_hashes()
+    for _, hash in ipairs(weapon_hashes) do
+        weapon.give_delayed_weapon_to_ped(player_ped, hash, 1000, false)
+    end
+end)
+
+menu.add_player_feature("Remove Held Weapon", "action", weapon_options, function(f, pid)
+    local player_ped = player.get_player_ped(pid)
+    local held_weapon = ped.get_current_ped_weapon(player_ped)
+    weapon.remove_weapon_from_ped(player_ped, held_weapon)
+end)
+
+menu.add_player_feature("Remove Held Weapon (loop)", "toggle", weapon_options, function(f, pid)
+    while f.on do
+        local player_ped = player.get_player_ped(pid)
+        local held_weapon = ped.get_current_ped_weapon(player_ped)
+        weapon.remove_weapon_from_ped(player_ped, held_weapon)
+        system.wait()
+    end
+end)
+
+menu.add_player_feature("Remove All Weapons", "action", weapon_options, function(f, pid)
+    local player_ped = player.get_player_ped(pid)
+    weapon.remove_all_ped_weapons(player_ped)
+end)
+
+menu.add_player_feature("Remove All Weapons (loop)", "toggle", weapon_options, function(f, pid)
+    while f.on do
+        local player_ped = player.get_player_ped(pid)
+        weapon.remove_all_ped_weapons(player_ped)
+        system.wait()
     end
 end)
 
