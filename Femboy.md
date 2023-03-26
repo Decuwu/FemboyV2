@@ -1,4 +1,4 @@
-# v2.2.0
+# v2.3.0
 # Required Trusted Modes
 - Stats
 - Globals/Locals
@@ -10,22 +10,39 @@
 - Auto Updater
 
 # Online Script Features
-- IP Shits 
+- IP Lookup 
     - Post IP Info In Chat <Team Chat><All Chat>
     - Copy IP To Clipboard
     - List Of IP Info
-- Griefing Features
+- Griefing 
     - Crush Player
+    - Cargoplane Spam
     - Taze Player
     - Firework Player
+    - RPG Player
     - Atomize Player
     - Kill Player
-- Friendly Features
-    - Give Collectibles
-    - Drop RP
+- Friendly 
+    - RP Drop
+- Weapon 
+    - RP Gun
+    - Kick Gun
+    - Give All Weapons
+    - Remove Held Weapons
+    - Remove Held Weapons (loop)
+    - Remove All Weapons 
+    - Remove All Weapons (loop)
 
-# Player Features
+# Player 
 - Player Proofs
+    - Set All Entity Proofs
+    - Bulletproof
+    - Fireproof
+    - Explosion Proof
+    - Collision Proof
+    - Melee Proof
+    - Steam Proof
+    - Water Proof
 - RGB Player
     - Loop All Hair Colours
     - Rainbow Hair (Better)
@@ -33,7 +50,17 @@
 - Ragdoll On Q <Narrow Leg Stumble><Wide Leg Stumble><Normal Ragdoll>
 - Clumsy Player
 
-# Vehicle Features
+# Weapon 
+- Give All Weapons
+- Remove All Weapons
+- TP Gun
+- Delete Gun
+- Kick Gun
+- RP Gun
+- Wall Gun
+- Wellie Gun
+
+# Vehicle 
 - Door Control
     - Open/Close All Doors
     - Open Door
@@ -70,12 +97,19 @@
 - Kill Engine 
 - Notify Engine Health
 
-# Online Features
+# Online 
+- Lobby Options 
+    - Give RP Gun To All Players
+    - Give All Weapons To All Players
+    - Remopve All Weapons From All Players
 - Moderation Options
     - Auto Kicker By Modder Flags Options
+    - Auto Kicker By Country
     - Auto Kicker By IP Options
-- Force Host
+- IP Lookup
 - Script Hostaholic
+- Force Host
+- Bail To SP
 - Aim Karma
     - Notify If Aimed At
     - Kick Player
@@ -85,9 +119,8 @@
     - Firework Player
     - Atomize Player 
     - Crush Player
-- IP Lookup
 
-# Recovery Features
+# Recovery 
 - Collectibles
 - Remote Business
 - Special Cargo Options 
@@ -118,7 +151,7 @@
         - Disable Kostaka Missiles Cooldown
         - Disable MK2 Cooldown
 
-# World Features
+# World 
 - Distance Scale
 - Set Time Scale
 - Load Map
@@ -130,20 +163,25 @@
 - Wind Speed
 - Wave Intensity
 
-# Misc Features
+# Misc 
+- Custom/Preset Alert Messages
+    - Custom Alert Message
+    - Custom Reason Ban Screen
+    - Ban Screen (No reason)
+    - Ban Screen w/ preset reason
 - Auto Skip Cutscene
 - Get All Achievements
 - Set Radar Angle
 - Hide HUD
-- Custom Error Message
 - Disable Above Map Notifs
 - Fix Weapon Wheel
-
-# Logging Features
-- Log Joins To Console
-- Log Script Events To Console
+- Flush Notifcation Queue
 
 # Settings
+- Logging
+    - Log Messages
+    - Log Joins
+    - Log Script Events
 - Save Settings
 - F8 To Save Settings
 - Femboy Lua Changelog
