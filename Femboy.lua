@@ -1,4 +1,4 @@
-local version = "2.3.0" 
+local version = "2.3.1" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
@@ -130,7 +130,7 @@ end
 
 local function request_model(hash, timeout)
     streaming.request_model(hash)
-    local timer = utils.time_ms() + (timeout or 1000)
+    local timer = utils.time_ms() + (timeout or 10)
     while timer > utils.time_ms() and not streaming.has_model_loaded(hash) do
         system.wait(0)
     end
@@ -481,7 +481,7 @@ menu.add_feature("Windows Open/Close", "toggle", door_control, function(f)
         f.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
-        if feat.on then
+        if f.on then
             native.call(0x85796B0549DDE156, veh) -- ROLL_DOWN_WINDOWS
         else
             for i = 0, 3 do
@@ -1144,72 +1144,79 @@ menu.add_feature("Remove All Weapons From All Players", "action", lobby_options,
 end)
 
 local aim_karma = menu.add_feature("Aim Karma", "parent", online_feature).id
+local aim_karma_table
 local function APv2(f)
     while f.on do
         local PlayerPed = player.get_player_ped(player.player_id())
-        if APv2 then
+        if aim_karma_table then -- checking if APv2 exists isnt needed
             for pid = 0, 31 do -- for every player in the lobby
                 if player.is_player_valid(pid) == true then -- if the player matches an ID then
                     local AimingAt = player.get_entity_player_is_aiming_at(pid) -- gets the entity a player is aiming at
                     local EnemyPos = player.get_player_coords(pid) -- gets the coords of the player above
                     if AimingAt == PlayerPed then --- if ped being aimed at is the same as player ped, then do the following
-                        if notifykarma then
+                        if aim_karma_table["notifykarma"].on then
                             menu.notify(player.get_player_name(pid) .. " aimed at you", "Femboy Menu")
                         end
 
-                        if removeheldweaponkarma then 
+                        if aim_karma_table["removeheldweaponkarma"].on then 
                             local player_ped = player.get_player_ped(pid)
                             local held_weapon = ped.get_current_ped_weapon(player_ped)
                             weapon.remove_weapon_from_ped(player_ped, held_weapon)
                         end
 
-                        if removeweaponkarma then
+                        if aim_karma_table["removeweaponkarma"].on then
                             local player_ped = player.get_player_ped(pid)
                             weapon.remove_all_ped_weapons(player_ped)
                         end
 
-                        if kickkarma then
+                        if aim_karma_table["kickkarma"].on then
                             network.force_remove_player(pid)
                             menu.notify(player.get_player_name(pid) .. " was kicked for aiming at you", "Femboy Menu")
                         end
 
-                        if tazekarma then
+                        if aim_karma_table["tazekarma"].on then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
+                            request_model(911657153)
                             gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 911657153, player.player_ped(), true, false, 100)
                         end
 
-                        if killkarma then
+                        if aim_karma_table["killkarma"].on then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
+                            request_model(3219281620)
                             gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 10000, 3219281620, player.player_ped(), true, false, 100)
                         end
 
-                        if explokarma then
+                        if aim_karma_table["explokarma"].on then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
+                            request_model(1672152130)
                             gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 1672152130, player.player_ped(), true, false, 100)
                         end
 
-                        if firewrkkarma then
+                        if aim_karma_table["firewrkkarma"].on then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
+                            request_model(2138347493)
                             gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 2138347493, player.player_ped(), true, false, 100)
                         end
 
-                        if atomkarma then
+                        if aim_karma_table["atomkarma"].on then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
+                            request_model(2939590305)
                             gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 2939590305, player.player_ped(), true, false, 100)
                         end
 
-                        if tankkarma then
+                        if aim_karma_table["tankkarma"].on then
                             local playerloc = player.get_player_coords(pid)
                             playerloc.z = playerloc.z + 2.7
-                            request_model(2859440138)
+							request_model(2859440138)
                             local veh = vehicle.create_vehicle(2859440138, playerloc, 0, true, false)
+                            local network_control = network.request_control_of_entity(veh)
                             entity.set_entity_visible(veh, false)
-                            system.wait(10000)
+                            system.wait(1000)
                             entity.delete_entity(veh)
                         end
 
@@ -1221,30 +1228,37 @@ local function APv2(f)
     end
 end
 
-feats.enableaimkarma = menu.add_feature("Enable Aim Karma", "toggle", aim_karma, function(f)
-    if f.on then
-        APv2(f)
-    end
-end)
+feats.enableaimkarma = menu.add_feature("Enable Aim Karma", "toggle", aim_karma, APv2) -- no need to make a function, just pass APv2
 
 menu.add_feature("--------------------", "action", aim_karma)
 
-local aim_karma_table = {
-    {name = "Notify If Aimed At", feat = "notifykarma"},
-    {name = "Remove Held Weapon", feat = "removeheldweaponkarma"},
-    {name = "Remove All Weapons", feat = "removeweaponkarma"},
-    {name = "Kick Player", feat = "kickkarma"},
-    {name = "Taze Player", feat = "tazekarma"},
-    {name = "Kill Player", feat = "killkarma"},
-    {name = "Explode Player", feat = "explokarma"},
-    {name = "Firework Player", feat = "firewrkkarma"},
-    {name = "Atomize Player (with damage)", feat = "atomkarma"},
-    {name = "Crush Player", feat = "tankkarma"}
+aim_karma_table = {
+    ["notifykarma"] = {name = "Notify If Aimed At", on = false},
+    ["removeheldweaponkarma"] = {name = "Remove Held Weapon", on = false, id = 1},
+    ["removeweaponkarma"] = {name = "Remove All Weapons", on = false, id = 2},
+    ["kickkarma"] = {name = "Kick Player", on = false, id = 3},
+    ["tazekarma"] = {name = "Taze Player", on = false, id = 4},
+    ["killkarma"] = {name = "Kill Player", on = false, id = 5},
+    ["explokarma"] = {name = "Explode Player", on = false, id = 6},
+    ["firewrkkarma"] = {name = "Firework Player", on = false, id = 7},
+    ["atomkarma"] = {name = "Atomize Player (with damage)", on = false, id = 8},
+    ["tankkarma"] = {name = "Crush Player", on = false, id = 9}
 }
-for _,v in ipairs(aim_karma_table) do
-    feats[v.feat] = menu.add_feature(v.name, "toggle", aim_karma,function(f)
-        v.feat = f.on    
+
+do
+    local sorted_aim_karma_table = {}
+    for k, v in pairs(aim_karma_table) do
+        sorted_aim_karma_table[#sorted_aim_karma_table+1] = v
+    end
+    table.sort(sorted_aim_karma_table, function(a, b)
+        return a.name < b.name
     end)
+
+    for k, v in ipairs(sorted_aim_karma_table) do
+        feats[k] = menu.add_feature(v.name, "toggle", aim_karma,function(f)
+            v.on = f.on -- the while loop isnt needed, it held the function running till it turned off which wouldnt set v.on (previously 'feat') to off
+        end)
+    end
 end
 
 local ip_feats = {}
@@ -2823,7 +2837,7 @@ menu.add_feature("Get All Achievements", "action", misc_feature, function(f)
 end)
 
 local set_radar_angle = menu.add_feature("Set Radar Angle", "value_i", misc_feature, function(f)
-	while f.on do 
+    while f.on do 
 		native.call(0x299FAEBB108AE05B, f.value) -- LOCK_MINIMAP_ANGLE
 		system.wait()
 	end
@@ -2861,10 +2875,6 @@ menu.add_feature("Disable Above Map Notifs", "toggle", misc_feature, function(f)
         native.call(0xA8FDB297A8D25FBA) -- THEFEED_FLUSH_QUEUE
         menu.notify("Notifications above map enabled", "Femboy Menu")
     end
-end)
-
-menu.add_feature("Fix Weapon Wheel", "action", misc_feature, function(f)
-	native.call(0xEB354E5376BC81A7) -- HUD_FORCE_WEAPON_WHEEL
 end)
 
 menu.add_feature("Flush Notifcation Queue", "action", misc_feature, function(f)
