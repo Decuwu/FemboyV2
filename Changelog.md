@@ -24,3 +24,9 @@
 - Moved and Rearranged some parents
     - dont worry, they didn't leave you again <3
 - General Optimisation Improvements
+
+
+# Bug fix update v2.3.1
+- Removed Fix Weapon Wheel 
+- Fixed feat issue
+- Fixed and improved Aim Karma (Thank you Ghost)
