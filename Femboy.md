@@ -174,7 +174,6 @@
 - Set Radar Angle
 - Hide HUD
 - Disable Above Map Notifs
-- Fix Weapon Wheel
 - Flush Notifcation Queue
 
 # Settings
