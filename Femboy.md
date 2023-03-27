@@ -1,4 +1,4 @@
-# v2.3.0
+# v2.3.1
 # Required Trusted Modes
 - Stats
 - Globals/Locals
