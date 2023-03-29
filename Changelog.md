@@ -30,3 +30,6 @@
 - Removed Fix Weapon Wheel 
 - Fixed feat issue
 - Fixed and improved Aim Karma (Thank you Ghost)
+
+# Bug fix update v2.3.2
+- Fixed automoderation
