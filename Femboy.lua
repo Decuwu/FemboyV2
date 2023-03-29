@@ -151,7 +151,7 @@ local function spawn_obect(feat, hash)
 end
 
 local function kickPlayersForFlag(flag)
-    if not feats.automoder.on then return end
+    if not feats.auto_moderation.on then return end
     for pid = 0, 31 do
         if player.is_player_modder(pid, flag) then
             network.force_remove_player(pid)
