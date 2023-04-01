@@ -1,4 +1,4 @@
-# v2.3.1
+# v2.4.0
 # Required Trusted Modes
 - Stats
 - Globals/Locals
@@ -10,6 +10,7 @@
 - Auto Updater
 
 # Online Script Features
+- Waypoint Follow Player
 - IP Lookup 
     - Post IP Info In Chat <Team Chat><All Chat>
     - Copy IP To Clipboard
@@ -24,8 +25,10 @@
     - Kill Player
 - Friendly 
     - RP Drop
+    - Card Drop
 - Weapon 
     - RP Gun
+    - Card Gun
     - Kick Gun
     - Give All Weapons
     - Remove Held Weapons
@@ -57,8 +60,11 @@
 - Delete Gun
 - Kick Gun
 - RP Gun
+- Card Gun
 - Wall Gun
 - Wellie Gun
+- Dildo Gun
+- Orbital Gun
 
 # Vehicle 
 - Door Control
@@ -69,10 +75,14 @@
     - Window Tint
     - Window Open/Close
 - Vehicle Customisation
-    - Set/Keep Custom License Plate
     - Hex Primary/Seconday/Pearlescent/Wheel Colours
     - RGB Tyre Smoke
     - Patriot Tyre Smoke
+- License Plate
+    - Match Plate To Speed
+    - Set/Keep Custom License Plate
+    - Change Plate Type
+
 - Light Control
     - RGB Neon
     - Brake Lights When Stationary
@@ -100,6 +110,7 @@
 # Online 
 - Lobby Options 
     - Give RP Gun To All Players
+    - Give Card Gun To All Players
     - Give All Weapons To All Players
     - Remopve All Weapons From All Players
 - Moderation Options
@@ -109,6 +120,7 @@
 - IP Lookup
 - Script Hostaholic
 - Force Host
+- Bail From Session
 - Bail To SP
 - Aim Karma
     - Notify If Aimed At
@@ -170,10 +182,12 @@
     - Ban Screen (No reason)
     - Ban Screen w/ preset reason
 - Auto Skip Cutscene
+- Auto TP To Waypoint
 - Get All Achievements
 - Set Radar Angle
 - Hide HUD
 - Disable Above Map Notifs
+- Fix Weapon Wheel
 - Flush Notifcation Queue
 
 # Settings
