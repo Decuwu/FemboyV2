@@ -1,4 +1,4 @@
-local version = "2.3.2" 
+local version = "2.4.0" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
@@ -58,6 +58,7 @@ local vehicle_feature = menu.add_feature("Vehicle", "parent", main).id
 local door_control = menu.add_feature("Door Controls", "parent", vehicle_feature).id 
 local vehicle_customisation = menu.add_feature("Vehicle Customisation", "parent", vehicle_feature).id
 local light_control = menu.add_feature("Light Controls", "parent", vehicle_feature).id
+local license_plate = menu.add_feature("License Plates", "parent", vehicle_feature).id 
 
 local online_feature = menu.add_feature("Online", "parent", main).id 
 local lobby_options = menu.add_feature("Lobby Options", "parent", online_feature).id
@@ -206,11 +207,19 @@ local function AlertMessage(body)
     end
 end
 
--- 
+-- opening notify
 local name = player.get_player_name(player.player_id())
 NotifyMap("Femboy Lua ", version .. " ~h~~r~Femboy Lua Script", "Script Loaded, head to Script Features\n\nCongratulations ~r~"..name.." ~w~you are now a femboy.", "CHAR_MP_STRIPCLUB_PR", 140)
 
--- player_feature 
+local stats_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS)
+local globals_locals_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS)
+local natives_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES)
+local https_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_HTTP)
+
+if not stats_trusted and not globals_locals_trusted and not natives_trusted and not https_trusted then
+    menu.notify("Femboy Lua loaded\nHowever, if you wish to use the full lua you will need to enable the following:\n\n-Stats (for some recovery options)\n-Globals/Locals (for some recovery options)\n-Natives (for most features)\n-HTTP (for vpn check, auto updater and ip lookup)", "Femboy Menu", 7, 0xFF00FFFF)
+end
+    -- player_feature 
 local bullet_proof, fire_proof, explosion_proof, collision_proof, melee_proof, steam_proof, water_proof
 local native_call = native.call
 
@@ -401,8 +410,8 @@ menu.add_feature("Kick Gun", "toggle", weapon_feature, function(f)
 end)
 
 menu.add_feature("RP Gun", "toggle", weapon_feature, function(f)
-    request_model(437412629)
     while f.on do 
+        request_model(437412629)
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
         if bool_rtn then
             native.call(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
@@ -410,8 +419,35 @@ menu.add_feature("RP Gun", "toggle", weapon_feature, function(f)
     system.wait()
     end
 end)
+menu.add_feature("Card Gun", "toggle", weapon_feature, function(f)
+    while f.on do 
+        request_model(3030532197)
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
+        if bool_rtn then
+            native.call(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
+        end
+    system.wait()
+    end
+end)
 menu.add_feature("Wall Gun", "toggle", weapon_feature, spawn_obect).data = 0xA4D194D1
 menu.add_feature("Wellie Gun", "toggle", weapon_feature, spawn_obect).data = 0x9CAFCB2
+menu.add_feature("Dildo Gun", "toggle", weapon_feature, spawn_obect).data = 0x4F7B518F
+
+menu.add_feature("Orbital Gun", "toggle", weapon_feature, function(f)
+    while f.on do
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
+        if bool_rtn then 
+            fire.add_explosion(v3_coord, 59, false, false, 1, player.player_ped())
+            graphics.set_next_ptfx_asset("scr_xm_orbital")
+            while not graphics.has_named_ptfx_asset_loaded("scr_xm_orbital") do
+                graphics.request_named_ptfx_asset("scr_xm_orbital")
+                system.yield(0)
+            end
+            graphics.start_networked_ptfx_non_looped_at_coord("scr_xm_orbital_blast", v3_coord, v3(0, 180, 0), 1.0, true, true, true)
+        end
+        system.wait()
+    end
+end)
 
 -- vehicle_feature 
 menu.add_feature("Open All Doors", "action", door_control, function(f)
@@ -506,47 +542,6 @@ menu.add_feature("Change Engine Noise", "action", vehicle_customisation, functio
         native.call(0x4F0C413926060B38, veh, noise)
     end
 end) 
-
-menu.add_feature("Set Custom License Plate", "action", vehicle_customisation, function(f)
-    local veh = player.get_player_vehicle(player.player_id())
-
-    if player.is_player_in_any_vehicle(player.player_id()) then
-        repeat
-            rtn, plate = input.get("Command box", "", 8, eInputType.IT_ASCII)
-            if rtn == 2 then rtn = 0 end
-            system.wait(0)
-        until rtn == 0
-
-        vehicle.set_vehicle_number_plate_text(veh, plate)
-    else
-        menu.notify("You are not in a vehicle!", "Femboy Menu")
-    end
-end)
-
-menu.add_feature("Keep Custom License Plate", "toggle", vehicle_customisation, function(f)
-    local veh = player.get_player_vehicle(player.player_id())
-    if player.is_player_in_any_vehicle(player.player_id()) then
-        repeat
-            rtn, plate = input.get("Input Custom Plate", "", 8, eInputType.IT_ASCII)
-            if rtn == 2 then rtn = 0 end
-            system.wait(0)
-        until rtn == 0
-        vehicle.set_vehicle_number_plate_text(veh, plate)
-        while f.on do
-            local new_veh = player.get_player_vehicle(player.player_id())
-            if new_veh ~= veh then -- if the player has changed vehicles
-                veh = new_veh
-                local current_plate = vehicle.get_vehicle_number_plate_text(veh) -- get the current license plate of the vehicle
-                if current_plate ~= plate then -- if the current license plate is not the desired value
-                    vehicle.set_vehicle_number_plate_text(veh, plate) -- update the license plate of the new vehicle
-                end
-            end
-            system.wait()
-        end
-    else
-        menu.notify("You are not in a vehicle!", "Femboy Menu")
-    end
-end)
 
 menu.add_feature("Set Primary Hex Colour", "action", vehicle_customisation, function(f)
     local veh = player.get_player_vehicle(player.player_id())
@@ -721,6 +716,84 @@ end)
 feat_tv.headlight_brightness.min = 0.0
 feat_tv.headlight_brightness.max = 100.0
 feat_tv.headlight_brightness.mod = 1.0
+
+feats.match_plate_to_speed = menu.add_feature("Match Plate To Speed", "value_str", license_plate, function(f)
+    while f.on do
+        local veh = player.get_player_vehicle(player.player_id())
+        local speed = entity.get_entity_speed(player.get_player_vehicle(player.player_id()))
+        
+        if f.value == 0 then
+            vehicle.set_vehicle_number_plate_text(veh, math.floor(speed * 2.236936) .. " MPH")
+        elseif f.value == 1 then
+            vehicle.set_vehicle_number_plate_text(veh, math.floor(speed * 3.6) .. " KPH")
+        elseif f.value == 2 then
+            vehicle.set_vehicle_number_plate_text(veh, math.floor(speed) .. " MPS")
+        end
+        system.wait()
+    end
+end):set_str_data({ "Mph", "Kph", "Metres per second" })
+
+menu.add_feature("Set Custom License Plate", "action", license_plate, function(f)
+    local veh = player.get_player_vehicle(player.player_id())
+
+    if player.is_player_in_any_vehicle(player.player_id()) then
+        repeat
+            rtn, plate = input.get("Command box", "", 8, eInputType.IT_ASCII)
+            if rtn == 2 then rtn = 0 end
+            system.wait(0)
+        until rtn == 0
+
+        vehicle.set_vehicle_number_plate_text(veh, plate)
+    else
+        menu.notify("You are not in a vehicle!", "Femboy Menu")
+    end
+end)
+
+menu.add_feature("Keep Custom License Plate", "toggle", license_plate, function(f)
+    local veh = player.get_player_vehicle(player.player_id())
+    if player.is_player_in_any_vehicle(player.player_id()) then
+        repeat
+            rtn, plate = input.get("Input Custom Plate", "", 8, eInputType.IT_ASCII)
+            if rtn == 2 then rtn = 0 end
+            system.wait(0)
+        until rtn == 0
+        vehicle.set_vehicle_number_plate_text(veh, plate)
+        while f.on do
+            local new_veh = player.get_player_vehicle(player.player_id())
+            if new_veh ~= veh then -- if the player has changed vehicles
+                veh = new_veh
+                local current_plate = vehicle.get_vehicle_number_plate_text(veh)
+                if current_plate ~= plate then
+                    vehicle.set_vehicle_number_plate_text(veh, plate)
+                end
+            end
+            system.wait()
+        end
+    else
+        menu.notify("You are not in a vehicle!", "Femboy Menu")
+    end
+end)
+
+local plate_type = menu.add_feature("Change Plate Type", "autoaction_value_i", license_plate, function(f)
+    local veh = player.get_player_vehicle(player.player_id())
+    vehicle.set_vehicle_number_plate_index(veh, f.value)
+end)
+plate_type.min = 0
+plate_type.max = 5
+plate_type.mod = 1
+
+--[[menu.add_feature("Give Car Parachute", "toggle", vehicle_feature, function(f)
+    while f.on do
+        local veh = player.get_player_vehicle(player.player_id())
+        local vehicle_model = vehicle.get_vehicle_model(veh)
+        local vehicle_hash = gameplay.get_hash_key(vehicle_model)
+        streaming.set_vehicle_model_has_parachute(vehicle_hash, true)
+        vehicle.set_vehicle_parachute_model(veh, 1298918533)
+        vehicle.set_vehicle_parachute_active(veh, true)
+        system.wait()
+    end
+end).on=true
+]]
 
 local vehicleop = {
     "Annihilator Stealth",
@@ -996,7 +1069,6 @@ feat_tv.veh_max_speed.value = 155.0
 menu.add_feature("Speedometer", "value_str", vehicle_feature, function(f)
     while f.on do
         local speed = entity.get_entity_speed(player.get_player_vehicle(player.player_id()))
-        local mph
 
         ui.set_text_scale(0.35)
         ui.set_text_font(0)
@@ -1095,6 +1167,10 @@ menu.add_feature("Force Host", "toggle", online_feature, function(f)
     end
 end)
 
+menu.add_feature("Bail from session", "action", online_feature, function(f)
+    network.force_remove_player(player.player_id())
+end)
+
 menu.add_feature("Bail To SP", "action", online_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
@@ -1109,6 +1185,7 @@ end)
 --lobby_options
 menu.add_feature("Give RP Gun To All Players", "toggle", lobby_options, function(f)
     while f.on do
+        request_model(437412629)
         for i = 0, 31 do 
             if player.is_player_valid(i) then 
                 local player_ped = player.get_player_ped(i)
@@ -1122,25 +1199,28 @@ menu.add_feature("Give RP Gun To All Players", "toggle", lobby_options, function
     end
 end)
 
-menu.add_feature("Give All Weapons To All Players", "action", lobby_options, function(f)
-    for i = 0, 31 do
-        if player.is_player_valid(i) then
-            local player_ped = player.get_player_ped(i)
-            local weapon_hashes = weapon.get_all_weapon_hashes()
-            for _, hash in ipairs(weapon_hashes) do
-                weapon.give_delayed_weapon_to_ped(player_ped, hash, 1000, false)
+menu.add_feature("Give Card Gun To All Players", "toggle", lobby_options, function(f)
+    while f.on do
+        request_model(3030532197)
+        for i = 0, 31 do 
+            if player.is_player_valid(i) then 
+                local player_ped = player.get_player_ped(i)
+                local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
+                if bool_rtn then
+                    native.call(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
+                end
             end
-        end 
+        end
+        system.wait()
     end
 end)
 
+menu.add_feature("Give All Weapons To All Players", "action", lobby_options, function(f)
+    menu.get_feature_by_hierarchy_key("online.all_players.give_all_weapons"):toggle()
+end)
+
 menu.add_feature("Remove All Weapons From All Players", "action", lobby_options, function(f)
-    for i = 0,31 do
-        if player.is_player_valid(i) and not player.player_id() then
-            local player_ped = player.get_player_ped(i)
-            weapon.remove_all_ped_weapons(player_ped)
-        end
-    end
+    menu.get_feature_by_hierarchy_key("online.all_players.remove_all_weapons"):toggle()
 end)
 
 local aim_karma = menu.add_feature("Aim Karma", "parent", online_feature).id
@@ -1165,8 +1245,7 @@ local function APv2(f)
                         end
 
                         if aim_karma_table["removeweaponkarma"].on then
-                            local player_ped = player.get_player_ped(pid)
-                            weapon.remove_all_ped_weapons(player_ped)
+                            menu.get_feature_by_hierarchy_key("online.online_players.player_"..pid..".weapons.remove_all_weapons"):toggle()
                         end
 
                         if aim_karma_table["kickkarma"].on then
@@ -2066,47 +2145,47 @@ for _, v in ipairs(special_crates) do
     end)
 end
 
--- air_cargo 
-
---menu.add_feature("Set Air Cargo Price To 1 Billion", "toggle", air_cargo, function(f)
---    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
---        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
---        f.on=false
---    else
---        while f.on do
---            script.set_global_i(284955,1147483647)
---            script.set_global_i(284956,1147483647)
---            script.set_global_i(284957,1147483647)
---            script.set_global_i(284958,1147483647)
---            script.set_global_i(284959,1147483647)
---            script.set_global_i(284960,1147483647)
---            script.set_global_i(284961,1147483647)
---            script.set_global_i(284962,1147483647)
---            script.set_global_i(284963,1147483647)
---            system.wait()
---        end
---    end
---end)
-
---menu.add_feature("Set Air Cargo Price To 2 Billion", "toggle", air_cargo, function(f)
---    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
---        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
---        f.on=false
---    else
---        while f.on do
---            script.set_global_i(284955,2147483647)
---            script.set_global_i(284956,2147483647)
---            script.set_global_i(284957,2147483647)
---            script.set_global_i(284958,2147483647)
---            script.set_global_i(284959,2147483647)
---            script.set_global_i(284960,2147483647)
---            script.set_global_i(284961,2147483647)
---            script.set_global_i(284962,2147483647)
---            script.set_global_i(284963,2147483647)
---            system.wait()
---        end
---    end
---end)
+--[[
+--air_cargo 
+menu.add_feature("Set Air Cargo Price To 1 Billion", "toggle", air_cargo, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(284955,1147483647)
+            script.set_global_i(284956,1147483647)
+            script.set_global_i(284957,1147483647)
+            script.set_global_i(284958,1147483647)
+            script.set_global_i(284959,1147483647)
+            script.set_global_i(284960,1147483647)
+            script.set_global_i(284961,1147483647)
+            script.set_global_i(284962,1147483647)
+            script.set_global_i(284963,1147483647)
+            system.wait()
+        end
+    end
+end)
+menu.add_feature("Set Air Cargo Price To 2 Billion", "toggle", air_cargo, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(284955,2147483647)
+            script.set_global_i(284956,2147483647)
+            script.set_global_i(284957,2147483647)
+            script.set_global_i(284958,2147483647)
+            script.set_global_i(284959,2147483647)
+            script.set_global_i(284960,2147483647)
+            script.set_global_i(284961,2147483647)
+            script.set_global_i(284962,2147483647)
+            script.set_global_i(284963,2147483647)
+            system.wait()
+        end
+    end
+end)
+]]
 
 menu.add_feature("Open AirFrieght App", "action", air_cargo, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
@@ -2825,6 +2904,17 @@ feats.skipcutscene = menu.add_feature("Auto Skip Cutscene", "toggle", misc_featu
     end
 end)
 
+feats.auto_tp_to_waypoint = menu.add_feature("Auto TP To Waypoint", "toggle", misc_feature, function(f)
+    while f.on do
+        local waypoint = ui.get_waypoint_coord()
+        if waypoint.x ~= 16000 then
+            menu.get_feature_by_hierarchy_key("local.teleport.waypoint"):toggle()
+            ui.set_waypoint_off()
+        end
+        system.wait()
+    end 
+end)
+
 menu.add_feature("Get All Achievements", "action", misc_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
@@ -3026,6 +3116,20 @@ for _,v in ipairs(credits_list) do
 end
 
 -- main_online 
+
+menu.add_player_feature("Waypoint Follow Player", "toggle", main_online, function(f, pid)
+    while f.on do
+        local player_ped = player.get_player_ped(pid)
+        local player_coords = entity.get_entity_coords(player_ped)
+        local v2_coord = v2(player_coords.x, player_coords.y)
+
+        if v2_coord.x ~= 0 or v2_coord.y ~= 0 then
+            ui.set_new_waypoint(v2_coord)
+        end
+        system.wait(100)
+    end
+end)
+
 --- ip_online_lookup
 local ip_feats = {}
 local ip_online_lookup = menu.add_player_feature("IP Lookup", "parent", main_online, function(f, pid)
@@ -3163,14 +3267,40 @@ menu.add_player_feature("RP Drop", "toggle", friendly_options, function(f, pid)
     end
 end)
 
+menu.add_player_feature("Card Drop", "toggle", friendly_options, function(f, pid)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on = false
+    else
+        request_model(3030532197)
+        while f.on do 
+            local coords= player.get_player_coords(pid)
+            native.call(0x673966A0C0FD7171, -1009939663, coords, 0, 1, 3030532197, 0, 1)
+            system.wait(5)
+        end
+    end 
+end)
+
 --- weapon_options
 menu.add_player_feature("RP Gun", "toggle", weapon_options, function(f, pid)
-    request_model(437412629)
     while f.on do 
+        request_model(437412629)
         local player_ped = player.get_player_ped(pid)
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
         if bool_rtn then
             native.call(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
+        end
+    system.wait()
+    end
+end)
+
+menu.add_player_feature("RP Gun", "toggle", weapon_options, function(f, pid)
+    while f.on do 
+        request_model(437412629)
+        local player_ped = player.get_player_ped(pid)
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
+        if bool_rtn then
+            native.call(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
         end
     system.wait()
     end
@@ -3227,15 +3357,12 @@ menu.add_player_feature("Remove Held Weapon (loop)", "toggle", weapon_options, f
 end)
 
 menu.add_player_feature("Remove All Weapons", "action", weapon_options, function(f, pid)
-    local player_ped = player.get_player_ped(pid)
-    weapon.remove_all_ped_weapons(player_ped)
+    menu.get_feature_by_hierarchy_key("online.online_players.player_"..pid..".weapons.remove_all_weapons"):toggle()
 end)
 
 menu.add_player_feature("Remove All Weapons (loop)", "toggle", weapon_options, function(f, pid)
     while f.on do
-        local player_ped = player.get_player_ped(pid)
-        weapon.remove_all_ped_weapons(player_ped)
-        system.wait()
+        menu.get_feature_by_hierarchy_key("online.online_players.player_"..pid..".weapons.remove_all_weapons"):toggle()
     end
 end)
 
@@ -3260,3 +3387,4 @@ menu.create_thread(function()
         menu.notify("Failed to find github shit")
     end
 end)
+
