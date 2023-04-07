@@ -1,15 +1,33 @@
-# Changelog v2.4.0
-- Added card drop (yoinked params from gamecrunch)
-- Added card gun (same as rp gun but the card collectible)
-- Added Auto TP To Waypoint
-- Added orbital cannon gun (thanks gee for help with ptfx) 
-- Added dildo gun
-- Added license plate parent
-    - Added match plate to current speed 
-    - Added change plate type
-    - Moved other plate features to here
-- Added bail from session
-- Added Waypoint Follow Player
-- Added trusted mode check on lua load (only appears if no trusted mode options enabled)
-- Fixed RP drop
-- Fixed Give and Remove all weapons in lobby options
+# Changelog v2.5.0
+- Added FemboyLuaFolder (auto creates when you run the lua)
+    - Femboy.ini now lives here (you may want to copy and paste your old ini in here)
+    - custom_spam_messages.lua lives here too, use this with the new network spam options to automatically save messages you want to spam and have them for next time (big up chatgpt for this one)
+- Added More RP Drops
+- Added Disable HUD Options
+- Added Money Loops (6s per loop)
+    - 750k 
+    - 500k
+- Added local money drop
+- Added notifies in places
+- Added suspended alert screen
+- Added money/rp given/removed alert screen
+- Added orbital cannon to aim karma
+- Added Nitrous Backfire (Thank you Topher)
+- Added Network Chat features
+    - chat spam messages
+    - Send R* icon in chat
+    - Send lock icon in chat
+    - Send R* verified icon in chat
+    - clear chat
+    - custom chat spam
+- Added orbital gun to online player
+- Added Walkstyles
+- Added Set Special Edition Version (not sure if this works)
+- Added orbital player to online player
+- Removed HIDE_FEED from auto supplier
+    - can be manually used in Femboy Lua > settings > hud options > HIDE_FEED
+- card gun actually shoots cards now
+- card gun is not rp gun
+- Chat moderation no longer kicks you
+- auto repair repairs more
+- General optimisation improvements 
