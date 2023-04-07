@@ -29,5 +29,5 @@
 - card gun actually shoots cards now
 - card gun is not rp gun
 - Chat moderation no longer kicks you
-- auto repair repairs more
+- auto repair repairs more :)
 - General optimisation improvements 
