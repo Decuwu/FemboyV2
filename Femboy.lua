@@ -1,7 +1,9 @@
-local version = "2.4.0" 
+---@diagnostic disable: undefined-global, lowercase-global, undefined-field
+
+local version = "2.5.0" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
-local INI = IniParser(appdata .. "\\scripts\\Femboy.ini")
+local INI = IniParser(appdata .. "\\scripts\\FemboyLuaFolder\\Femboy.ini")
 
 local function SaveSettings()
     for k, v in pairs(feats) do
@@ -47,65 +49,80 @@ local function LoadSettings()
     end
 end
 
-local main = menu.add_feature("Femboy Lua", "parent", 0).id 
-local player_feature = menu.add_feature("Player", "parent", main).id 
-local player_proof = menu.add_feature("Player Proofs", "parent", player_feature).id 
-local rgb_player_feature = menu.add_feature("RGB Player", "parent", player_feature).id
+local femboy_native = native.call
+local femboy_local = {}
 
-local weapon_feature = menu.add_feature("Weapon", "parent", main).id
+femboy_local.main = menu.add_feature("Femboy Lua", "parent", 0).id 
 
-local vehicle_feature = menu.add_feature("Vehicle", "parent", main).id
-local door_control = menu.add_feature("Door Controls", "parent", vehicle_feature).id 
-local vehicle_customisation = menu.add_feature("Vehicle Customisation", "parent", vehicle_feature).id
-local light_control = menu.add_feature("Light Controls", "parent", vehicle_feature).id
-local license_plate = menu.add_feature("License Plates", "parent", vehicle_feature).id 
+femboy_local.player_feature = menu.add_feature("Player", "parent", femboy_local.main).id 
+femboy_local.walkstyles = menu.add_feature("Walkstyles", "parent", femboy_local.player_feature).id
+femboy_local.player_proof = menu.add_feature("Player Proofs", "parent", femboy_local.player_feature).id 
+femboy_local.rgb_player_feature = menu.add_feature("RGB Player", "parent", femboy_local.player_feature).id 
 
-local online_feature = menu.add_feature("Online", "parent", main).id 
-local lobby_options = menu.add_feature("Lobby Options", "parent", online_feature).id
-local moderation_options = menu.add_feature("Moderation Options", "parent", online_feature).id 
-local auto_moderation = menu.add_feature("Auto Moderation", "parent", moderation_options).id 
-local country_kick = menu.add_feature("Country Kick", "parent", moderation_options).id 
-local chat_moderation_options = menu.add_feature("Chat Moderation Options", "parent", moderation_options).id 
-local ip_lookup = menu.add_feature("IP Lookup", "parent", online_feature).id
+femboy_local.weapon_feature = menu.add_feature("Weapon", "parent", femboy_local.main).id
 
-local recovery_feature = menu.add_feature("Recovery", "parent", main).id
-local collectibles = menu.add_feature("Collectibles", "parent", recovery_feature).id
-local remote_business = menu.add_feature("Remote Business", "parent", recovery_feature).id
-local special_cargo = menu.add_feature("Special Cargo Options", "parent", recovery_feature).id 
-local normal_crate = menu.add_feature("Choose Normal Crate To Buy", "parent", special_cargo).id 
-local special_crate = menu.add_feature("Choose Special Crate To Buy", "parent", special_cargo).id 
-local air_cargo = menu.add_feature("Air Freight Cargo Options", "parent", recovery_feature).id
-local steal_missions_air = menu.add_feature("Steal Missions", "parent", air_cargo).id 
-local sell_missions_air = menu.add_feature("Sell Missions", "parent", air_cargo).id 
-local night_club = menu.add_feature("Nightclub Options", "parent", recovery_feature).id
-local vehicle_cargo = menu.add_feature("Vehicle Cargo Options", "parent", recovery_feature).id 
-local source_vehicle = menu.add_feature("Source Vehicle Options", "parent", vehicle_cargo).id 
-local top_range_vehicle = menu.add_feature("Top Range Vehicles", "parent", source_vehicle).id 
-local mid_range_vehicles = menu.add_feature("Mid Range Vehicles", "parent", source_vehicle).id 
-local standard_range_vehicles = menu.add_feature("Standard Range Vehicles", "parent", source_vehicle).id 
-local unknown_range_vehicles  = menu.add_feature("Unknown Range Vehicles", "parent", source_vehicle).id 
-local recovery_tool = menu.add_feature("Tools/Services", "parent", recovery_feature).id 
-local bad_sport_manager = menu.add_feature("Bad Sport Manager", "parent", recovery_tool).id
-local disable_tools = menu.add_feature("Disable Options", "parent", recovery_tool).id
-local maximize_options = menu.add_feature("Maximize Options", "parent", recovery_tool).id
+femboy_local.vehicle_feature = menu.add_feature("Vehicle", "parent", femboy_local.main).id
+femboy_local.door_control = menu.add_feature("Door Controls", "parent", femboy_local.vehicle_feature).id 
+femboy_local.vehicle_customisation = menu.add_feature("Vehicle Customisation", "parent", femboy_local.vehicle_feature).id
+femboy_local.light_control = menu.add_feature("Light Controls", "parent", femboy_local.vehicle_feature).id
+femboy_local.license_plate = menu.add_feature("License Plates", "parent", femboy_local.vehicle_feature).id 
 
-local world_feature = menu.add_feature("World", "parent", main).id
-local misc_feature = menu.add_feature("Misc", "parent", main).id
-local alert_screen = menu.add_feature("Custom/Preset Alert Messages", "parent", misc_feature).id
+femboy_local.online_feature = menu.add_feature("Online", "parent", femboy_local.main).id 
+femboy_local.lobby_options = menu.add_feature("Lobby Options", "parent", femboy_local.online_feature).id
+femboy_local.network_chat_options = menu.add_feature("Network Chat Options", "parent", femboy_local.online_feature).id
+femboy_local.network_chat_spam_options = menu.add_feature("Custom Chat Spam Messages", "parent", femboy_local.network_chat_options).id
 
-local settings = menu.add_feature("Settings", "parent", main).id 
-local logging_feature = menu.add_feature("Logging", "parent", settings).id 
+femboy_local.moderation_options = menu.add_feature("Moderation Options", "parent", femboy_local.online_feature).id 
+femboy_local.auto_moderation = menu.add_feature("Auto Moderation", "parent", femboy_local.moderation_options).id 
+femboy_local.country_kick = menu.add_feature("Country Kick", "parent", femboy_local.moderation_options).id 
+femboy_local.chat_moderation_options = menu.add_feature("Chat Moderation Options", "parent", femboy_local.moderation_options).id 
 
-local credits = menu.add_feature("Credits", "parent", main).id
+femboy_local.ip_lookup = menu.add_feature("IP Lookup", "parent", femboy_local.online_feature).id
 
---local dev_build_stuff = menu.add_feature("Dev Build Shit", "parent", main).id
---local webhook = menu.add_feature("Discord Webhook", "parent", dev_build_stuff).id 
+femboy_local.recovery_feature = menu.add_feature("Recovery", "parent", femboy_local.main).id
+femboy_local.money_loops = menu.add_feature("Money Loops", "parent", femboy_local.recovery_feature).id
+femboy_local.collectibles = menu.add_feature("Collectibles", "parent", femboy_local.recovery_feature).id
+femboy_local.remote_business = menu.add_feature("Remote Business", "parent", femboy_local.recovery_feature).id
 
-local main_online = menu.add_player_feature("Femboy Lua", "parent", 0).id
+femboy_local.special_cargo = menu.add_feature("Special Cargo Options", "parent", femboy_local.recovery_feature).id 
+femboy_local.normal_crate = menu.add_feature("Choose Normal Crate To Buy", "parent", femboy_local.special_cargo).id 
+femboy_local.special_crate = menu.add_feature("Choose Special Crate To Buy", "parent", femboy_local.special_cargo).id 
+
+femboy_local.air_cargo = menu.add_feature("Air Freight Cargo Options", "parent", femboy_local.recovery_feature).id
+femboy_local.steal_missions_air = menu.add_feature("Steal Missions", "parent", femboy_local.air_cargo).id 
+femboy_local.sell_missions_air = menu.add_feature("Sell Missions", "parent", femboy_local.air_cargo).id
+
+femboy_local.night_club = menu.add_feature("Nightclub Options", "parent", femboy_local.recovery_feature).id
+
+femboy_local.vehicle_cargo = menu.add_feature("Vehicle Cargo Options", "parent", femboy_local.recovery_feature).id 
+femboy_local.source_vehicle = menu.add_feature("Source Vehicle Options", "parent", femboy_local.vehicle_cargo).id 
+femboy_local.top_range_vehicle = menu.add_feature("Top Range Vehicles", "parent", femboy_local.source_vehicle).id 
+femboy_local.mid_range_vehicles = menu.add_feature("Mid Range Vehicles", "parent", femboy_local.source_vehicle).id 
+femboy_local.standard_range_vehicles = menu.add_feature("Standard Range Vehicles", "parent", femboy_local.source_vehicle).id 
+femboy_local.unknown_range_vehicles  = menu.add_feature("Unknown Range Vehicles", "parent", femboy_local.source_vehicle).id 
+
+femboy_local.recovery_tool = menu.add_feature("Tools/Services", "parent", femboy_local.recovery_feature).id 
+femboy_local.bad_sport_manager = menu.add_feature("Bad Sport Manager", "parent", femboy_local.recovery_tool).id
+femboy_local.disable_tools = menu.add_feature("Disable Options", "parent", femboy_local.recovery_tool).id
+
+femboy_local.world_feature = menu.add_feature("World", "parent", femboy_local.main).id
+
+femboy_local.misc_feature = menu.add_feature("Misc", "parent", femboy_local.main).id
+femboy_local.alert_screen = menu.add_feature("Custom/Preset Alert screens", "parent", femboy_local.misc_feature).id
+
+femboy_local.settings = menu.add_feature("Settings", "parent", femboy_local.main).id 
+femboy_local.logging_feature = menu.add_feature("Logging", "parent", femboy_local.settings).id 
+femboy_local.hud_options = menu.add_feature("HUD Options", "parent", femboy_local.settings).id
+
+femboy_local.credits = menu.add_feature("Credits", "parent", femboy_local.main).id
+
+femboy_local.main_online = menu.add_player_feature("Femboy Lua Exclusive Version", "parent", 0).id
 --local ip_online_lookup = menu.add_player_feature("IP Lookup", "parent", main_online).id
-local griefing_options = menu.add_player_feature("Griefing", "parent", main_online).id 
-local friendly_options = menu.add_player_feature("Friendly", "parent", main_online).id 
-local weapon_options = menu.add_player_feature("Weapon", "parent", main_online).id
+femboy_local.griefing_options = menu.add_player_feature("Griefing", "parent", femboy_local.main_online).id 
+
+femboy_local.friendly_options = menu.add_player_feature("Friendly", "parent", femboy_local.main_online).id 
+femboy_local.rp_drop = menu.add_player_feature("RP Drops", "parent", femboy_local.friendly_options).id
+femboy_local.weapon_options = menu.add_player_feature("Weapon", "parent", femboy_local.main_online).id
 
 -- functions
 function RGBRainbow(timer, frequency )
@@ -117,6 +134,21 @@ function RGBRainbow(timer, frequency )
     result.b = math.floor( math.sin( curtime * frequency + 4 ) * 127 + 128 )
     
     return result
+end
+
+function get_future_date()
+    local current_time = os.time()
+    local future_time = current_time + (30 * 24 * 60 * 60)
+    local future_date = os.date("%d/%m/%Y", future_time)
+    return future_date
+end
+
+function requestptfx(name)
+    graphics.request_named_ptfx_asset(name)
+    while (not graphics.has_named_ptfx_asset_loaded(name)) do
+        system.wait(0)
+    end
+    return graphics.has_named_ptfx_asset_loaded(name)
 end
 
 local function dec_to_ipv4(ip)
@@ -207,23 +239,93 @@ local function AlertMessage(body)
     end
 end
 
--- opening notify
+-- 
 local name = player.get_player_name(player.player_id())
 NotifyMap("Femboy Lua ", version .. " ~h~~r~Femboy Lua Script", "Script Loaded, head to Script Features\n\nCongratulations ~r~"..name.." ~w~you are now a femboy.", "CHAR_MP_STRIPCLUB_PR", 140)
 
-local stats_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS)
-local globals_locals_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS)
-local natives_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES)
-local https_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_HTTP)
+femboy_local.stats_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS)
+femboy_local.globals_locals_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS)
+femboy_local.natives_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES)
+femboy_local.https_trusted = menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_HTTP)
 
-if not stats_trusted and not globals_locals_trusted and not natives_trusted and not https_trusted then
+if not femboy_local.stats_trusted and not femboy_local.globals_locals_trusted and not femboy_local.natives_trusted and not femboy_local.https_trusted then
     menu.notify("Femboy Lua loaded\nHowever, if you wish to use the full lua you will need to enable the following:\n\n-Stats (for some recovery options)\n-Globals/Locals (for some recovery options)\n-Natives (for most features)\n-HTTP (for vpn check, auto updater and ip lookup)", "Femboy Menu", 7, 0xFF00FFFF)
 end
-    -- player_feature 
-local bullet_proof, fire_proof, explosion_proof, collision_proof, melee_proof, steam_proof, water_proof
-local native_call = native.call
+-- player_feature 
+menu.add_feature("Reset Walkstyle", "action", femboy_local.walkstyles, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on = false
+    else
+        femboy_native(0xAA74EC0CB0AAEA2C, player.player_ped(), 1.0)
+    end
+end)
 
-menu.add_feature("Set All Entity Proofs", "toggle", player_proof, function(f)
+local walkstyles = {
+    {name = "ANIM_GROUP_MOVE_BALLISTIC"},
+    {name = "ANIM_GROUP_MOVE_LEMAR_ALLEY"},
+    {name = "clipset@move@trash_fast_turn"},
+    {name = "FEMALE_FAST_RUNNER"},
+    {name = "missfbi4prepp1_garbageman"},
+    {name = "move_characters@franklin@fire"},
+    {name = "move_characters@Jimmy@slow@"},
+    {name = "move_characters@michael@fire"},
+    {name = "move_f@flee@a"},
+    {name = "move_f@scared"},
+    {name = "move_f@sexy@a"},
+    {name = "move_heist_lester"},
+    {name = "move_injured_generic"},
+    {name = "move_lester_CaneUp"},
+    {name = "move_m@bag"},
+    {name = "MOVE_M@BAIL_BOND_NOT_TAZERED"},
+    {name = "MOVE_M@BAIL_BOND_TAZERED"},
+    {name = "move_m@brave"},
+    {name = "move_m@casual@d"},
+    {name = "move_m@drunk@moderatedrunk"},
+    {name = "MOVE_M@DRUNK@MODERATEDRUNK"},
+    {name = "MOVE_M@DRUNK@MODERATEDRUNK_HEAD_U}"},
+    {name = "MOVE_M@DRUNK@SLIGHTLYDRUNK"},
+    {name = "MOVE_M@DRUNK@VERYDRUNK"},
+    {name = "move_m@fire"},
+    {name = "move_m@gangster@var_e"},
+    {name = "move_m@gangster@var_f"},
+    {name = "move_m@gangster@var_i"},
+    {name = "move_m@JOG@"},
+    {name = "MOVE_M@PRISON_GAURD"},
+    {name = "MOVE_P_M_ONE"},
+    {name = "MOVE_P_M_ONE_BRIEFCASE"},
+    {name = "move_p_m_zero_janitor"},
+    {name = "move_p_m_zero_slow"},
+    {name = "move_ped_bucket"},
+    {name = "move_ped_crouched"},
+    {name = "move_ped_mop"},
+    {name = "MOVE_M@FEMME@"},
+    {name = "MOVE_F@FEMME@"},
+    {name = "MOVE_M@GANGSTER@NG"},
+    {name = "MOVE_F@GANGSTER@NG"},
+    {name = "MOVE_M@POSH@"},
+    {name = "MOVE_F@POSH@"},
+    {name = "MOVE_M@TOUGH_GUY@"},
+    {name = "MOVE_F@TOUGH_GUY@"}
+}
+for _,v in pairs(walkstyles) do
+    menu.add_feature(v.name, "action", femboy_local.walkstyles, function(f)
+        if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+            menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+            f.on = false
+        else
+            femboy_native(0xD2A71E1A77418A49, v.name)
+            if femboy_native(0x318234F4F3738AF3, v.name):__tointeger() == 1 then
+                femboy_native(0xAF8A94EDE7712BEF, player.player_ped(), v.name, 1.0)
+            end
+        end
+    end)
+end
+
+local bullet_proof, fire_proof, explosion_proof, collision_proof, melee_proof, steam_proof, water_proof
+local native_call = femboy_native
+
+menu.add_feature("Set All Entity Proofs", "toggle", femboy_local.player_proof, function(f)
 	while f.on do
 		system.wait()
 		bullet_proof.on=f.on
@@ -236,56 +338,56 @@ menu.add_feature("Set All Entity Proofs", "toggle", player_proof, function(f)
 	end
 end)
 
-bullet_proof = menu.add_feature("Set Bulletproof", "toggle", player_proof, function(f)
+bullet_proof = menu.add_feature("Set Bulletproof", "toggle", femboy_local.player_proof, function(f)
 	while f.on do
 		native_call(0xFAEE099C6F890BB8, player.get_player_ped(player.player_id()), true, 0, 0, 0, 0, 0, 1, 0)
 		system.wait()
 	end
 end) 
 
-fire_proof = menu.add_feature("Set Fireproof", "toggle", player_proof, function(f)
+fire_proof = menu.add_feature("Set Fireproof", "toggle", femboy_local.player_proof, function(f)
 	while f.on do
 		native_call(0xFAEE099C6F890BB8, player.get_player_ped(player.player_id()), 0, true, 0, 0, 0, 0, 1, 0)
 		system.wait()
 	end
 end) 
 
-explosion_proof = menu.add_feature("Set Explosion Proof", "toggle", player_proof, function(f)
+explosion_proof = menu.add_feature("Set Explosion Proof", "toggle", femboy_local.player_proof, function(f)
 	while f.on do
 		native_call(0xFAEE099C6F890BB8, player.get_player_ped(player.player_id()), 0, 0, true, 0, 0, 0, 1, 0)
 		system.wait()
 	end
 end) 
 
-collision_proof = menu.add_feature("Set Collision Proof", "toggle", player_proof, function(f)
+collision_proof = menu.add_feature("Set Collision Proof", "toggle", femboy_local.player_proof, function(f)
 	while f.on do
 		native_call(0xFAEE099C6F890BB8, player.get_player_ped(player.player_id()), 0, 0, 0, true, 0, 0, 1, 0)
 		system.wait()
 	end
 end) 
 
-melee_proof = menu.add_feature("Set Melee Proof", "toggle", player_proof, function(f)
+melee_proof = menu.add_feature("Set Melee Proof", "toggle", femboy_local.player_proof, function(f)
 	while f.on do
 		native_call(0xFAEE099C6F890BB8, player.get_player_ped(player.player_id()), 0, 0, 0, 0, true, 0, 1, 0)
 		system.wait()
 	end
 end) 
 
-steam_proof = menu.add_feature("Set Steam Proof", "toggle", player_proof, function(f)
+steam_proof = menu.add_feature("Set Steam Proof", "toggle", femboy_local.player_proof, function(f)
 	while f.on do
 		native_call(0xFAEE099C6F890BB8, player.get_player_ped(player.player_id()), 0, 0, 0, 0, 0, true, 1, 0)
 		system.wait()
 	end
 end) 
 
-water_proof = menu.add_feature("Set Water Proof", "toggle", player_proof, function(f)
+water_proof = menu.add_feature("Set Water Proof", "toggle", femboy_local.player_proof, function(f)
 	while f.on do
 		native_call(0xFAEE099C6F890BB8, player.get_player_ped(player.player_id()), 0, 0, 0, 0, 0, 0, 1, true)
 		system.wait()
 	end
 end) 
 
-feat_tv.AllRGBHair = menu.add_feature("Loop All Hair Colours", "value_i", rgb_player_feature, function(f)
+feat_tv.AllRGBHair = menu.add_feature("Loop All Hair Colours", "value_i", femboy_local.rgb_player_feature, function(f)
     while f.on do
         local playerped = player.get_player_ped(player.player_id())
         for i = 0, 63 do
@@ -301,7 +403,7 @@ feat_tv.AllRGBHair.min = 0
 feat_tv.AllRGBHair.max = 10000
 feat_tv.AllRGBHair.mod = 50
 
-feat_tv.RGBHair = menu.add_feature("Rainbow Hair (better)", "value_i", rgb_player_feature, function(f)
+feat_tv.RGBHair = menu.add_feature("Rainbow Hair (better)", "value_i", femboy_local.rgb_player_feature, function(f)
     while f.on do
         local playerped = player.get_player_ped(player.player_id())
         for i = 33, 53 do
@@ -317,16 +419,30 @@ feat_tv.RGBHair.min = 0
 feat_tv.RGBHair.max = 10000
 feat_tv.RGBHair.mod = 50
 
-feats.mobileradio = menu.add_feature("Mobile Radio", "toggle", player_feature, function(f)
+menu.add_feature("Self Money Drop", "toggle", femboy_local.player_feature, function(f)
+    while f.on do
+        request_model(0x749B5065)
+        local coords = player.get_player_coords(player.player_id())
+        local peds = native.call(0xD49F9B0955C367DE, 6, 0x749B5065, coords.x, coords.y, coords.z, 0.0, false, false):__tointeger() -- spawn ped
+        entity.set_entity_visible(peds, false)
+        native.call(0xA9C8960E8684C1B5, peds, 2000) -- give money
+        native.call(0x1913FE4CBF41C463, peds, 392, true) -- remove snacks
+        ped.set_ped_health(peds, 0.0)
+        system.wait(200)
+        entity.delete_entity(peds)
+    end
+end)
+
+feats.mobileradio = menu.add_feature("Mobile Radio", "toggle", femboy_local.player_feature, function(f)
     gameplay.set_mobile_radio(f.on)
 end)
 
-local notified = false
-menu.add_feature("Ragdoll On Q", "value_str", player_feature, function(f)
-    if not notified then
+femboy_local.notified = false
+menu.add_feature("Ragdoll On Q", "value_str", femboy_local.player_feature, function(f)
+    if not femboy_local.notified then
         menu.notify("Normal Ragdoll is recommended. Press Q to enable ragdoll, Press Q again to stand back up",
             "Femboy Menu")
-        notified = true
+        femboy_local.notified = true
     end
     while f.on do
         if (controls.is_control_just_pressed(0, 44) or controls.is_control_just_pressed(2, 44)) then
@@ -341,31 +457,31 @@ menu.add_feature("Ragdoll On Q", "value_str", player_feature, function(f)
     end
 end):set_str_data({"Narrow Leg Stumble", "Wide Leg Stumble", "Normal Ragdoll"})
 
-feats.clumsy = menu.add_feature("Clumsy Player", "toggle", player_feature, function(f)
+feats.clumsy = menu.add_feature("Clumsy Player", "toggle", femboy_local.player_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         while f.on do
-            native.call(0xF0A4F1BBF4FA7497, player.player_ped(), true)
+            femboy_native(0xF0A4F1BBF4FA7497, player.player_ped(), true)
             system.wait()
         end
     end
 end)
 
 -- weapon_feature
-menu.add_feature("Give All Weapons", "action", weapon_feature, function(f)
+menu.add_feature("Give All Weapons", "action", femboy_local.weapon_feature, function(f)
     local weapon_hashes = weapon.get_all_weapon_hashes()
     for _, hash in ipairs(weapon_hashes) do
         weapon.give_delayed_weapon_to_ped(player.player_ped(), hash, 1000, false)
     end
 end)
 
-menu.add_feature("Remove All Weapons", "action", weapon_feature, function(f)
+menu.add_feature("Remove All Weapons", "action", femboy_local.weapon_feature, function(f)
     weapon.remove_all_ped_weapons(player.player_ped())
 end)
 
-menu.add_feature("TP Gun", "toggle", weapon_feature, function(f)
+menu.add_feature("TP Gun", "toggle", femboy_local.weapon_feature, function(f)
     while f.on do
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
         local v2_coord = v2(v3_coord.x, v3_coord.y)
@@ -379,7 +495,7 @@ menu.add_feature("TP Gun", "toggle", weapon_feature, function(f)
     end 
 end)
 
-menu.add_feature("Delete Gun", "toggle", weapon_feature, function(f)
+menu.add_feature("Delete Gun", "toggle", femboy_local.weapon_feature, function(f)
     while f.on do
         local entity_to_delete = player.get_entity_player_is_aiming_at(player.player_id())
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
@@ -392,7 +508,7 @@ menu.add_feature("Delete Gun", "toggle", weapon_feature, function(f)
     end
 end)
 
-menu.add_feature("Kick Gun", "toggle", weapon_feature, function(f)
+menu.add_feature("Kick Gun", "toggle", femboy_local.weapon_feature, function(f)
     while f.on do
         for pid = 0, 31 do
             if player.is_player_valid(pid) then 
@@ -409,31 +525,31 @@ menu.add_feature("Kick Gun", "toggle", weapon_feature, function(f)
     end
 end)
 
-menu.add_feature("RP Gun", "toggle", weapon_feature, function(f)
+menu.add_feature("RP Gun", "toggle", femboy_local.weapon_feature, function(f)
     while f.on do 
         request_model(437412629)
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
         if bool_rtn then
-            native.call(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
+            femboy_native(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
         end
     system.wait()
     end
 end)
-menu.add_feature("Card Gun", "toggle", weapon_feature, function(f)
+menu.add_feature("Card Gun", "toggle", femboy_local.weapon_feature, function(f)
     while f.on do 
         request_model(3030532197)
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
         if bool_rtn then
-            native.call(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
+            femboy_native(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
         end
     system.wait()
     end
 end)
-menu.add_feature("Wall Gun", "toggle", weapon_feature, spawn_obect).data = 0xA4D194D1
-menu.add_feature("Wellie Gun", "toggle", weapon_feature, spawn_obect).data = 0x9CAFCB2
-menu.add_feature("Dildo Gun", "toggle", weapon_feature, spawn_obect).data = 0x4F7B518F
+menu.add_feature("Wall Gun", "toggle", femboy_local.weapon_feature, spawn_obect).data = 0xA4D194D1
+menu.add_feature("Wellie Gun", "toggle", femboy_local.weapon_feature, spawn_obect).data = 0x9CAFCB2
+menu.add_feature("Dildo Gun", "toggle", femboy_local.weapon_feature, spawn_obect).data = 0x4F7B518F
 
-menu.add_feature("Orbital Gun", "toggle", weapon_feature, function(f)
+menu.add_feature("Orbital Gun", "toggle", femboy_local.weapon_feature, function(f)
     while f.on do
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player.player_ped())
         if bool_rtn then 
@@ -450,84 +566,84 @@ menu.add_feature("Orbital Gun", "toggle", weapon_feature, function(f)
 end)
 
 -- vehicle_feature 
-menu.add_feature("Open All Doors", "action", door_control, function(f)
+menu.add_feature("Open All Doors", "action", femboy_local.door_control, function(f)
     local veh = player.get_player_vehicle(player.player_id())
     for i = 0, 5 do
         vehicle.set_vehicle_door_open(veh, i, false, false)
     end
 end)
 
-local opendor = menu.add_feature("Open Door", "action_value_i", door_control, function(f)
+femboy_local.opendor = menu.add_feature("Open Door", "action_value_i", femboy_local.door_control, function(f)
     local veh = player.get_player_vehicle(player.player_id())
     vehicle.set_vehicle_door_open(veh, f.value, false, false)
 end)
-opendor.min = 0
-opendor.max = 5
-opendor.mod = 1
+femboy_local.opendor.min = 0
+femboy_local.opendor.max = 5
+femboy_local.opendor.mod = 1
 
-menu.add_feature("Close All Doors", "action", door_control, function(f)
+menu.add_feature("Close All Doors", "action", femboy_local.door_control, function(f)
     local veh = player.get_player_vehicle(player.player_id())
     vehicle.set_vehicle_doors_shut(veh, false)
 end)
 
-menu.add_feature("Remove All Doors", "action", door_control, function(f)
+menu.add_feature("Remove All Doors", "action", femboy_local.door_control, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
         for i = 0, 5 do
-            native.call(0xD4D4F6A4AB575A33, veh, i, true) -- SET_VEHICLE_DOOR_BROKEN
+            femboy_native(0xD4D4F6A4AB575A33, veh, i, true) -- SET_VEHICLE_DOOR_BROKEN
         end
     end
 end)
 
-local brkdor = menu.add_feature("Remove Specific Door", "action_value_i", door_control, function(f)
+femboy_local.brkdor = menu.add_feature("Remove Specific Door", "action_value_i", femboy_local.door_control, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
-        native.call(0xD4D4F6A4AB575A33, veh, f.value, true) -- SET_VEHICLE_DOOR_BROKEN, true = delete, false = break
+        femboy_native(0xD4D4F6A4AB575A33, veh, f.value, true) -- SET_VEHICLE_DOOR_BROKEN, true = delete, false = break
     end
 end)
-brkdor.min = 0
-brkdor.max = 5
-brkdor.mod = 1
+femboy_local.brkdor.min = 0
+femboy_local.brkdor.max = 5
+femboy_local.brkdor.mod = 1
 
-local wndwcol = menu.add_feature("Window Tint", "action_value_i", door_control, function(f)
+femboy_local.wndwcol = menu.add_feature("Window Tint", "action_value_i", femboy_local.door_control, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
         while feat.on do
-            native.call(0x57C51E6BAD752696, veh, feat.value)
+            femboy_native(0x57C51E6BAD752696, veh, feat.value)
             system.wait(0)
         end
     end
 end)
-wndwcol.min = 0
-wndwcol.max = 5
-wndwcol.mod = 1
+femboy_local.wndwcol.min = 0
+femboy_local.wndwcol.max = 5
+femboy_local.wndwcol.mod = 1
 
-menu.add_feature("Windows Open/Close", "toggle", door_control, function(f)
+menu.add_feature("Windows Open/Close", "toggle", femboy_local.door_control, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
         if f.on then
-            native.call(0x85796B0549DDE156, veh) -- ROLL_DOWN_WINDOWS
+            femboy_native(0x85796B0549DDE156, veh) -- ROLL_DOWN_WINDOWS
         else
             for i = 0, 3 do
-                native.call(0x602E548F46E24D59, veh, i) -- ROLL_UP_WINDOW
+                femboy_native(0x602E548F46E24D59, veh, i) -- ROLL_UP_WINDOW
             end
         end
     end
 end)
 
-menu.add_feature("Change Engine Noise", "action", vehicle_customisation, function(f)
+menu.add_feature("Change Engine Noise", "action", femboy_local.vehicle_customisation, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
@@ -539,11 +655,11 @@ menu.add_feature("Change Engine Noise", "action", vehicle_customisation, functio
             if rtn == 2 then return end
             system.wait()
         until rtn == 0
-        native.call(0x4F0C413926060B38, veh, noise)
+        femboy_native(0x4F0C413926060B38, veh, noise)
     end
 end) 
 
-menu.add_feature("Set Primary Hex Colour", "action", vehicle_customisation, function(f)
+menu.add_feature("Set Primary Hex Colour", "action", femboy_local.vehicle_customisation, function(f)
     local veh = player.get_player_vehicle(player.player_id())
 
     if player.is_player_in_any_vehicle(player.player_id()) then
@@ -561,7 +677,7 @@ menu.add_feature("Set Primary Hex Colour", "action", vehicle_customisation, func
     end
 end)
 
-menu.add_feature("Set Secondary Hex Colour", "action", vehicle_customisation, function(f)
+menu.add_feature("Set Secondary Hex Colour", "action", femboy_local.vehicle_customisation, function(f)
     local veh = player.get_player_vehicle(player.player_id())
 
     if player.is_player_in_any_vehicle(player.player_id()) then
@@ -580,7 +696,7 @@ menu.add_feature("Set Secondary Hex Colour", "action", vehicle_customisation, fu
     end
 end)
 
-menu.add_feature("Set Pearlescent Hex Colour", "action", vehicle_customisation, function(f)
+menu.add_feature("Set Pearlescent Hex Colour", "action", femboy_local.vehicle_customisation, function(f)
     local veh = player.get_player_vehicle(player.player_id())
 
     if player.is_player_in_any_vehicle(player.player_id()) then
@@ -599,7 +715,7 @@ menu.add_feature("Set Pearlescent Hex Colour", "action", vehicle_customisation, 
     end
 end)
 
-menu.add_feature("Set Wheel Hex Colour", "action", vehicle_customisation, function(f)
+menu.add_feature("Set Wheel Hex Colour", "action", femboy_local.vehicle_customisation, function(f)
     local veh = player.get_player_vehicle(player.player_id())
 
     if player.is_player_in_any_vehicle(player.player_id()) then
@@ -618,9 +734,9 @@ menu.add_feature("Set Wheel Hex Colour", "action", vehicle_customisation, functi
     end
 end)
 
---menu.add_feature("RGB Vehicle Colour", "toggle", vehicle_customisation, function(f)
+--menu.add_feature("RGB Vehicle Colour", "toggle", femboy_local.vehicle_customisation, function(f)
 --    while f.on do
---        local get_game_timer = native.call(0x9CD27B0045628463):__tointeger()
+--        local get_game_timer = femboy_native(0x9CD27B0045628463):__tointeger()
 --        local rgb = RGBRainbow(get_game_timer, 2)
 --        local veh = player.get_player_vehicle(player.player_id())
 --       vehicle.set_vehicle_custom_primary_colour(veh, rgb.r, rgb.b, rgb.g)
@@ -631,13 +747,13 @@ end)
 --    end
 --end)
 
-menu.add_feature("RGB Tyre Smoke", "toggle", vehicle_customisation, function(f)
+menu.add_feature("RGB Tyre Smoke", "toggle", femboy_local.vehicle_customisation, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         while f.on do 
-            local get_game_timer = native.call(0x9CD27B0045628463):__tointeger()
+            local get_game_timer = femboy_native(0x9CD27B0045628463):__tointeger()
             local rgb = RGBRainbow(get_game_timer, 2)
             local veh = player.get_player_vehicle(player.player_id())
             vehicle.set_vehicle_tire_smoke_color(veh, rgb.r, rgb.g, rgb.b)
@@ -646,30 +762,30 @@ menu.add_feature("RGB Tyre Smoke", "toggle", vehicle_customisation, function(f)
     end
 end)
 
-menu.add_feature("Set Patriot Tyre Smoke", "action", vehicle_customisation, function()
+menu.add_feature("Set Patriot Tyre Smoke", "action", femboy_local.vehicle_customisation, function()
     veh = player.get_player_vehicle(player.player_id())
     vehicle.set_vehicle_tire_smoke_color(veh, 0, 0, 0)
 end)
 
-feats.rgb_neons = menu.add_feature("RGB Neons", "toggle", light_control, function(f)
+feats.rgb_neons = menu.add_feature("RGB Neons", "toggle", femboy_local.light_control, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         while f.on do
-            local get_game_timer = native.call(0x9CD27B0045628463):__tointeger()
+            local get_game_timer = femboy_native(0x9CD27B0045628463):__tointeger()
             local rgb = RGBRainbow(get_game_timer, 2)
             local veh = player.get_player_vehicle(player.player_id())
             for i = 0,3 do
                 vehicle.set_vehicle_neon_light_enabled(veh, i, true) 
-                native.call(0x8E0A582209A62695, veh, rgb.r, rgb.g, rgb.b)
+                femboy_native(0x8E0A582209A62695, veh, rgb.r, rgb.g, rgb.b)
             end
             system.wait()
         end
     end
 end)
 
-feats.brake_lights = menu.add_feature("Brake Lights When Stationary", "toggle", light_control, function(feat)
+feats.brake_lights = menu.add_feature("Brake Lights When Stationary", "toggle", femboy_local.light_control, function(feat)
     while feat.on do
         local veh = player.get_player_vehicle(player.player_id())
         local speed = entity.get_entity_speed(veh)
@@ -680,17 +796,17 @@ feats.brake_lights = menu.add_feature("Brake Lights When Stationary", "toggle", 
     end
 end)
 
-feat_tv.rgbX = menu.add_feature("RGB Xenon", "value_i", light_control, function(f)
+feat_tv.rgbX = menu.add_feature("RGB Xenon", "value_i", femboy_local.light_control, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         menu.notify("Xenon Lights Added, BEGIN THE RAVE")
-        native.call(0x2A1F4F37F95BAD08, veh, 22, f.on) -- TOGGLE_VEHICLE_MOD
+        femboy_native(0x2A1F4F37F95BAD08, veh, 22, f.on) -- TOGGLE_VEHICLE_MOD
         while f.on do
             local veh = player.get_player_vehicle(player.player_id())
             for i = 1, 12 do
-                native.call(0xE41033B25D003A07, veh, i) -- SET_VEHICLE_XENON_LIGHTS_COLOR
+                femboy_native(0xE41033B25D003A07, veh, i) -- SET_VEHICLE_XENON_LIGHTS_COLOR
                 system.wait(f.value)
             end
             system.wait(0)
@@ -701,14 +817,14 @@ feat_tv.rgbX.min = 0
 feat_tv.rgbX.max = 2500
 feat_tv.rgbX.mod = 100
 
-feat_tv.headlight_brightness = menu.add_feature("Headlight Brightness", "autoaction_value_f", light_control, function(f)
+feat_tv.headlight_brightness = menu.add_feature("Headlight Brightness", "autoaction_value_f", femboy_local.light_control, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         while f.on do
             local veh = player.get_player_vehicle(player.player_id())
-            native.call(0xB385454F8791F57C, veh, f.value)
+            femboy_native(0xB385454F8791F57C, veh, f.value)
             system.wait()
         end
     end
@@ -717,7 +833,7 @@ feat_tv.headlight_brightness.min = 0.0
 feat_tv.headlight_brightness.max = 100.0
 feat_tv.headlight_brightness.mod = 1.0
 
-feats.match_plate_to_speed = menu.add_feature("Match Plate To Speed", "value_str", license_plate, function(f)
+feats.match_plate_to_speed = menu.add_feature("Match Plate To Speed", "value_str", femboy_local.license_plate, function(f)
     while f.on do
         local veh = player.get_player_vehicle(player.player_id())
         local speed = entity.get_entity_speed(player.get_player_vehicle(player.player_id()))
@@ -733,7 +849,7 @@ feats.match_plate_to_speed = menu.add_feature("Match Plate To Speed", "value_str
     end
 end):set_str_data({ "Mph", "Kph", "Metres per second" })
 
-menu.add_feature("Set Custom License Plate", "action", license_plate, function(f)
+menu.add_feature("Set Custom License Plate", "action", femboy_local.license_plate, function(f)
     local veh = player.get_player_vehicle(player.player_id())
 
     if player.is_player_in_any_vehicle(player.player_id()) then
@@ -749,7 +865,7 @@ menu.add_feature("Set Custom License Plate", "action", license_plate, function(f
     end
 end)
 
-menu.add_feature("Keep Custom License Plate", "toggle", license_plate, function(f)
+menu.add_feature("Keep Custom License Plate", "toggle", femboy_local.license_plate, function(f)
     local veh = player.get_player_vehicle(player.player_id())
     if player.is_player_in_any_vehicle(player.player_id()) then
         repeat
@@ -774,7 +890,7 @@ menu.add_feature("Keep Custom License Plate", "toggle", license_plate, function(
     end
 end)
 
-local plate_type = menu.add_feature("Change Plate Type", "autoaction_value_i", license_plate, function(f)
+local plate_type = menu.add_feature("Change Plate Type", "autoaction_value_i", femboy_local.license_plate, function(f)
     local veh = player.get_player_vehicle(player.player_id())
     vehicle.set_vehicle_number_plate_index(veh, f.value)
 end)
@@ -824,7 +940,7 @@ local vehicleop = {
     "Anti-Aircraft Trailer",
     "Rogue"
 }
-menu.add_feature("Homing Lockon To Players", "toggle", vehicle_feature, function(f)
+menu.add_feature("Homing Lockon To Players", "toggle", femboy_local.vehicle_feature, function(f)
     local pedTable = {}
     streaming.request_model(gameplay.get_hash_key("cs_jimmydisanto"))
     local timer = utils.time_ms() + 1000
@@ -881,96 +997,104 @@ menu.add_feature("Homing Lockon To Players", "toggle", vehicle_feature, function
     end
 end)
 
-menu.add_feature("Fix Vehicle", "action", vehicle_feature, function()
-    vehicle.set_vehicle_fixed(player.get_player_vehicle(player.player_id()), true)
+menu.add_feature("Fix Vehicle", "action", femboy_local.vehicle_feature, function()
+    vehicle.set_vehicle_fixed(player.get_player_vehicle(player.player_id()))
 end)
 
-feats.autorepair = menu.add_feature("Auto Repair", "toggle", vehicle_feature, function(f)
+feats.autorepair = menu.add_feature("Auto Repair", "toggle", femboy_local.vehicle_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         while f.on do
             local veh = player.player_vehicle()
-            if veh then
+            if player.is_player_in_any_vehicle(player.player_id()) then
                 local speed = entity.get_entity_speed(veh)
 
-                if speed < 80 then
-                    if vehicle.is_vehicle_damaged(veh) then
-                        vehicle.set_vehicle_fixed(player.get_player_vehicle(player.player_id()), true)
-                    end
-                elseif veh and speed > 81 then return end
+            if femboy_native(0x11D862A3E977A9EF, veh):__tointeger() == 0 then -- ARE_ALL_VEHICLE_WINDOWS_INTACT
+                for i = 0, 7 do 
+                    femboy_native(0x772282EBEB95E682, veh, i) -- FIX_VEHICLE_WINDOW
+                end 
+            end
 
-                if native.call(0x11D862A3E977A9EF, veh):__tointeger() then -- ARE_ALL_VEHICLE_WINDOWS_INTACT
-                    for i = 0, 7 do 
-                        native.call(0x772282EBEB95E682, veh, i) -- FIX_VEHICLE_WINDOW
-                    end 
+            if speed <= 75 and vehicle.is_vehicle_damaged(veh) then
+                vehicle.set_vehicle_fixed(veh, true)
+            elseif speed >= 81 then 
+                repeat
+                    local speed = entity.get_entity_speed(veh)
+                    system.wait()
+                until speed  <= 75 
+
+                if speed <= 75 then
+                    vehicle.set_vehicle_fixed(player.get_player_vehicle(player.player_id()), true)
                 end
-                
+            end   
+
             end
             system.wait(5)
         end
     end
 end)
+
 if feats.autorepair.on then
     feats.autorepair.on = false
     feats.autorepair.on = true
 end
 
-local rattle = menu.add_feature("Engine Rattle", "value_f", vehicle_feature, function(f)
+femboy_local.rattle = menu.add_feature("Engine Rattle", "value_f", femboy_local.vehicle_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         local veh = player.player_vehicle()
-        native.call(0x01BB4D577D38BD9E, veh, f.value, f.on)
+        femboy_native(0x01BB4D577D38BD9E, veh, f.value, f.on)
     end
 end)
-rattle.min = 0.0
-rattle.max = 1.0
-rattle.mod = 0.1
-rattle.value = 0.0
+femboy_local.rattle.min = 0.0
+femboy_local.rattle.max = 1.0
+femboy_local.rattle.mod = 0.1
+femboy_local.rattle.value = 0.0
 
-local dirtLevel = menu.add_feature("Dirt Level", "autoaction_value_f", vehicle_feature, function(feat)
+femboy_local.dirtLevel = menu.add_feature("Dirt Level", "autoaction_value_f", femboy_local.vehicle_feature, function(feat)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         feat.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
         while feat.value do
-            native.call(0x79D3B596FE44EE8B, veh, feat.value)
+            femboy_native(0x79D3B596FE44EE8B, veh, feat.value)
             system.wait(0)
         end
     end
 end)
-dirtLevel.min = 0.0
-dirtLevel.max = 15.0
-dirtLevel.mod = 1.0
+femboy_local.dirtLevel.min = 0.0
+femboy_local.dirtLevel.max = 15.0
+femboy_local.dirtLevel.mod = 1.0
 
-feats.stayclean = menu.add_feature("Stay Clean", "toggle", vehicle_feature, function(feat)
+feats.stayclean = menu.add_feature("Stay Clean", "toggle", femboy_local.vehicle_feature, function(feat)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         feat.on = false
     else
         while feat.on do
-            native.call(0x79D3B596FE44EE8B, player.get_player_vehicle(player.player_id()), 0)
+            femboy_native(0x79D3B596FE44EE8B, player.get_player_vehicle(player.player_id()), 0)
             system.wait(0)
         end
     end
 end)
 
-local grvty = menu.add_feature("Gravity", "value_f", vehicle_feature, function(f)
+femboy_local.grvty = menu.add_feature("Gravity", "value_f", femboy_local.vehicle_feature, function(f)
     while f.on do
         vehicle.set_vehicle_gravity_amount(player.get_player_vehicle(player.player_id()), f.value)
         system.wait()
     end
     vehicle.set_vehicle_gravity_amount(player.get_player_vehicle(player.player_id()), 9.8)
 end)
-grvty.min = -5.0
-grvty.max = 20.0
-grvty.mod = 1.0
+femboy_local.grvty.min = -5.0
+femboy_local.grvty.max = 20.0
+femboy_local.grvty.mod = 1.0
 
-feats.airsuspension = menu.add_feature("Air Suspension", "toggle", vehicle_feature, function(f)
+feats.airsuspension = menu.add_feature("Air Suspension", "toggle", femboy_local.vehicle_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
@@ -980,18 +1104,18 @@ feats.airsuspension = menu.add_feature("Air Suspension", "toggle", vehicle_featu
             local veh = player.get_player_vehicle(player.player_id())
             local speed = entity.get_entity_speed(veh)
             if speed > 0.5 then
-                native.call(0x3A375167F5782A65, veh, false)
+                femboy_native(0x3A375167F5782A65, veh, false)
             else
-                native.call(0x3A375167F5782A65, veh, true)
+                femboy_native(0x3A375167F5782A65, veh, true)
             end
             system.wait()
         end
     end
     local speed = entity.get_entity_speed(player.get_player_vehicle(player.player_id()))
-    native.call(0x3A375167F5782A65, veh, false)
+    femboy_native(0x3A375167F5782A65, veh, false)
 end)
 
-feats.driftsuspension = menu.add_feature("Drift Suspension", "toggle", vehicle_feature, function(f)
+feats.driftsuspension = menu.add_feature("Drift Suspension", "toggle", femboy_local.vehicle_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
@@ -999,30 +1123,30 @@ feats.driftsuspension = menu.add_feature("Drift Suspension", "toggle", vehicle_f
         menu.notify("only works on vehicles released in the Tuners Update", "Femboy Menu")
         while f.on do
             local veh = player.get_player_vehicle(player.player_id())
-            native.call(0x3A375167F5782A65, veh, f.on) -- SET_REDUCE_DRIFT_VEHICLE_SUSPENSION(veh, bool)
+            femboy_native(0x3A375167F5782A65, veh, f.on) -- SET_REDUCE_DRIFT_VEHICLE_SUSPENSION(veh, bool)
             system.wait()
         end
         local veh = player.get_player_vehicle(player.player_id())
-        native.call(0x3A375167F5782A65, veh, f.off)
+        femboy_native(0x3A375167F5782A65, veh, f.off)
     end
 end)
 
-feats.drifttyres = menu.add_feature("Drift Tyres", "toggle", vehicle_feature, function(f)
+feats.drifttyres = menu.add_feature("Drift Tyres", "toggle", femboy_local.vehicle_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         while f.on do
             local veh = player.get_player_vehicle(player.player_id())
-            native.call(0x5AC79C98C5C17F05, veh, f.on) -- SET_DRIFT_TYRES_ENABLED(veh, bool)
+            femboy_native(0x5AC79C98C5C17F05, veh, f.on) -- SET_DRIFT_TYRES_ENABLED(veh, bool)
             system.wait()
         end
         local veh = player.get_player_vehicle(player.player_id())
-        native.call(0x5AC79C98C5C17F05, veh, f.off)
+        femboy_native(0x5AC79C98C5C17F05, veh, f.off)
     end
 end)
 
-menu.add_feature("Exhaust Backfire", "value_str", vehicle_feature, function(f)
+menu.add_feature("Exhaust Backfire", "value_str", femboy_local.vehicle_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
@@ -1030,14 +1154,27 @@ menu.add_feature("Exhaust Backfire", "value_str", vehicle_feature, function(f)
         if player.is_player_in_any_vehicle(player.player_id()) then
             while f.on do
                 local veh = player.player_vehicle()
-                native.call(0x2BE4BC731D039D5A, veh, f.value)
+                femboy_native(0x2BE4BC731D039D5A, veh, f.value)
                 system.wait()
             end
         end
     end
 end):set_str_data({ "Disable", "Enable" })
 
-feat_tv.pwr = menu.add_feature("Power Increasinator", "value_i", vehicle_feature, function(f)
+menu.add_feature("Nitrous Backfire", "toggle", femboy_local.vehicle_feature, function(f)
+    if f.on then
+        requestptfx("veh_xs_vehicle_mods")
+        local veh = player.get_player_vehicle(player.player_id())
+        femboy_native(0xC8E9B6B71B8E660D, veh, true, 50.0, 50.0, 1.0, false)
+    else
+        local veh = player.player_vehicle()
+        femboy_native(0xC8E9B6B71B8E660D, veh, false, f.value, f.value, 1.0, false)
+        graphics.remove_named_ptfx_asset("veh_xs_vehicle_mods")
+        graphics.remove_ptfx_from_entity(veh)
+    end
+end)
+
+feat_tv.pwr = menu.add_feature("Power Increasinator", "value_i", femboy_local.vehicle_feature, function(f)
     while f.on do
         local veh = player.get_player_vehicle(player.player_id())
         vehicle.modify_vehicle_top_speed(veh, f.value)
@@ -1050,7 +1187,7 @@ feat_tv.pwr.min = 0
 feat_tv.pwr.max = 100000
 feat_tv.pwr.mod = 10
 
-feat_tv.veh_max_speed = menu.add_feature("Speed Limiter (Mph)", "value_f", vehicle_feature, function(f)
+feat_tv.veh_max_speed = menu.add_feature("Speed Limiter (Mph)", "value_f", femboy_local.vehicle_feature, function(f)
     while f.on do
         local veh = player.get_player_vehicle(player.player_id())
         if veh then
@@ -1066,7 +1203,7 @@ feat_tv.veh_max_speed.max = 10000.0
 feat_tv.veh_max_speed.mod = 5.0
 feat_tv.veh_max_speed.value = 155.0
 
-menu.add_feature("Speedometer", "value_str", vehicle_feature, function(f)
+menu.add_feature("Speedometer", "value_str", femboy_local.vehicle_feature, function(f)
     while f.on do
         local speed = entity.get_entity_speed(player.get_player_vehicle(player.player_id()))
 
@@ -1095,60 +1232,60 @@ menu.add_feature("Speedometer", "value_str", vehicle_feature, function(f)
     end
 end):set_str_data({ "Mph", "Kph", "Knots", "Mach", "Metres per second" })
 
-local fwdlaunch = menu.add_feature("Launch Forward", "action_slider", vehicle_feature, function(f)
+femboy_local.fwdlaunch = menu.add_feature("Launch Forward", "action_slider", femboy_local.vehicle_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
-        native.call(0xAB54A438726D25D5, veh, f.value)
+        femboy_native(0xAB54A438726D25D5, veh, f.value)
     end
 end)
-fwdlaunch.min = 0.0
-fwdlaunch.max = 10000.0
-fwdlaunch.mod = 50.0
+femboy_local.fwdlaunch.min = 0.0
+femboy_local.fwdlaunch.max = 10000.0
+femboy_local.fwdlaunch.mod = 50.0
 
-menu.add_feature("Turn Engine Off", "action", vehicle_feature, function()
+menu.add_feature("Turn Engine Off", "action", femboy_local.vehicle_feature, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
-        native.call(0x2497C4717C8B881E, veh, 0, 0, true)
+        femboy_native(0x2497C4717C8B881E, veh, 0, 0, true)
     end
 end)
 
-menu.add_feature("Kill engine", "action", vehicle_feature, function()
+menu.add_feature("Kill engine", "action", femboy_local.vehicle_feature, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         menu.notify("next bit of damage will kill the car, gl", "Femboy Menu")
         local veh = player.get_player_vehicle(player.player_id())
-        native.call(0x45F6D8EEF34ABEF1, veh, 0)
+        femboy_native(0x45F6D8EEF34ABEF1, veh, 0)
     end
 end)
 
-menu.add_feature("Notify Engine Health", "action", vehicle_feature, function(feat)
+menu.add_feature("Notify Engine Health", "action", femboy_local.vehicle_feature, function(feat)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         local veh = player.get_player_vehicle(player.player_id())
-        local enginehealth = native.call(0xC45D23BAF168AAB8, veh):__tonumber() --GET_VEHICLE_ENGINE_HEALTH
+        local enginehealth = femboy_native(0xC45D23BAF168AAB8, veh):__tonumber() --GET_VEHICLE_ENGINE_HEALTH
         menu.notify("Engine health is " .. enginehealth .. ".", "Femboy Menu")
     end
 end)
 
 -- online_feature
-menu.add_feature("Script Hostaholic", "toggle", online_feature, function(f)
+menu.add_feature("Script Hostaholic", "toggle", femboy_local.online_feature, function(f)
     while f.on do
         menu.get_feature_by_hierarchy_key("online.lobby.force_script_host"):toggle()
         system.wait(2000)
     end
 end)
 
-menu.add_feature("Force Host", "toggle", online_feature, function(f)
+menu.add_feature("Force Host", "toggle", femboy_local.online_feature, function(f)
     while f.on do
         local ped = player.player_id() -- get the player's ID
         if player.is_player_host(ped) then
@@ -1167,23 +1304,23 @@ menu.add_feature("Force Host", "toggle", online_feature, function(f)
     end
 end)
 
-menu.add_feature("Bail from session", "action", online_feature, function(f)
+menu.add_feature("Bail from session", "action", femboy_local.online_feature, function(f)
     network.force_remove_player(player.player_id())
 end)
 
-menu.add_feature("Bail To SP", "action", online_feature, function(f)
+menu.add_feature("Bail To SP", "action", femboy_local.online_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
     else
-        if native.call(0x580CE4438479CC61) then
-            native.call(0x95914459A87EBA28, 0, 0, 0)
+        if femboy_native(0x580CE4438479CC61) then
+            femboy_native(0x95914459A87EBA28, 0, 0, 0)
         end
     end
 end)
 
 --lobby_options
-menu.add_feature("Give RP Gun To All Players", "toggle", lobby_options, function(f)
+menu.add_feature("Give RP Gun To All Players", "toggle", femboy_local.lobby_options, function(f)
     while f.on do
         request_model(437412629)
         for i = 0, 31 do 
@@ -1191,7 +1328,7 @@ menu.add_feature("Give RP Gun To All Players", "toggle", lobby_options, function
                 local player_ped = player.get_player_ped(i)
                 local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
                 if bool_rtn then
-                    native.call(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
+                    femboy_native(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
                 end
             end
         end
@@ -1199,7 +1336,7 @@ menu.add_feature("Give RP Gun To All Players", "toggle", lobby_options, function
     end
 end)
 
-menu.add_feature("Give Card Gun To All Players", "toggle", lobby_options, function(f)
+menu.add_feature("Give Card Gun To All Players", "toggle", femboy_local.lobby_options, function(f)
     while f.on do
         request_model(3030532197)
         for i = 0, 31 do 
@@ -1207,7 +1344,7 @@ menu.add_feature("Give Card Gun To All Players", "toggle", lobby_options, functi
                 local player_ped = player.get_player_ped(i)
                 local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
                 if bool_rtn then
-                    native.call(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
+                    femboy_native(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
                 end
             end
         end
@@ -1215,15 +1352,44 @@ menu.add_feature("Give Card Gun To All Players", "toggle", lobby_options, functi
     end
 end)
 
-menu.add_feature("Give All Weapons To All Players", "action", lobby_options, function(f)
+menu.add_feature("Orbital Lobby", "action", femboy_local.lobby_options, function(f)
+    for pid = 0,31 do
+        local v3_coord = player.get_player_coords(pid)
+        fire.add_explosion(v3_coord, 59, false, false, 1, pid)
+        graphics.set_next_ptfx_asset("scr_xm_orbital")
+        while not graphics.has_named_ptfx_asset_loaded("scr_xm_orbital") do
+            graphics.request_named_ptfx_asset("scr_xm_orbital")
+            system.yield(0)
+        end
+        graphics.start_networked_ptfx_non_looped_at_coord("scr_xm_orbital_blast", v3_coord, v3(0, 180, 0), 1.0, true, true, true)
+    end
+end)
+
+menu.add_feature("Orbital Lobby (loop)", "toggle", femboy_local.lobby_options, function(f)
+    while f.on do
+        for pid = 0,31 do
+            local v3_coord = player.get_player_coords(pid)
+            fire.add_explosion(v3_coord, 59, false, false, 1, pid)
+            graphics.set_next_ptfx_asset("scr_xm_orbital")
+            while not graphics.has_named_ptfx_asset_loaded("scr_xm_orbital") do
+                graphics.request_named_ptfx_asset("scr_xm_orbital")
+                system.yield(0)
+            end
+            graphics.start_networked_ptfx_non_looped_at_coord("scr_xm_orbital_blast", v3_coord, v3(0, 180, 0), 1.0, true, true, true)
+        end
+        system.wait()
+    end
+end)
+
+menu.add_feature("Give All Weapons To All Players", "action", femboy_local.lobby_options, function(f)
     menu.get_feature_by_hierarchy_key("online.all_players.give_all_weapons"):toggle()
 end)
 
-menu.add_feature("Remove All Weapons From All Players", "action", lobby_options, function(f)
+menu.add_feature("Remove All Weapons From All Players", "action", femboy_local.lobby_options, function(f)
     menu.get_feature_by_hierarchy_key("online.all_players.remove_all_weapons"):toggle()
 end)
 
-local aim_karma = menu.add_feature("Aim Karma", "parent", online_feature).id
+femboy_local.aim_karma = menu.add_feature("Aim Karma", "parent", femboy_local.online_feature).id
 local aim_karma_table
 local function APv2(f)
     while f.on do
@@ -1274,6 +1440,17 @@ local function APv2(f)
                             gameplay.shoot_single_bullet_between_coords(playerstart, playerloc, 1000, 1672152130, player.player_ped(), true, false, 100)
                         end
 
+                        if aim_karma_table["orbkarma"].on then
+                            local v3_coord = player.get_player_coords(pid)
+                            fire.add_explosion(v3_coord, 59, false, false, 1, player.player_id())
+                            graphics.set_next_ptfx_asset("scr_xm_orbital")
+                            while not graphics.has_named_ptfx_asset_loaded("scr_xm_orbital") do
+                                graphics.request_named_ptfx_asset("scr_xm_orbital")
+                                system.yield(0)
+                            end
+                            graphics.start_networked_ptfx_non_looped_at_coord("scr_xm_orbital_blast", v3_coord, v3(0, 180, 0), 1.0, true, true, true)
+                        end
+
                         if aim_karma_table["firewrkkarma"].on then
                             local playerstart = player.get_player_coords(pid) + 1
                             local playerloc = player.get_player_coords(pid)
@@ -1299,6 +1476,8 @@ local function APv2(f)
                             entity.delete_entity(veh)
                         end
 
+
+
                     end
                 end
             end
@@ -1307,9 +1486,10 @@ local function APv2(f)
     end
 end
 
-feats.enableaimkarma = menu.add_feature("Enable Aim Karma", "toggle", aim_karma, APv2) -- no need to make a function, just pass APv2
 
-menu.add_feature("--------------------", "action", aim_karma)
+feats.enableaimkarma = menu.add_feature("Enable Aim Karma", "toggle", femboy_local.aim_karma, APv2) -- no need to make a function, just pass APv2
+
+menu.add_feature("--------------------", "action", femboy_local.aim_karma)
 
 aim_karma_table = {
     ["notifykarma"] = {name = "Notify If Aimed At", on = false},
@@ -1319,6 +1499,7 @@ aim_karma_table = {
     ["tazekarma"] = {name = "Taze Player", on = false, id = 4},
     ["killkarma"] = {name = "Kill Player", on = false, id = 5},
     ["explokarma"] = {name = "Explode Player", on = false, id = 6},
+    ["orbkarma"] = {name = "Orbital Cannon Player", on = false, id =10},
     ["firewrkkarma"] = {name = "Firework Player", on = false, id = 7},
     ["atomkarma"] = {name = "Atomize Player (with damage)", on = false, id = 8},
     ["tankkarma"] = {name = "Crush Player", on = false, id = 9}
@@ -1332,16 +1513,114 @@ do
     table.sort(sorted_aim_karma_table, function(a, b)
         return a.name < b.name
     end)
-
+    
     for k, v in ipairs(sorted_aim_karma_table) do
-        feats[k] = menu.add_feature(v.name, "toggle", aim_karma,function(f)
+        feats[k] = menu.add_feature(v.name, "toggle", femboy_local.aim_karma,function(f)
             v.on = f.on -- the while loop isnt needed, it held the function running till it turned off which wouldnt set v.on (previously 'feat') to off
         end)
     end
 end
 
+--network_chat_options
+local custom_spam_messages = {}
+
+local function save_custom_spam_messages()
+    local file = io.open("scripts/femboyluafolder/custom_spam_messages.lua", "w")
+    if file then
+        local safe_str_table = {}
+        for k, v in pairs(custom_spam_messages) do
+           safe_str_table[k] = string.format("%q", v):gsub("[\r\n]", "n")
+        end
+        local str = 'return {' .. table.concat(safe_str_table, ', ') .. '}'
+        file:write(str)
+        file:flush()
+        file:close()
+    end
+end
+
+femboy_local.custom_spam_chat = menu.add_feature("Custom Chat Spam", "value_i", femboy_local.network_chat_options, function(f)
+
+    local rtn, message
+    if f.on then
+        repeat
+            rtn, message = input.get("Input Message", "", 100, eInputType.IT_ASCII)
+            if rtn == 2 then return end
+            system.wait()
+        until rtn == 0 
+    end
+
+    if f.on then
+        table.insert(custom_spam_messages, message)
+        local feature = menu.add_feature(message, "value_i", femboy_local.network_chat_spam_options, function(f)
+            while f.on do
+                network.send_chat_message(message, false)
+                system.wait(f.value)
+            end
+        end)
+        feature.max = 10000
+        feature.min = 0
+        feature.mod = 50
+        feature.value = 200
+    end
+
+    save_custom_spam_messages()
+
+    while f.on do
+        network.send_chat_message(message, false)
+        system.wait(f.value)
+    end
+end)
+femboy_local.custom_spam_chat.max = 10000
+femboy_local.custom_spam_chat.min = 0
+femboy_local.custom_spam_chat.mod = 50
+femboy_local.custom_spam_chat.value = 200
+
+local file = io.open("scripts/femboyluafolder/custom_spam_messages.lua", "r")
+if file then
+    custom_spam_messages = dofile("scripts/femboyluafolder/custom_spam_messages.lua")
+    file:close()
+
+    for _, message in ipairs(custom_spam_messages) do
+        local feature = menu.add_feature(message, "value_i", femboy_local.network_chat_spam_options, function(f)
+            while f.on do
+                network.send_chat_message(message, false)
+                system.wait(f.value)
+            end
+        end)
+        feature.max = 10000
+        feature.min = 0
+        feature.mod = 50
+        feature.value = 200
+    end
+end
+
+local chat_icons = {
+    {name = "R*", icon = "∑"},
+    {name = "Lock", icon = "Ω"},
+    {name = "R* verified", icon = "¦"},
+}
+for _,v in pairs(chat_icons) do
+    menu.add_feature("Send "..v.name.." icon in chat", "action", femboy_local.network_chat_options, function(f)
+
+        local rtn, message
+        repeat
+            rtn, message = input.get("Type Message", "", 100, eInputType.IT_ASCII)
+            if rtn == 2 then return end
+            system.wait()
+        until rtn == 0  
+        network.send_chat_message(v.icon .. message, false)
+    end)
+end
+
+menu.add_feature("Clear Chat", "toggle", femboy_local.network_chat_options, function(f)
+    while f.on do
+        network.send_chat_message(" ", false)
+        system.wait()
+    end
+end)
+
 local ip_feats = {}
-menu.add_feature("Press here to enter IP", "action", ip_lookup, function(f)
+menu.add_feature("Press here to enter IP", "action", femboy_local.ip_lookup, function(f)
     repeat
         rtn, ip = input.get("Enter IP", "", 20, eInputType.IT_ASCII)
         if rtn == 2 then return end
@@ -1360,12 +1639,12 @@ menu.add_feature("Press here to enter IP", "action", ip_lookup, function(f)
         print("Error.")
     end
 end)
-menu.add_feature("                                    -- IP Info --                                        ", "action", ip_lookup)
-ip_feats["query"] = menu.add_feature("Query", "action_value_str", ip_lookup)
+menu.add_feature("                                    -- IP Info --                                        ", "action", femboy_local.ip_lookup)
+ip_feats["query"] = menu.add_feature("Query", "action_value_str", femboy_local.ip_lookup)
 ip_feats["query"].hidden = true
 
-feats.auto_moderation = menu.add_feature("Enable Auto Moderation", "toggle", auto_moderation)
-menu.add_feature("--------------------", "action", auto_moderation)
+feats.auto_moderation = menu.add_feature("Enable Auto Moderation", "toggle", femboy_local.auto_moderation)
+menu.add_feature("--------------------", "action", femboy_local.auto_moderation)
 local modder_flags = {
     {name = "Manual", detection = "MDF_MANUAL"},
     {name = "Player Model", detection = "MDF_PLAYER_MODEL"},
@@ -1394,7 +1673,7 @@ local modder_flags = {
     {name = "Chat Spoof", detection = "MDF_CHAT_SPOOF"}
 }
 for _,v in ipairs(modder_flags) do 
-    feats[v.detection] = menu.add_feature(v.name .. " flag", "toggle", auto_moderation, function(f)
+    feats[v.detection] = menu.add_feature(v.name .. " flag", "toggle", femboy_local.auto_moderation, function(f)
         while f.on do
             kickPlayersForFlag(eModderDetectionFlags[v.detection])
             system.wait()
@@ -1654,7 +1933,7 @@ local cheese = {
     { name = "Aland Islands",                                        code = "AX" }
 }
 local country_features = {}
-feats.enable_auto_kick = menu.add_feature("Enable", "toggle", country_kick, function(f)
+feats.enable_auto_kick = menu.add_feature("Enable", "toggle", femboy_local.country_kick, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_HTTP) then
         menu.notify("HTTP trusted mode must be enabled to use this.", "Femboy Menu")
         f.on = false
@@ -1682,13 +1961,13 @@ feats.enable_auto_kick = menu.add_feature("Enable", "toggle", country_kick, func
     end
 end)
 
-menu.add_feature("Enable All", "toggle", country_kick, function(f)
+menu.add_feature("Enable All", "toggle", femboy_local.country_kick, function(f)
     menu.notify("if you enable this and then ask why you keep getting kicked from lobbies, im going to treat you like a retard, so make sure to check twice.", "Femboy Lua")
     for _, feat in pairs(country_features) do
         feat.on = f.on
     end
 end)
-menu.add_feature("Filter Countries", "action_value_str", country_kick, function(f)
+menu.add_feature("Filter Countries", "action_value_str", femboy_local.country_kick, function(f)
     repeat
         rtn, filter = input.get("Filter Countries", "", 50, eInputType.IT_ASCII)
         if rtn == 2 then return end
@@ -1713,10 +1992,10 @@ menu.add_feature("Filter Countries", "action_value_str", country_kick, function(
     end
 end):set_str_data({ "Search" })
 
-menu.add_feature("-- Country List --", "action", country_kick)
+menu.add_feature("-- Country List --", "action", femboy_local.country_kick)
 
 for _, v in pairs(cheese) do
-    country_features[#country_features + 1] = menu.add_feature("Auto Kick " .. v.name, "toggle", country_kick, function(f)
+    country_features[#country_features + 1] = menu.add_feature("Auto Kick " .. v.name, "toggle", femboy_local.country_kick, function(f)
         v.on = f.on
     end)
     country_features[#country_features].data = v
@@ -1817,10 +2096,10 @@ local f = function(s)
     end
     return false
 end
-feats.blockracism = menu.add_feature("Block Racism", "toggle", chat_moderation_options, function(func)
+feats.blockracism = menu.add_feature("Block Racism", "toggle", femboy_local.chat_moderation_options, function(func)
     if func.on then
         racism = event.add_event_listener("chat", function(e)
-            if f(e.body) then
+            if f(e.body) and not player.player_id() then
                 menu.notify(player.get_player_name(e.sender) .. " was removed for being too much of an edgelord",
                     "Femboy Menu")
                 network.force_remove_player(e.sender)
@@ -1881,7 +2160,7 @@ local f = function(s)
     end
     return false
 end
-feats.blockhomophobia = menu.add_feature("Block Homophobia", "toggle", chat_moderation_options, function(func)
+feats.blockhomophobia = menu.add_feature("Block Homophobia", "toggle", femboy_local.chat_moderation_options, function(func)
     if func.on then
         homophobic = event.add_event_listener("chat", function(e)
             if f(e.body) and not player.player_id() then
@@ -1909,7 +2188,7 @@ local f = function(s)
 end
 local messages = {}
 local max_repeats = 2
-feats.chatspam = menu.add_feature("Block Bot/Chat Spam", "toggle", chat_moderation_options, function(func)
+feats.chatspam = menu.add_feature("Block Bot/Chat Spam", "toggle", femboy_local.chat_moderation_options, function(func)
     if func.on then
         spam = event.add_event_listener("chat", function(e)
             local sender = e.sender
@@ -1927,7 +2206,7 @@ feats.chatspam = menu.add_feature("Block Bot/Chat Spam", "toggle", chat_moderati
                     messages[sender].count = 0
                     messages[sender].last_message = message
                 end
-                if f(message) or messages[sender].count >= max_repeats then
+                if f(message) or messages[sender].count >= max_repeats and not player.player_id() then
                     for pid = 0, 31 do
                         local name = player.get_player_name(e.sender)
                         menu.notify(name .. " was removed for Chat Spam, likely an ad bot or just annoying",
@@ -1945,11 +2224,29 @@ feats.chatspam = menu.add_feature("Block Bot/Chat Spam", "toggle", chat_moderati
 end)
 
 -- recovery_feature
+-- money_loops
+menu.add_feature("750k loop", "toggle", femboy_local.money_loops, function(f)
+    while f.on do
+        script.set_global_i(0x1E08B9, 0)
+        script.set_global_i(0x1E08B9, 2)
+        system.wait(6000)
+    end
+end)
+
+menu.add_feature("500k loop", "toggle", femboy_local.money_loops, function(f)
+    while f.on do
+        script.set_global_i(0x1E08B9, 0)
+        script.set_global_i(0x1E08B9, 1)
+        system.wait(6000)
+    end
+end)
+
 -- remote_business
-menu.add_feature("Start CEO", "action", remote_business, function()
+menu.add_feature("Start CEO", "action", femboy_local.remote_business, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
     else
+        menu.notify("May take multiple presses, sometimes may not work", "Femboy Lua", 5, 0xFF00FFFF)
         script.set_global_i(1894584,0)
         script.set_global_i(274986,32)
         script.set_global_i(274984,32)
@@ -1957,31 +2254,32 @@ menu.add_feature("Start CEO", "action", remote_business, function()
 end)
 
 local remote_business_table = {
-    {name = "Open Airfrieght App", hash = "appsmuggler"},
-    {name = "Open Bunker App", hash = "appbunkerbusiness"},
+    {name = "Airfrieght App", hash = "appsmuggler"},
+    {name = "Bunker App", hash = "appbunkerbusiness"},
     {name = "Franklin's Agency", hash = "appfixersecurity"},
     {name = "Master Control Terminal", hash = "apparcadebusinesshub"},
     {name = "Nightclub App App", hash = "appbusinesshub"},
     {name = "Terrobyte Terminal", hash = "apphackertruck"}
 }
 for _,v in ipairs(remote_business_table) do
-    menu.add_feature(v.name, "action", remote_business, function()
+    menu.add_feature(v.name, "action", femboy_local.remote_business, function()
         if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
             menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         else
+            menu.notify("May require to be pressed twice to open "..v.name, "Femboy Lua", 5, 0xFF00FFFF)
             script.set_global_i(1854376,-1)
             script.set_global_i(1894584,0)
             script.set_global_i(274986,32)
             script.set_global_i(274984,32)
-            native.call(0x6EB5F71AA68F2E8E, v.hash) -- VOID REQUEST_SCRIPT(const char* scriptName)
-            native.call(0xE6CC9F3BA0FB9EF1, v.hash) -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-            native.call(0xE81651AD79516E48, v.hash, 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+            femboy_native(0x6EB5F71AA68F2E8E, v.hash) -- VOID REQUEST_SCRIPT(const char* scriptName)
+            femboy_native(0xE6CC9F3BA0FB9EF1, v.hash) -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+            femboy_native(0xE81651AD79516E48, v.hash, 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
         end
     end)
 end
 
 -- special_cargo
-feats.sell_cargo_for_5_million = menu.add_feature("Sell Cargo For 5 Million", "toggle", special_cargo, function(f)
+feats.sell_cargo_for_5_million = menu.add_feature("Sell Cargo For 5 Million", "toggle", femboy_local.special_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2019,18 +2317,14 @@ feats.sell_cargo_for_5_million = menu.add_feature("Sell Cargo For 5 Million", "t
     end
 end)
 
-feats.auto_supplier = menu.add_feature("Auto Supplier", "toggle", special_cargo, function(f)
+feats.auto_supplier = menu.add_feature("Auto Supplier", "toggle", femboy_local.special_cargo, function(f)
     while f.on do
         menu.get_feature_by_hierarchy_key("online.business.manual_actions.supply_special_cargo"):toggle()
         system.wait()
-        native.call(0x32888337579A5970, f.on) -- hide feed
-        system.wait()
     end
-    native.call(0x15CFA549788D35EF) -- THEFEED_SHOW
-    native.call(0xA8FDB297A8D25FBA) -- THEFEED_FLUSH_QUEUE
 end)
 
-menu.add_feature("Instant Buy", "toggle", special_cargo, function(f)
+menu.add_feature("Instant Buy", "toggle", femboy_local.special_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2044,7 +2338,7 @@ menu.add_feature("Instant Buy", "toggle", special_cargo, function(f)
     end
 end)
 
-menu.add_feature("Instant Sell", "toggle", special_cargo, function(f)
+menu.add_feature("Instant Sell", "toggle", femboy_local.special_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2056,7 +2350,7 @@ menu.add_feature("Instant Sell", "toggle", special_cargo, function(f)
     end
 end)
 
-menu.add_feature("Get Max Crates w/ One Purchase", "toggle", special_cargo, function(f)
+menu.add_feature("Get Max Crates w/ One Purchase", "toggle", femboy_local.special_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2068,7 +2362,7 @@ menu.add_feature("Get Max Crates w/ One Purchase", "toggle", special_cargo, func
     end
 end)
 
-menu.add_feature("Remove Special Cargo Cooldown", "toggle", special_cargo, function(f)
+menu.add_feature("Remove Special Cargo Cooldown", "toggle", femboy_local.special_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
     else
@@ -2080,7 +2374,7 @@ menu.add_feature("Remove Special Cargo Cooldown", "toggle", special_cargo, funct
     end
 end)
 
-menu.add_feature("Start CEO", "action", special_cargo, function()
+menu.add_feature("Start CEO", "action", femboy_local.special_cargo, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
     else
@@ -2090,7 +2384,7 @@ menu.add_feature("Start CEO", "action", special_cargo, function()
     end
 end)
 
-menu.add_feature("Terrobyte Touchscreen Terminal","action", special_cargo,function()
+menu.add_feature("Terrobyte Touchscreen Terminal","action", femboy_local.special_cargo,function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Natives and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
     else
@@ -2098,9 +2392,9 @@ menu.add_feature("Terrobyte Touchscreen Terminal","action", special_cargo,functi
         script.set_global_i(1894584,0)
         script.set_global_i(274986,32)
         script.set_global_i(274984,32)
-        native.call(0x6EB5F71AA68F2E8E, "apphackertruck") -- VOID REQUEST_SCRIPT(const char* scriptName)
-        native.call(0xE6CC9F3BA0FB9EF1, "apphackertruck") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-        native.call(0xE81651AD79516E48, "apphackertruck", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+        femboy_native(0x6EB5F71AA68F2E8E, "apphackertruck") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        femboy_native(0xE6CC9F3BA0FB9EF1, "apphackertruck") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        femboy_native(0xE81651AD79516E48, "apphackertruck", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
     end
 end)
 
@@ -2118,7 +2412,7 @@ local normal_crates = {
     {name = "Bullion", idx = 10}
 }
 for _, v in ipairs(normal_crates) do
-    menu.add_feature(v.name, "toggle", normal_crate,function(f)
+    menu.add_feature(v.name, "toggle", femboy_local.normal_crate,function(f)
         while f.on do
             script.set_global_i(1949968,0)
             script.set_global_i(1949814,v.idx)
@@ -2136,7 +2430,7 @@ local special_crates = {
     {name = "Rare Pocket Watch", idx = 9}
 }
 for _, v in ipairs(special_crates) do
-    menu.add_feature(v.name, "toggle", special_crate,function(f)
+    menu.add_feature(v.name, "toggle", femboy_local.special_crate,function(f)
         while f.on do
             script.set_global_i(1949968,1)
             script.set_global_i(1949814,v.idx)
@@ -2187,7 +2481,7 @@ menu.add_feature("Set Air Cargo Price To 2 Billion", "toggle", air_cargo, functi
 end)
 ]]
 
-menu.add_feature("Open AirFrieght App", "action", air_cargo, function()
+menu.add_feature("Open AirFrieght App", "action", femboy_local.air_cargo, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
     else
@@ -2195,13 +2489,13 @@ menu.add_feature("Open AirFrieght App", "action", air_cargo, function()
         script.set_global_i(1894584,0)
         script.set_global_i(274986,32)
         script.set_global_i(274984,32)
-        native.call(0x6EB5F71AA68F2E8E, "appsmuggler") -- VOID REQUEST_SCRIPT(const char* scriptName)
-        native.call(0xE6CC9F3BA0FB9EF1, "appsmuggler") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
-        native.call(0xE81651AD79516E48, "appsmuggler", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
+        femboy_native(0x6EB5F71AA68F2E8E, "appsmuggler") -- VOID REQUEST_SCRIPT(const char* scriptName)
+        femboy_native(0xE6CC9F3BA0FB9EF1, "appsmuggler") -- BOOL HAS_SCRIPT_LOADED(const char* scriptName)
+        femboy_native(0xE81651AD79516E48, "appsmuggler", 54000) -- INT START_NEW_SCRIPT(const char* stackSize)
     end
 end)
 
-menu.add_feature("Instant Sell", "toggle", air_cargo, function(f)
+menu.add_feature("Instant Sell", "toggle", femboy_local.air_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2213,7 +2507,7 @@ menu.add_feature("Instant Sell", "toggle", air_cargo, function(f)
     end
 end)
 
-menu.add_feature("Instant Source", "toggle", air_cargo, function(f)
+menu.add_feature("Instant Source", "toggle", femboy_local.air_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2225,7 +2519,7 @@ menu.add_feature("Instant Source", "toggle", air_cargo, function(f)
     end
 end)
 
-menu.add_feature("Source Cargo", "toggle", air_cargo, function(f)
+menu.add_feature("Source Cargo", "toggle", femboy_local.air_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2238,7 +2532,7 @@ menu.add_feature("Source Cargo", "toggle", air_cargo, function(f)
     end
 end)
 
-menu.add_feature("Remove Sell Cooldown", "toggle", air_cargo, function(f)
+menu.add_feature("Remove Sell Cooldown", "toggle", femboy_local.air_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2255,7 +2549,7 @@ menu.add_feature("Remove Sell Cooldown", "toggle", air_cargo, function(f)
     end
 end)
 
-menu.add_feature("Alien Egg", "toggle", steal_missions_air, function(f) 
+menu.add_feature("Alien Egg", "toggle", femboy_local.steal_missions_air, function(f) 
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) and not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Stats and Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2287,7 +2581,7 @@ local steal_missions = {
     {name = "Chupacabra Street", idx = 13}
 }
 for _, v in ipairs(steal_missions) do
-    menu.add_feature(v.name, "toggle", steal_missions_air,function(f)
+    menu.add_feature(v.name, "toggle", femboy_local.steal_missions_air,function(f)
         while f.on do
             script.set_global_i(2798615, v.idx)
             system.wait()
@@ -2304,7 +2598,7 @@ local sell_missions = {
     {name = "Dune FAV", idx = 19}
 }
 for _, v in ipairs(sell_missions) do
-    menu.add_feature(v.name, "toggle", sell_missions_air,function(f)
+    menu.add_feature(v.name, "toggle", femboy_local.sell_missions_air,function(f)
         while f.on do
             script.set_global_i(2798615, v.idx)
             system.wait()
@@ -2314,7 +2608,7 @@ end
 
 -- night_club
 local nightclub_notif = false
-menu.add_feature("300k Safe Loop", "toggle", night_club, function(f)
+menu.add_feature("300k Safe Loop", "toggle", femboy_local.night_club, function(f)
     if nightclub_notif == false then 
         menu.notify("- Activate Loop\n- Go to nightclub safe, directly ahead of the computer\n- Open the safe and stand right against it", "Femboy Lua", 5, 0xFF00EEEE)
         nightclub_notif = true
@@ -2332,7 +2626,7 @@ menu.add_feature("300k Safe Loop", "toggle", night_club, function(f)
     end
 end)
 
-menu.add_feature("Instant Sell","toggle",night_club,function(f)
+menu.add_feature("Instant Sell","toggle",femboy_local.night_club,function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2346,7 +2640,7 @@ menu.add_feature("Instant Sell","toggle",night_club,function(f)
     end
 end)
 
-menu.add_feature("Sell Cargo For 4 Million","toggle",night_club,function(f)
+menu.add_feature("Sell Cargo For 4 Million","toggle",femboy_local.night_club,function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2358,7 +2652,7 @@ menu.add_feature("Sell Cargo For 4 Million","toggle",night_club,function(f)
     end
 end)
 
-menu.add_feature("Remove Nightclub Sell Cooldown","toggle",night_club,function(f)
+menu.add_feature("Remove Nightclub Sell Cooldown","toggle",femboy_local.night_club,function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2370,8 +2664,17 @@ menu.add_feature("Remove Nightclub Sell Cooldown","toggle",night_club,function(f
     end
 end)
 
+menu.add_feature("Maximize nightclub popularity", "action", femboy_local.night_club, function()
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
+        menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
+    else
+        stats.stat_set_int(2724973317, 1000, true)
+        stats.stat_set_int(2295992369, 1000, true)
+    end
+end)
+
 -- vehicle_cargo 
-menu.add_feature("Disable Sell Cooldown", "toggle", vehicle_cargo, function(f)
+menu.add_feature("Disable Sell Cooldown", "toggle", femboy_local.vehicle_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2385,7 +2688,7 @@ menu.add_feature("Disable Sell Cooldown", "toggle", vehicle_cargo, function(f)
     end
 end)
 
-menu.add_feature("Disable Source Cooldown", "toggle", vehicle_cargo, function(f)
+menu.add_feature("Disable Source Cooldown", "toggle", femboy_local.vehicle_cargo, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
         menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
@@ -2436,7 +2739,7 @@ local top_range = {
     {name = "Z-Type - [CE0]", idx = 45}
 }
 for _, v in ipairs(top_range) do
-    menu.add_feature(v.name, "toggle", top_range_vehicle,function(f)
+    menu.add_feature(v.name, "toggle", femboy_local.top_range_vehicle,function(f)
         while f.on do
             script.set_global_i(1894772, v.idx)
             system.wait()
@@ -2477,7 +2780,7 @@ local mid_range = {
     {name = "Zentorno - [H3R0]", idx = 57}
 }
 for _, v in ipairs(mid_range) do
-    menu.add_feature(v.name, "toggle", mid_range_vehicles,function(f)
+    menu.add_feature(v.name, "toggle", femboy_local.mid_range_vehicles,function(f)
         while f.on do
             script.set_global_i(1894772, v.idx)
             system.wait()
@@ -2517,7 +2820,7 @@ local standard_range = {
     {name = "Turismo R - [TPD4WG]", idx = 87}
 }
 for _,v in ipairs(standard_range) do
-    menu.add_feature(v.name, "toggle", standard_range_vehicles,function(f)
+    menu.add_feature(v.name, "toggle", femboy_local.standard_range_vehicles,function(f)
         while f.on do
             script.set_global_i(1894772, v.idx)
             system.wait()
@@ -2533,7 +2836,7 @@ local unknown_range = {
     {name = "ETR1 - [PR3TTY]", idx = 15},
 }
 for _,v in ipairs(unknown_range) do
-    menu.add_feature(v.name, "toggle", unknown_range_vehicles,function(f)
+    menu.add_feature(v.name, "toggle", femboy_local.unknown_range_vehicles,function(f)
         while f.on do
             script.set_global_i(1894772, v.idx)
             system.wait()
@@ -2542,7 +2845,7 @@ for _,v in ipairs(unknown_range) do
 end
 
 -- recovery_tool 
-menu.add_feature("Become a bad sport", "action", bad_sport_manager, function()
+menu.add_feature("Become a bad sport", "action", femboy_local.bad_sport_manager, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
         menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
     else
@@ -2551,7 +2854,7 @@ menu.add_feature("Become a bad sport", "action", bad_sport_manager, function()
     end
 end)
 
-menu.add_feature("Remove bad sport", "action", bad_sport_manager, function()
+menu.add_feature("Remove bad sport", "action", femboy_local.bad_sport_manager, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
         menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
     else
@@ -2559,144 +2862,16 @@ menu.add_feature("Remove bad sport", "action", bad_sport_manager, function()
     end
 end)
 
-menu.add_feature("Force Cloud Save", "action", recovery_tool, function(f)
+menu.add_feature("Force Cloud Save", "action", femboy_local.recovery_tool, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
     else
-        native.call(0xE07BCA305B82D2FD, 0, 0, 3, 0)
+        femboy_native(0xE07BCA305B82D2FD, 0, 0, 3, 0)
     end
 end)
 
-menu.add_feature("Request Acid Lab", "action", recovery_tool, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        script.set_global_i(2793984,1)
-    end
-end)
-
-menu.add_feature("Request Avenger", "action", recovery_tool, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        cript.set_global_i(2793979,1)
-    end
-end)
-
-menu.add_feature("Request Ballistic Equipment", "action", recovery_tool, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        script.set_global_i(2793942,1)
-    end
-end)
-
-menu.add_feature("Request Dinghy", "action", recovery_tool, function()
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        script.set_global_i(2794012,1)
-    end
-end)
-
-menu.add_feature("Request Kosatka", "action", recovery_tool, function()
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        cript.set_global_i(2794000,1)
-    end
-end)
-
-menu.add_feature("Request Motorcycle", "action", recovery_tool, function()
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        script.set_global_i(2794034,1)
-    end
-end)
-
-menu.add_feature("Request MOC", "action", recovery_tool, function()
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        script.set_global_i(2793971,1)
-    end
-end)
-
-menu.add_feature("Request Mini Tank", "action", recovery_tool, function()
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        script.set_global_i(2799921,1)
-    end
-end)
-
-menu.add_feature("Request RC Bandito", "action", recovery_tool, function()
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        script.set_global_i(2799920,1)
-    end
-end)
-
-menu.add_feature("Request Terrobyte", "action", recovery_tool, function()
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-    else
-        script.set_global_i(2793983,1)
-    end
-end)
-
-feats.disable_transaction_error = menu.add_feature("Remove Transaction Error", "toggle", disable_tools, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-        f.on=false
-    else
-        while f.on do
-            script.set_global_i(4536673, 0)
-            script.set_global_i(4536674, 0)
-            script.set_global_i(4536675, 0)
-            system.wait()
-        end
-    end
-end)
-
-feats.disable_kosatka_missiles_cd = menu.add_feature("Disable Kosatka Missiles Cooldown", "toggle", disable_tools, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-        f.on=false
-    else
-        while f.on do
-            script.set_global_i(292332, 0)
-            script.set_global_i(292333, 99999)
-            system.wait()
-        end
-    end
-end)
-
-feats.disable_mk2_cd = menu.add_feature("Disable MK2 Cooldown", "toggle", disable_tools, function(f)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
-        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
-        f.on=false
-    else
-        while f.on do
-            script.set_global_i(290553, 0)
-            system.wait()
-        end
-    end
-end)
-
-menu.add_feature("Maximize nightclub popularity", "action", maximize_options, function()
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
-        menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
-    else
-        stats.stat_set_int(2724973317, 1000, true)
-        stats.stat_set_int(2295992369, 1000, true)
-    end
-end)
-
-menu.add_feature("Maximize Inventory", "action", maximize_options, function()
+menu.add_feature("Maximize Inventory", "action", femboy_local.recovery_tool, function()
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_STATS) then
         menu.notify("Stats are required to be enabled to use this feature", "Femboy Lua")
     else
@@ -2711,6 +2886,68 @@ menu.add_feature("Maximize Inventory", "action", maximize_options, function()
         stats.stat_set_int(3689384104, 11, true)
     end
 end)
+
+local request_services = {
+    {name = "Acid Lab", value = 2793984},
+    {name = "Avenger", value = 2793979},
+    {name = "Ballistic Equipment", value = 2793942},
+    {name = "Dinghy", value = 2794012},
+    {name = "Kosatka", value = 2794000},
+    {name = "Motorcycle", value = 2794034},
+    {name = "MOC", value = 2793971},
+    {name = "Mini Tank", value = 2799921},
+    {name = "RC Bandito", value = 2799920},
+    {name = "Terrobyte", value = 2793983},
+}
+for _,v in ipairs(request_services) do
+    menu.add_feature("Request "..v.name, "action", femboy_local.recovery_tool, function(f)
+        if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+            menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        else
+            script.set_global_i(v.value, 1)
+        end
+    end)
+end
+
+feats.disable_transaction_error = menu.add_feature("Remove Transaction Error", "toggle", femboy_local.disable_tools, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(4536673, 0)
+            script.set_global_i(4536674, 0)
+            script.set_global_i(4536675, 0)
+            system.wait()
+        end
+    end
+end)
+
+feats.disable_kosatka_missiles_cd = menu.add_feature("Disable Kosatka Missiles Cooldown", "toggle", femboy_local.disable_tools, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(292332, 0)
+            script.set_global_i(292333, 99999)
+            system.wait()
+        end
+    end
+end)
+
+feats.disable_mk2_cd = menu.add_feature("Disable MK2 Cooldown", "toggle", femboy_local.disable_tools, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_SCRIPT_VARS) then
+        menu.notify("Globals/Locals are required to be enabled to use this feature", "Femboy Lua")
+        f.on=false
+    else
+        while f.on do
+            script.set_global_i(290553, 0)
+            system.wait()
+        end
+    end
+end)
+
 -- collectibles 
 local collect = {
     {name = "Action Figures", global = 2765117, max = 100},
@@ -2725,7 +2962,8 @@ local collect = {
     {name = "Trick or Treat (halloween)", global = 2765499, max = 200}
 }
 for _,v in ipairs(collect) do
-    local feat = menu.add_feature(v.name, "action_value_i", collectibles, function(f)
+    local feat = menu.add_feature(v.name, "action_value_i", femboy_local.collectibles, function(f)
+        menu.notify("Collect one of "..v.name.." for the value to change to what you set", "Femboy Lua", 5, 0xFF00FF00)
         script.set_global_i(v.global, f.value)
     end)
     feat.min = 0
@@ -2735,103 +2973,98 @@ for _,v in ipairs(collect) do
 end
 
 -- world_feature 
-local distancescale = menu.add_feature("Distance Scale", "value_f", world_feature, function(f)
+femboy_local.distancescale = menu.add_feature("Distance Scale", "value_f", femboy_local.world_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
     else
         menu.notify("This will affect your FPS massively", "Femboy Menu")
         while f.on do
-            native.call(0xA76359FC80B2438E, f.value)
+            femboy_native(0xA76359FC80B2438E, f.value)
             system.wait()
         end
-        native.call(0xA76359FC80B2438E, 1.0)
+        femboy_native(0xA76359FC80B2438E, 1.0)
     end
 end)
-distancescale.min = 0.0
-distancescale.max = 200.0
-distancescale.mod = 0.5
+femboy_local.distancescale.min = 0.0
+femboy_local.distancescale.max = 200.0
+femboy_local.distancescale.mod = 0.5
 
-local set_time_scale = menu.add_feature("Set Time Scale", "value_f", world_feature, function(f)
+femboy_local.set_time_scale = menu.add_feature("Set Time Scale", "value_f", femboy_local.world_feature, function(f)
 	if f.on then
-		native.call(0x1D408577D440E81E, f.value) -- SET_TIME_SCALE
+		femboy_native(0x1D408577D440E81E, f.value) -- SET_TIME_SCALE
 	else 
-		native.call(0x1D408577D440E81E, 1.0)
+		femboy_native(0x1D408577D440E81E, 1.0)
 	end
 end) 
-set_time_scale.min = 0.0
-set_time_scale.max = 1.0
-set_time_scale.mod = 0.1
+femboy_local.set_time_scale.min = 0.0
+femboy_local.set_time_scale.max = 1.0
+femboy_local.set_time_scale.mod = 0.1
 
-menu.add_feature("Load Map", "action_value_str", world_feature, function(f)
+menu.add_feature("Load Map", "action_value_str", femboy_local.world_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         if f.value == 0 then
-            native.call(0xD7C10C4A637992C9) -- on_enter_sp
+            femboy_native(0xD7C10C4A637992C9) -- on_enter_sp
         elseif f.value == 1 then 
-            native.call(0x0888C3502DBBEEF5) -- on_enter_mp
+            femboy_native(0x0888C3502DBBEEF5) -- on_enter_mp
         end 
     end 
 end):set_str_data({"SP Map", "MP Map"})
 
-menu.add_feature("Make Nearby NPC's Riot", "toggle", world_feature, function(f)
+menu.add_feature("Make Nearby NPC's Riot", "toggle", femboy_local.world_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
-        native.call(0x2587A48BC88DFADF, f.on)
+        femboy_native(0x2587A48BC88DFADF, f.on)
     end
 end)
 
-menu.add_feature("Blackout", "toggle", world_feature, function(f)
+menu.add_feature("Blackout", "toggle", femboy_local.world_feature, function(f)
     gameplay.set_blackout(f.on)
 end)
 
-local rainlvl = menu.add_feature("Magic puddles", "autoaction_value_f", world_feature, function(f)
+femboy_local.rainlvl = menu.add_feature("Magic puddles", "autoaction_value_f", femboy_local.world_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
-        if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
-            menu.notify("Natives are required to be enabled to use this feature", "Femboy Menu")
-            f.on = false
-        else
-            native.call(0x643E26EA6E024D92, f.value)
-        end
+        femboy_native(0x643E26EA6E024D92, f.value)
     end
 end)
-rainlvl.min = 0.0
-rainlvl.max = 10.0
-rainlvl.mod = 0.5
+femboy_local.rainlvl.min = 0.0
+femboy_local.rainlvl.max = 10.0
+femboy_local.rainlvl.mod = 0.5
 
-local windspd = menu.add_feature("Wind speed", "autoaction_value_f", world_feature, function(f)
+femboy_local.windspd = menu.add_feature("Wind speed", "autoaction_value_f", femboy_local.world_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
-        native.call(0xEE09ECEDBABE47FC, f.value)
+        femboy_native(0xEE09ECEDBABE47FC, f.value)
     end
 end)
-windspd.min = 0.0
-windspd.max = 12.0
-windspd.mod = 0.5
+femboy_local.windspd.min = 0.0
+femboy_local.windspd.max = 12.0
+femboy_local.windspd.mod = 0.5
 
-local waveint = menu.add_feature("Wave Intensity", "value_f", world_feature, function(f)
+femboy_local.waveint = menu.add_feature("Wave Intensity", "value_f", femboy_local.world_feature, function(f)
     if f.on then
         water.set_waves_intensity(f.value)
     else
         water.reset_waves_intensity()
     end
 end)
-waveint.min = 0.0
-waveint.max = 1000.0
-waveint.value = 1
-waveint.mod = 10.0
+femboy_local.waveint.min = 0.0
+femboy_local.waveint.max = 1000.0
+femboy_local.waveint.value = 1
+femboy_local.waveint.mod = 10.0
 
 -- misc_feature 
-menu.add_feature("Custom Alert Message", "toggle", alert_screen, function(f)
+menu.add_feature("Custom Alert Message", "toggle", femboy_local.alert_screen, function(f)
 
 	local rtn, subtitle
 	repeat
@@ -2846,7 +3079,7 @@ menu.add_feature("Custom Alert Message", "toggle", alert_screen, function(f)
 	end
 end)
 
-menu.add_feature("Custom Reason Ban Screen", "toggle", alert_screen, function(f)
+menu.add_feature("Custom Reason Ban Screen", "toggle", femboy_local.alert_screen, function(f)
     
     local rtn, subtitle
     repeat
@@ -2861,14 +3094,14 @@ menu.add_feature("Custom Reason Ban Screen", "toggle", alert_screen, function(f)
     end
 end)
 
-menu.add_feature("Ban Screen (no reason)", "toggle", alert_screen, function(f)
+menu.add_feature("Ban Screen (no reason)", "toggle", femboy_local.alert_screen, function(f)
     while f.on do
         AlertMessage("You have been banned from Grand Theft Auto permanently.\nReturn to Grand Theft Auto V.")
         system.wait()
     end
 end)
 
-menu.add_feature("Ban Screen w/", "value_str", alert_screen, function(f)
+menu.add_feature("Ban Screen w/", "value_str", femboy_local.alert_screen, function(f)
     while f.on do
         if f.value == 0 then 
             AlertMessage("You have been banned from Grand Theft Auto permanently.\nReason: Using the best mod menu.\nReturn to Grand Theft Auto V.")
@@ -2895,7 +3128,40 @@ menu.add_feature("Ban Screen w/", "value_str", alert_screen, function(f)
     end
 end):set_str_data({"Using the best mod menu", "Cheating", "Crasing idiots", "Having too much fun", "Not buying sharkcards", "rawr xD", "Take the L", "Navy Seal Copypasta", "UwU Navy Seal Copypasta", "I have your IP Copypasta"})
 
-feats.skipcutscene = menu.add_feature("Auto Skip Cutscene", "toggle", misc_feature, function(f)
+menu.add_feature("Suspended Screen", "toggle", femboy_local.alert_screen, function(f)
+    while f.on do
+        local date = get_future_date()
+        AlertMessage("You have been suspended from Grand Theft Auto Online until "..date..".\nIn addition, your Grand Theft Auto Online character(s) will be reset.\nReturn to Grand Theft Auto V.")
+        system.wait()
+    end
+end)
+
+local corrected_alert_screen = {
+    {name = "RP given/removed", msg = "Rockstar Game Services have corrected your RP levels to "},
+    {name = "Money given/removed", msg = "Rockstar Game Services have corrected your GTA Dollars by $"}
+}
+for _,v in ipairs(corrected_alert_screen) do
+    menu.add_feature(v.name, "toggle", femboy_local.alert_screen, function(f)
+
+        local rtn, value
+        repeat
+            rtn, value = input.get("Input "..v.name, "", 50, eInputType.IT_ASCII)
+            if rtn == 2 then return end
+            system.wait()
+        until rtn == 0
+
+        while f.on do
+            if v.name == "RP given/removed" then
+                AlertMessage(v.msg..value.."RP.")
+            else
+                AlertMessage(v.msg..value)
+            end
+            system.wait()
+        end
+    end)
+end
+
+feats.skipcutscene = menu.add_feature("Auto Skip Cutscene", "toggle", femboy_local.misc_feature, function(f)
     while f.on do
         if cutscene.is_cutscene_playing() then
             cutscene.stop_cutscene_immediately()
@@ -2904,7 +3170,7 @@ feats.skipcutscene = menu.add_feature("Auto Skip Cutscene", "toggle", misc_featu
     end
 end)
 
-feats.auto_tp_to_waypoint = menu.add_feature("Auto TP To Waypoint", "toggle", misc_feature, function(f)
+feats.auto_tp_to_waypoint = menu.add_feature("Auto TP To Waypoint", "toggle", femboy_local.misc_feature, function(f)
     while f.on do
         local waypoint = ui.get_waypoint_coord()
         if waypoint.x ~= 16000 then
@@ -2915,64 +3181,73 @@ feats.auto_tp_to_waypoint = menu.add_feature("Auto TP To Waypoint", "toggle", mi
     end 
 end)
 
-menu.add_feature("Get All Achievements", "action", misc_feature, function(f)
+menu.add_feature("Get All Achievements", "action", femboy_local.misc_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         for i = 1, 77 do
-            native.call(0xBEC7076D64130195, i)
+            femboy_native(0xBEC7076D64130195, i)
         end
     end
 end)
 
-local set_radar_angle = menu.add_feature("Set Radar Angle", "value_i", misc_feature, function(f)
+menu.add_feature("Set Specicial Edition Version", "action", femboy_local.misc_feature, function(f)
+    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+        f.on = false
+    else
+        femboy_native(0xDAC073C7901F9E15, 866)
+    end
+end)
+
+femboy_local.set_radar_angle = menu.add_feature("Set Radar Angle", "value_i", femboy_local.misc_feature, function(f)
     while f.on do 
-		native.call(0x299FAEBB108AE05B, f.value) -- LOCK_MINIMAP_ANGLE
+		femboy_native(0x299FAEBB108AE05B, f.value) -- LOCK_MINIMAP_ANGLE
 		system.wait()
 	end
-	native.call(0x8183455E16C42E3A) -- UNLOCK_MINIMAP_ANGLE
+	femboy_native(0x8183455E16C42E3A) -- UNLOCK_MINIMAP_ANGLE
 end) 
-set_radar_angle.min = 1
-set_radar_angle.max = 360 
-set_radar_angle.mod = 1
+femboy_local.set_radar_angle.min = 1
+femboy_local.set_radar_angle.max = 360 
+femboy_local.set_radar_angle.mod = 1
 
-menu.add_feature("Hide HUD", "toggle", misc_feature, function(f)
+menu.add_feature("Hide HUD", "toggle", femboy_local.misc_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
     else
         if f.on then
-            native.call(0xA6294919E56FF02A, false)
-            native.call(0xA0EBB943C300E693, false)
+            femboy_native(0xA6294919E56FF02A, false)
+            femboy_native(0xA0EBB943C300E693, false)
         else
-            native.call(0xA6294919E56FF02A, true)
-            native.call(0xA0EBB943C300E693, true)
+            femboy_native(0xA6294919E56FF02A, true)
+            femboy_native(0xA0EBB943C300E693, true)
         end
     end
 end)
 
-menu.add_feature("Disable Above Map Notifs", "toggle", misc_feature, function(f)
+menu.add_feature("Disable Above Map Notifs", "toggle", femboy_local.misc_feature, function(f)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on=false
     else
         while f.on do
-            native.call(0x32888337579A5970, f.on) -- hide feed
+            femboy_native(0x32888337579A5970, f.on) -- hide feed
             system.wait()
         end
-        native.call(0x15CFA549788D35EF) -- THEFEED_SHOW
-        native.call(0xA8FDB297A8D25FBA) -- THEFEED_FLUSH_QUEUE
+        femboy_native(0x15CFA549788D35EF) -- THEFEED_SHOW
+        femboy_native(0xA8FDB297A8D25FBA) -- THEFEED_FLUSH_QUEUE
         menu.notify("Notifications above map enabled", "Femboy Menu")
     end
 end)
 
-menu.add_feature("Flush Notifcation Queue", "action", misc_feature, function(f)
-    native.call(0xA8FDB297A8D25FBA)
+menu.add_feature("Flush Notifcation Queue", "action", femboy_local.misc_feature, function(f)
+    femboy_native(0xA8FDB297A8D25FBA)
 end)
 
 -- logging_feature
-feats.log_messages_to_console = menu.add_feature("Log Messages To Console", "toggle", logging_feature, function(f)
+feats.log_messages_to_console = menu.add_feature("Log Messages To Console", "toggle", femboy_local.logging_feature, function(f)
     if f.on then
         messagelog = event.add_event_listener("chat", function(e)
             local pid = player.get_player_name(e.player)
@@ -2986,7 +3261,7 @@ feats.log_messages_to_console = menu.add_feature("Log Messages To Console", "tog
     end
 end)
 
-feats.log_joins_to_console = menu.add_feature("Log Joins To Console", "toggle", logging_feature, function(f)
+feats.log_joins_to_console = menu.add_feature("Log Joins To Console", "toggle", femboy_local.logging_feature, function(f)
     if f.on then
         joinlog = event.add_event_listener("player_join", function(e)
             local pid = player.get_player_name(e.player)
@@ -3001,7 +3276,7 @@ feats.log_joins_to_console = menu.add_feature("Log Joins To Console", "toggle", 
     end
 end)
 
-feats.log_script_events_to_console = menu.add_feature("Log Script Events To Console", "toggle", logging_feature, function(f)
+feats.log_script_events_to_console = menu.add_feature("Log Script Events To Console", "toggle", femboy_local.logging_feature, function(f)
     if f.on then
         script_listener = event.add_event_listener("script", function(e)
             local pid = e.player
@@ -3020,12 +3295,60 @@ feats.log_script_events_to_console = menu.add_feature("Log Script Events To Cons
     end
 end)
 
+-- hud_options
+local hud_component = {
+    {id = 1, name = "WANTED_STARS"},
+    {id = 2, name = "WEAPON_ICON"},
+    {id = 3, name = "CASH"},
+    {id = 4, name = "MP_CASH"},
+    {id = 5, name = "MP_MESSAGE"},
+    {id = 6, name = "VEHICLE_NAME"},
+    {id = 7, name = "AREA_NAME"},
+    {id = 8, name = "VEHICLE_CLASS"},
+    {id = 9, name = "STREET_NAME"},
+    {id = 10, name = "HELP_TEXT"},
+    {id = 11, name = "FLOATING_HELP_TEXT_1"},
+    {id = 12, name = "FLOATING_HELP_TEXT_2"},
+    {id = 13, name = "CASH_CHANGE"},
+    {id = 14, name = "RETICLE"},
+    {id = 15, name = "SUBTITLE_TEXT"},
+    {id = 16, name = "RADIO_STATIONS"},
+    {id = 17, name = "SAVING_GAME"},
+    {id = 18, name = "GAME_STREAM"},
+    {id = 19, name = "WEAPON_WHEEL"},
+    {id = 20, name = "WEAPON_WHEEL_STATS"},
+    {id = 21, name = "HUD_COMPONENTS"},
+    {id = 22, name = "HUD_WEAPONS"},
+}
+feats.HUD_AND_RADAR = menu.add_feature("HUD_AND_RADAR", "toggle", femboy_local.hud_options, function(f)
+    while f.on do
+        ui.hide_hud_and_radar_this_frame()
+        system.wait()
+    end
+end)
+
+feats.HIDE_FEED = menu.add_feature("HIDE_FEED", "toggle", femboy_local.hud_options, function(f)
+    while f.on do
+        femboy_native(0x32888337579A5970, f.on) -- hide feed
+        system.wait()
+    end
+end)
+
+for _, v in ipairs(hud_component) do
+    feats[v.name] = menu.add_feature(v.name, "toggle", femboy_local.hud_options, function(f)
+        while f.on do
+            ui.hide_hud_component_this_frame(v.id)
+            system.wait()
+        end
+    end)
+end
+
 -- settings 
-menu.add_feature("Save Settings", "action", settings, function(f)
+menu.add_feature("Save Settings", "action", femboy_local.settings, function(f)
     SaveSettings()
 end)
 
-feats.f8_to_save = menu.add_feature("F8 To Save Settings", "toggle", settings, function(f)
+feats.f8_to_save = menu.add_feature("F8 To Save Settings", "toggle", femboy_local.settings, function(f)
     while f.on do
         if controls.is_control_just_pressed(0, 169) or controls.is_control_just_pressed(2, 169) and f.on then
             SaveSettings()
@@ -3034,7 +3357,7 @@ feats.f8_to_save = menu.add_feature("F8 To Save Settings", "toggle", settings, f
     end
 end)
 
-menu.add_feature("Changelog", "action_value_str", settings, function(f)
+menu.add_feature("Changelog", "action_value_str", femboy_local.settings, function(f)
     if f.value == 0 then
         menu.notify(
             "#FFC0CBFF#https://github.com/Decuwu/femboylua/blob/main/Changelog.md\n\n#DEFAULT#copied to clipboard, paste it in your browser url to see the scripts changelog",
@@ -3050,7 +3373,7 @@ menu.add_feature("Changelog", "action_value_str", settings, function(f)
     end
 end):set_str_data({ "Copy Link", "Print To Console" })
 
-menu.add_feature("Feature List", "action", settings, function(f)
+menu.add_feature("Feature List", "action", femboy_local.settings, function(f)
     menu.notify(
         "#FFC0CBFF#https://github.com/Decuwu/femboylua/blob/main/Femboy.md\n\n#DEFAULT#copied to clipboard, paste it in your browser url to see the scripts feature list",
         "Femboy Menu")
@@ -3060,7 +3383,7 @@ end)
 -- vpn checker 
 local flagged_players = {}
 local enable_vpn_check = true
-feats.disable_vpn = menu.add_feature("Disable VPN Check", "toggle", settings, function(f)
+feats.disable_vpn = menu.add_feature("Disable VPN Check", "toggle", femboy_local.settings, function(f)
     if f.on then
         enable_vpn_check = not enable_vpn_check
     else
@@ -3096,13 +3419,13 @@ end)
 
 -- credits 
 local credits_list = {
-    {name = "Toph", notify_map_sub_title = "The Gopher", notify_map = "Helped an absolute BUNCH with understanding the API and helped with a lot of features!", notify_map_pic = "CHAR_HAO", menu_notify = "#FFFFCC00#Credits:\n-#FFFFDD00#Made above map notification\n-#FFFFDD22#IP info function\n-#FFFFDD33#Aim Karma\n-#FFFFDD44#Air Suspension\n-#FFFFDD55#Chat Moderation\n-#FFFFDD66#Minimap Disco\n-#FFFFDD77#Save and Load settings function", menu_notify_name = "#FFFFCC00#Toph", menu_notify_colour = 0xFFFFCC00},
-    {name = "Rimuru", notify_map_sub_title = "Wannabe Welsh", notify_map = "'let' me learn LUA using her script and still continues to help me all the time", notify_map_pic = "CHAR_WENDY", menu_notify = "#FFFF55AA#Credits:\n-#FFFF4488#Made Auto Updater\n-#FFFF4499#Taught me how to use tables to make features\n-#FFFF44AA#Yelled at me for bad code\n-#FFFF44BB#Let me ask dumb af questions\n-#FFFF44CC#Gave the code for nightclub loop\n-#FFFF44DD#Gave the function for RGB Neon", menu_notify_name = "#FFFF55AA#Rimuru", menu_notify_colour = 0xFFFF55AA},
-    {name = "GhostOne", notify_map_sub_title = "Has Cheese", notify_map = "Makes zero sense when giving help but still helps a lot", notify_map_pic = "CHAR_TAXI", menu_notify = "#FF00FFEE#Credits:\n-#FF00EEFF#Made Auto Kick By Country\n-#FF00DDFF#Made VPN detection flag\n-#FF00CCFF#Made IP lookup\n-#FF00BBFF#Made a lot of different functions\n-#FF00AAFF#Taught me a lot to do with functions and tables\n-#FF0099FF#Cheese", menu_notify_name = "#FF00FFFF#GhostOne", menu_notify_colour = 0xFF00FFFF},
+    {name = "Toph", notify_map_sub_title = "The Gopher", notify_map = "Helped an absolute BUNCH with understanding the API and helped with a lot of features!", notify_map_pic = "CHAR_HAO", menu_notify = "#FFFFCC00#Credits:\n-#FFFFDD00#Made above map notification\n-#FFFFDD22#IP info function\n-#FFFFDD33#Aim Karma\n-#FFFFDD44#Air Suspension\n-#FFFFDD55#Chat Moderation\n-#FFFFDD66#Minimap Disco\n-#FFFFDD77#Save and Load settings function\n-#FFFFDD88#And more", menu_notify_name = "#FFFFCC00#Toph", menu_notify_colour = 0xFFFFCC00},
+    {name = "Rimuru", notify_map_sub_title = "Wannabe Welsh", notify_map = "'let' me learn LUA using her script and still continues to help me all the time", notify_map_pic = "CHAR_WENDY", menu_notify = "#FFFF55AA#Credits:\n-#FFFF4488#Made Auto Updater\n-#FFFF4499#Taught me how to use tables to make features\n-#FFFF44AA#Yelled at me for bad code\n-#FFFF44BB#Let me ask dumb af questions\n-#FFFF44CC#Gave the code for nightclub loop\n-#FFFF44DD#And more", menu_notify_name = "#FFFF55AA#Rimuru", menu_notify_colour = 0xFFFF55AA},
+    {name = "GhostOne", notify_map_sub_title = "Has Cheese", notify_map = "Makes zero sense when giving help but still helps a lot", notify_map_pic = "CHAR_TAXI", menu_notify = "#FF00FFEE#Credits:\n-#FF00EEFF#Made Auto Kick By Country\n-#FF00DDFF#Made VPN detection flag\n-#FF00CCFF#Made IP lookup\n-#FF00BBFF#Made a lot of different functions\n-#FF00AAFF#Taught me a lot to do with functions and tables\n-#FF0099FF#Cheese and more", menu_notify_name = "#FF00FFFF#GhostOne", menu_notify_colour = 0xFF00FFFF},
     {name = "Aren", notify_map_sub_title = "Mostly Cringe", notify_map = "Helped me a lot with LUA at the beginning, taught me how to use natives", notify_map_pic = "CHAR_JIMMY", menu_notify = "#FFFF1100#Credits:\n-#FFFF2211#Taught me how to use natives\n-#FFFF3311#Taught me how to start making luas", menu_notify_name = "#FFFF1111#Aren", menu_notify_colour = 0xFFFF1111}
 }
 for _,v in ipairs(credits_list) do
-    menu.add_feature(v.name, "action_value_str", credits, function(f)
+    menu.add_feature(v.name, "action_value_str", femboy_local.credits, function(f)
         if f.value == 0 then
             if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then 
                 return menu.notify(v.notify_map, v.name, 5, v.menu_notify_colour)
@@ -3117,7 +3440,7 @@ end
 
 -- main_online 
 
-menu.add_player_feature("Waypoint Follow Player", "toggle", main_online, function(f, pid)
+menu.add_player_feature("Waypoint Follow Player", "toggle", femboy_local.main_online, function(f, pid)
     while f.on do
         local player_ped = player.get_player_ped(pid)
         local player_coords = entity.get_entity_coords(player_ped)
@@ -3132,7 +3455,7 @@ end)
 
 --- ip_online_lookup
 local ip_feats = {}
-local ip_online_lookup = menu.add_player_feature("IP Lookup", "parent", main_online, function(f, pid)
+femboy_local.ip_online_lookup = menu.add_player_feature("IP Lookup", "parent", femboy_local.main_online, function(f, pid)
     local response, my_info = web.get("http://ip-api.com/json/" ..
     dec_to_ipv4(player.get_player_ip(pid)) .. "?fields=66846719")
     if response == 200 then
@@ -3153,7 +3476,7 @@ local ip_online_lookup = menu.add_player_feature("IP Lookup", "parent", main_onl
     end
 end).id
 
-menu.add_player_feature("Post IP Info In Chat", "action_value_str", ip_online_lookup, function(f, pid)
+menu.add_player_feature("Post IP Info In Chat", "action_value_str", femboy_local.ip_online_lookup, function(f, pid)
     local ip = player.get_player_ip(pid)
     local response, my_info = web.get("http://ip-api.com/json/" .. dec_to_ipv4(ip) .. "?fields=1189433")
     local message = my_info:gsub(",", "\n"):gsub('[{}"]', ""):gsub(":", " - "):gsub("proxy", "VPN"):gsub("regionName","Region"):gsub("query", "IP"):gsub("continent", "Continent"):gsub("country", "Country"):gsub("city", "City"):gsub("zip", "ZIP/Post Code"):gsub("isp", "ISP"):gsub("org", "Organisation")
@@ -3170,19 +3493,19 @@ menu.add_player_feature("Post IP Info In Chat", "action_value_str", ip_online_lo
     end
 end):set_str_data({ "Team Chat", "All Chat" })
 
-menu.add_player_feature("Copy IP To clipboard", "action", ip_online_lookup, function(f, pid)
+menu.add_player_feature("Copy IP To clipboard", "action", femboy_local.ip_online_lookup, function(f, pid)
     local ip = player.get_player_ip(pid)
     local p = player.get_player_name(pid)
     utils.to_clipboard(dec_to_ipv4(ip))
     menu.notify(p .. "'s IP " .. dec_to_ipv4(ip) .. " has been added to clipboard")
 end)
 
-menu.add_player_feature("                                    -- IP Info --                                        ","action", ip_online_lookup, function()
+menu.add_player_feature("                                    -- IP Info --                                        ","action", femboy_local.ip_online_lookup, function()
     menu.notify("Press this if you're gay", "rekt")
 end)
 
 --- griefing_options 
-menu.add_player_feature("Crush Player", "action", griefing_options, function(f, pid)
+menu.add_player_feature("Crush Player", "action", femboy_local.griefing_options, function(f, pid)
     local playerloc = player.get_player_coords(pid)
     playerloc.z = playerloc.z + 2.7
     request_model(2859440138)
@@ -3192,7 +3515,7 @@ menu.add_player_feature("Crush Player", "action", griefing_options, function(f, 
     entity.delete_entity(veh)
 end)
 
-menu.add_player_feature("Cargoplane Spam", "toggle", griefing_options, function(f, pid)
+menu.add_player_feature("Cargoplane Spam", "toggle", femboy_local.griefing_options, function(f, pid)
     while f.on do
         local playerloc = player.get_player_coords(pid)
         playerloc.z = playerloc.z + 2.7
@@ -3202,7 +3525,7 @@ menu.add_player_feature("Cargoplane Spam", "toggle", griefing_options, function(
     end
 end)
 
-menu.add_player_feature("Taze Player", "toggle", griefing_options, function(f, pid)
+menu.add_player_feature("Taze Player", "toggle", femboy_local.griefing_options, function(f, pid)
     while f.on do
         local playerstart = player.get_player_coords(pid) + 1
         local playerloc = player.get_player_coords(pid)
@@ -3212,7 +3535,7 @@ menu.add_player_feature("Taze Player", "toggle", griefing_options, function(f, p
     end
 end)
 
-menu.add_player_feature("Firework Player", "toggle", griefing_options, function(f, pid)
+menu.add_player_feature("Firework Player", "toggle", femboy_local.griefing_options, function(f, pid)
     while f.on do
         local playerstart = player.get_player_coords(pid) + 1
         local playerloc = player.get_player_coords(pid)
@@ -3222,7 +3545,7 @@ menu.add_player_feature("Firework Player", "toggle", griefing_options, function(
     end
 end)
 
-menu.add_player_feature("RPG Player", "toggle", griefing_options, function(f, pid)
+menu.add_player_feature("RPG Player", "toggle", femboy_local.griefing_options, function(f, pid)
     while f.on do
         local playerstart = player.get_player_coords(pid) + 1
         local playerloc = player.get_player_coords(pid)
@@ -3232,7 +3555,33 @@ menu.add_player_feature("RPG Player", "toggle", griefing_options, function(f, pi
     end
 end)
 
-menu.add_player_feature("Atomize Player", "toggle", griefing_options, function(f, pid)
+menu.add_player_feature("Orbital Player", "action", femboy_local.griefing_options, function(f, pid)
+    local v3_coord = player.get_player_coords(pid)
+    fire.add_explosion(v3_coord, 59, false, false, 1, player.player_ped())
+    graphics.set_next_ptfx_asset("scr_xm_orbital")
+    while not graphics.has_named_ptfx_asset_loaded("scr_xm_orbital") do
+        graphics.request_named_ptfx_asset("scr_xm_orbital")
+        system.yield(0)
+    end
+    graphics.start_networked_ptfx_non_looped_at_coord("scr_xm_orbital_blast", v3_coord, v3(0, 180, 0), 1.0, true, true, true)
+end)
+
+menu.add_player_feature("Orbital Player (loop)", "toggle", femboy_local.griefing_options, function(f, pid)
+    while f.on do
+        local v3_coord = player.get_player_coords(pid)
+        player.get_player_coords(pid)
+        fire.add_explosion(v3_coord, 59, false, false, 1, player.player_ped())
+        graphics.set_next_ptfx_asset("scr_xm_orbital")
+        while not graphics.has_named_ptfx_asset_loaded("scr_xm_orbital") do
+            graphics.request_named_ptfx_asset("scr_xm_orbital")
+            system.yield(0)
+        end
+        graphics.start_networked_ptfx_non_looped_at_coord("scr_xm_orbital_blast", v3_coord, v3(0, 180, 0), 1.0, true, true, true)
+        system.wait()
+    end
+end)
+
+menu.add_player_feature("Atomize Player", "toggle", femboy_local.griefing_options, function(f, pid)
     while f.on do
         local playerstart = player.get_player_coords(pid) + 1
         local playerloc = player.get_player_coords(pid)
@@ -3242,7 +3591,7 @@ menu.add_player_feature("Atomize Player", "toggle", griefing_options, function(f
     end
 end)
 
-menu.add_player_feature("Kill Player", "toggle", griefing_options, function(f, pid)
+menu.add_player_feature("Kill Player", "toggle", femboy_local.griefing_options, function(f, pid)
     while f.on do
         local playerstart = player.get_player_coords(pid) + 1
         local playerloc = player.get_player_coords(pid)
@@ -3253,21 +3602,33 @@ menu.add_player_feature("Kill Player", "toggle", griefing_options, function(f, p
 end)
 
 --- friendly_options
-menu.add_player_feature("RP Drop", "toggle", friendly_options, function(f, pid)
-    if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
-        menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
-        f.on=false
-    else
-        request_model(437412629)
-        while f.on do
-            local coords = player.get_player_coords(pid)
-            native.call(0x673966A0C0FD7171, 738282662, coords, 0, 1, 437412629, 0, 1)
-            system.wait(5)
-        end
-    end
-end)
+local rp_models = {
+    {name = "Alien", model = 1298470051},
+    {name = "Beast", model = 1955543594},
+    {name = "Princess Robot Bubblegum", model = 437412629},
+    {name = "Impotent Rage", model = 446117594},
+    {name = "Republican Space Ranger", model = 3644302825}, 
+    {name = "Republican Space Ranger (different one)", model = 601745115},
+    {name = "Pogo", model = 1025210927}, 
+    {name = "Sasquatch", model = 2568981558}
+}
+for _,v in ipairs(rp_models) do
+    menu.add_player_feature(v.name, "toggle", femboy_local.rp_drop, function(f, pid)
+        if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
+            menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
+            f.on=false
+        else
+            request_model(v.model)
+            while f.on do
+                local coords = player.get_player_coords(pid)
+                femboy_native(0x673966A0C0FD7171, 738282662, coords, 0, 1, v.model, 0, 1)
+                system.wait(5)
+            end 
+        end 
+    end)
+end
 
-menu.add_player_feature("Card Drop", "toggle", friendly_options, function(f, pid)
+menu.add_player_feature("Card Drop", "toggle", femboy_local.friendly_options, function(f, pid)
     if not menu.is_trusted_mode_enabled(eTrustedFlags.LUA_TRUST_NATIVES) then
         menu.notify("Natives are required to be enabled to use this feature", "Femboy Lua")
         f.on = false
@@ -3275,38 +3636,55 @@ menu.add_player_feature("Card Drop", "toggle", friendly_options, function(f, pid
         request_model(3030532197)
         while f.on do 
             local coords= player.get_player_coords(pid)
-            native.call(0x673966A0C0FD7171, -1009939663, coords, 0, 1, 3030532197, 0, 1)
+            femboy_native(0x673966A0C0FD7171, -1009939663, coords, 0, 1, 3030532197, 0, 1)
             system.wait(5)
         end
     end 
 end)
 
 --- weapon_options
-menu.add_player_feature("RP Gun", "toggle", weapon_options, function(f, pid)
+menu.add_player_feature("RP Gun", "toggle", femboy_local.weapon_options, function(f, pid)
     while f.on do 
         request_model(437412629)
         local player_ped = player.get_player_ped(pid)
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
         if bool_rtn then
-            native.call(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
+            femboy_native(0x673966A0C0FD7171, 738282662, v3_coord, 0, 1, 437412629, 0, 1)
         end
     system.wait()
     end
 end)
 
-menu.add_player_feature("RP Gun", "toggle", weapon_options, function(f, pid)
+menu.add_player_feature("Card Gun", "toggle", femboy_local.weapon_options, function(f, pid)
     while f.on do 
-        request_model(437412629)
+        request_model(3030532197)
         local player_ped = player.get_player_ped(pid)
         local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(player_ped)
         if bool_rtn then
-            native.call(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
+            femboy_native(0x673966A0C0FD7171, -1009939663, v3_coord, 0, 1, 3030532197, 0, 1)
         end
     system.wait()
     end
 end)
 
-menu.add_player_feature("Kick Gun", "toggle", weapon_options, function(f, pid)
+menu.add_player_feature("Orbital Gun", "toggle", femboy_local.weapon_options, function(f, pid)
+    while f.on do
+        local pid_ped = player.get_player_ped(pid)
+        local bool_rtn, v3_coord = ped.get_ped_last_weapon_impact(pid_ped)
+        if bool_rtn then 
+            fire.add_explosion(v3_coord, 59, false, false, 1, player.player_ped())
+            graphics.set_next_ptfx_asset("scr_xm_orbital")
+            while not graphics.has_named_ptfx_asset_loaded("scr_xm_orbital") do
+                graphics.request_named_ptfx_asset("scr_xm_orbital")
+                system.yield(0)
+            end
+            graphics.start_networked_ptfx_non_looped_at_coord("scr_xm_orbital_blast", v3_coord, v3(0, 180, 0), 1.0, true, true, true)
+        end
+        system.wait()
+    end
+end)
+
+menu.add_player_feature("Kick Gun", "toggle", femboy_local.weapon_options, function(f, pid)
     while f.on do
         for i = 0, 31 do
             if player.is_player_valid(i) then 
@@ -3333,7 +3711,7 @@ menu.add_player_feature("Kick Gun", "toggle", weapon_options, function(f, pid)
     end
 end)
 
-menu.add_player_feature("Give All Weapons", "action", weapon_options, function(f,pid)
+menu.add_player_feature("Give All Weapons", "action", femboy_local.weapon_options, function(f,pid)
     local player_ped = player.get_player_ped(pid)
     local weapon_hashes = weapon.get_all_weapon_hashes()
     for _, hash in ipairs(weapon_hashes) do
@@ -3341,13 +3719,13 @@ menu.add_player_feature("Give All Weapons", "action", weapon_options, function(f
     end
 end)
 
-menu.add_player_feature("Remove Held Weapon", "action", weapon_options, function(f, pid)
+menu.add_player_feature("Remove Held Weapon", "action", femboy_local.weapon_options, function(f, pid)
     local player_ped = player.get_player_ped(pid)
     local held_weapon = ped.get_current_ped_weapon(player_ped)
     weapon.remove_weapon_from_ped(player_ped, held_weapon)
 end)
 
-menu.add_player_feature("Remove Held Weapon (loop)", "toggle", weapon_options, function(f, pid)
+menu.add_player_feature("Remove Held Weapon (loop)", "toggle", femboy_local.weapon_options, function(f, pid)
     while f.on do
         local player_ped = player.get_player_ped(pid)
         local held_weapon = ped.get_current_ped_weapon(player_ped)
@@ -3356,11 +3734,11 @@ menu.add_player_feature("Remove Held Weapon (loop)", "toggle", weapon_options, f
     end
 end)
 
-menu.add_player_feature("Remove All Weapons", "action", weapon_options, function(f, pid)
+menu.add_player_feature("Remove All Weapons", "action", femboy_local.weapon_options, function(f, pid)
     menu.get_feature_by_hierarchy_key("online.online_players.player_"..pid..".weapons.remove_all_weapons"):toggle()
 end)
 
-menu.add_player_feature("Remove All Weapons (loop)", "toggle", weapon_options, function(f, pid)
+menu.add_player_feature("Remove All Weapons (loop)", "toggle", femboy_local.weapon_options, function(f, pid)
     while f.on do
         menu.get_feature_by_hierarchy_key("online.online_players.player_"..pid..".weapons.remove_all_weapons"):toggle()
     end
@@ -3387,4 +3765,3 @@ menu.create_thread(function()
         menu.notify("Failed to find github shit")
     end
 end)
-
