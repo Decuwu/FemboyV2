@@ -31,3 +31,6 @@
 - Chat moderation no longer kicks you
 - auto repair repairs more :)
 - General optimisation improvements 
+
+# Changelog v2.5.1
+- Renamed back to Femboy.lua not FemboyScript.lua :angry:
