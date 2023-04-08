@@ -1,6 +1,6 @@
 ---@diagnostic disable: undefined-global, lowercase-global, undefined-field
 
-local version = "2.5.1" 
+local version = "2.5.0" 
 local feats, feat_vals, feat_tv = {}, {}, {}
 local appdata = utils.get_appdata_path("PopstarDevs", "2Take1Menu")
 local INI = IniParser(appdata .. "\\scripts\\FemboyLuaFolder\\Femboy.ini")
