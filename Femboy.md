@@ -1,4 +1,4 @@
-# v2.4.0
+# v2.5.0
 # Required Trusted Modes
 - Stats
 - Globals/Locals
@@ -21,6 +21,8 @@
     - Taze Player
     - Firework Player
     - RPG Player
+    - Orbital Player
+    - Orbital Player (looped)
     - Atomize Player
     - Kill Player
 - Friendly 
@@ -37,6 +39,7 @@
     - Remove All Weapons (loop)
 
 # Player 
+- Walkstyles
 - Player Proofs
     - Set All Entity Proofs
     - Bulletproof
@@ -49,6 +52,7 @@
 - RGB Player
     - Loop All Hair Colours
     - Rainbow Hair (Better)
+- Self Money Drop
 - Mobile Radio
 - Ragdoll On Q <Narrow Leg Stumble><Wide Leg Stumble><Normal Ragdoll>
 - Clumsy Player
@@ -82,7 +86,6 @@
     - Match Plate To Speed
     - Set/Keep Custom License Plate
     - Change Plate Type
-
 - Light Control
     - RGB Neon
     - Brake Lights When Stationary
@@ -99,6 +102,7 @@
 - Drift Tyres
 - Launch Control
 - Exhaust Backfire <enable><disable>
+- Nitrous Backfire
 - Power Increasinator
 - Speed Limiter (Mph) 
 - Speedomoter <Mph><Kph><Knots><Mach><mps/Metres per second>
@@ -113,6 +117,14 @@
     - Give Card Gun To All Players
     - Give All Weapons To All Players
     - Remopve All Weapons From All Players
+- Network Chat Options
+    - Custom Chat Spam Messages
+        - Saves messages you've set yourself
+    - Custom Chat Spam loop
+    - Send R* icon in chat
+    - Send Lock icon in chat
+    - Send R* verified in chat
+    - Clear Chat
 - Moderation Options
     - Auto Kicker By Modder Flags Options
     - Auto Kicker By Country
@@ -128,11 +140,15 @@
     - Taze Player
     - Kill Player
     - Explode Player
+    - Orbital Cannon Player
     - Firework Player
     - Atomize Player 
     - Crush Player
 
 # Recovery 
+- Money Loops 
+    - 750k loop
+    - 500k loop
 - Collectibles
 - Remote Business
 - Special Cargo Options 
@@ -181,9 +197,13 @@
     - Custom Reason Ban Screen
     - Ban Screen (No reason)
     - Ban Screen w/ preset reason
+    - Suspended Screen
+    - RP given/removed
+    - Money given/removed
 - Auto Skip Cutscene
 - Auto TP To Waypoint
 - Get All Achievements
+- Set Special Edition Version
 - Set Radar Angle
 - Hide HUD
 - Disable Above Map Notifs
@@ -195,6 +215,7 @@
     - Log Messages
     - Log Joins
     - Log Script Events
+- HUD Options
 - Save Settings
 - F8 To Save Settings
 - Femboy Lua Changelog
