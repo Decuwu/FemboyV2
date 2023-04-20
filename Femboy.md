@@ -1,11 +1,23 @@
-# v2.5.0
+# v2.6.0
 # Required Trusted Modes
 - Stats
 - Globals/Locals
 - Natives 
 - Http 
 
-# Features
+# Included Files in femboyluafolder.zip
+- femboyluafolder
+    - custom_spam_messages.ini
+        - Messages that can be spammed with `online > network chat options > custom chat spam messages`
+    - saved_car_colours.ini 
+        - Vehicle colour profiles that can be loaded in `vehicle > vehicle customisation > colour customisation > saved colours`
+    - saved_neons.ini
+        - Neon colours that can be equiped at `vehicle > vehicle customisation > neon customisation > saved neons`
+    - Femboy.ini 
+        - Created when you first save your settings in the script at `settings > save settings`
+- Femboy.lua
+
+# Background Features
 - VPN Checker
 - Auto Updater
 
@@ -71,6 +83,25 @@
 - Orbital Gun
 
 # Vehicle 
+- Vehicle Customisation
+    - Colour Customisation
+        - Saved Colours
+        - Save Vehicle Colours
+        - Set Primary/Secondary/Pearlescent/Wheel colour via hex
+    - Neon Customisation
+        - Saved Neons
+        - Save Current Neons
+        - Set Custom Neon Colour
+    - Change Engine Noise
+    - RGB Vehicle Colour
+    - RGB Neons
+    - RGB Tyre Smoke
+    - RGB Xenon
+    - Patriot Tyre Smoke
+- License Plate
+    - Match Plate To Speed
+    - Set/Keep Custom License Plate
+    - Change Plate Type
 - Door Control
     - Open/Close All Doors
     - Open Door
@@ -78,22 +109,12 @@
     - Remove Specific Door
     - Window Tint
     - Window Open/Close
-- Vehicle Customisation
-    - Hex Primary/Seconday/Pearlescent/Wheel Colours
-    - RGB Tyre Smoke
-    - Patriot Tyre Smoke
-- License Plate
-    - Match Plate To Speed
-    - Set/Keep Custom License Plate
-    - Change Plate Type
 - Light Control
-    - RGB Neon
     - Brake Lights When Stationary
-    - RGB Xenon
-    - Change Xenon
     - Headlight Brightness
 - Homing Lockon To Players (Originally By Ghostone)
 - Fix Vehicle / Auto Repair
+- Reduced Collisions
 - Engine Rattle
 - Dirt Level / Stay Clean
 - Gravity
@@ -145,7 +166,7 @@
     - Atomize Player 
     - Crush Player
 
-# Recovery 
+# Business Manager v2 
 - Money Loops 
     - 750k loop
     - 500k loop
@@ -178,6 +199,14 @@
         - Remove Transaction Error
         - Disable Kostaka Missiles Cooldown
         - Disable MK2 Cooldown
+- Auto Enable 2Take1 Business Manager
+    - Has a README that i suggest reading if you have hints disabled
+
+# Entities/Objects
+- Spawned Objects
+    - Only works with some object guns atm
+- Delete All Peds
+- Delete All Vehicles
 
 # World 
 - Distance Scale
@@ -186,6 +215,7 @@
     - SP Map
     - MP Map
 - Make Nearby NPC's Riot
+- Crazy Vehicles
 - Blackout
 - Magic Puddles
 - Wind Speed
@@ -221,6 +251,15 @@
 - Femboy Lua Changelog
 - Femboy Lua Feature List
 - Disable VPN Check
+
+# File Manager
+- 2Take1 Saved Outfit Manager
+    - Equip
+    - Delete
+- 2Take1 Saved Vehicle Manager
+    - Spawn 
+    - Rename
+    - Delete
 
 # Credits 
 - Toph
