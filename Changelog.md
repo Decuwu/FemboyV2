@@ -1,36 +1,83 @@
-# Changelog v2.5.0
-- Added FemboyLuaFolder (auto creates when you run the lua)
-    - Femboy.ini now lives here (you may want to copy and paste your old ini in here)
-    - custom_spam_messages.lua lives here too, use this with the new network spam options to automatically save messages you want to spam and have them for next time (big up chatgpt for this one)
-- Added More RP Drops
-- Added Disable HUD Options
-- Added Money Loops (6s per loop)
-    - 750k 
-    - 500k
-- Added local money drop
-- Added notifies in places
-- Added suspended alert screen
-- Added money/rp given/removed alert screen
-- Added orbital cannon to aim karma
-- Added Nitrous Backfire (Thank you Topher)
-- Added Network Chat features
-    - chat spam messages
-    - Send R* icon in chat
-    - Send lock icon in chat
-    - Send R* verified icon in chat
-    - clear chat
-    - custom chat spam
-- Added orbital gun to online player
-- Added Walkstyles
-- Added Set Special Edition Version (not sure if this works)
-- Added orbital player to online player
-- Removed HIDE_FEED from auto supplier
-    - can be manually used in Femboy Lua > settings > hud options > HIDE_FEED
-- card gun actually shoots cards now
-- card gun is not rp gun
-- Chat moderation no longer kicks you
-- auto repair repairs more :)
-- General optimisation improvements 
+# Changelog v2.6.0
+- femboyluafolder is now included with the script  
+    includes:
+    - preset neon colours
+    - preset car colours
+    - preset spam messages
+- Added Colour Customisation sub menu
+    - Saved Colours
+        - - Load preset car colours from here, found in the file %appdata%\popstardevs\scripts\femboyluafolder\saved_car_colours.lua
+    - Save Vehicle Colours
+        - Saves the current colour profile to saved_car_colours.lua
+    - Moved here
+        - Set primary hex colour
+        - set secondary hex colour
+        - set pearlescent hex colour
+        - set wheel hex colour
+- Added Neon Customisation sub menu
+    - Saved Neons 
+        - Load preset neon colours from here, found in the file %appdata%\popstardevs\scripts\femboyluafolder\saved_neons.lua
+    - Set Custom Neon Colour
+        - Input custom hex values for a neon colour
+    - Save Current Neons
+        - Saves the current neons on the vehicle to the saved_neons.lua
+- Added objects sub menu
+    - Spawned Objects
+        - Show Location
+        - Entity ESP
+        - Get Entity Coords (to clipboard)
+        - Move to coords
+        - Fine tune x, y, z coords
+        - Set entity rotation
+        - TP entity to you
+        - Delete
+- Added 2Take1 File Manager
+    - Added 2Take1 Saved Vehicle Manager
+        - Save current vehicle
+        - Spawn
+        - Rename
+        - Delete
+            - edits your moddedVehicle folder
+    - Added 2Take1 Saved Outfit Manager
+        - Save current outfit
+        - Equip
+        - Delete
+            - edits your moddedOutfits folder
+- Added reduced collisions when driving
+- Added delete all peds
+- Added delele all vehicles
+- Added crazy vehicles 
+    - Launches all vehicles forward, doesn't effect you
+- Added RGB Vehicle Colour
+- Added Auto Enable 2Take1 Business manager
+    - Read the README below the feature please
+- Added a bit of colour :shrug:
+- Added some hints
+- Added tip notif to walkstyles
+- Updated Orbital options
+    - Orbital Lobby 
+    - Orbital Player
+        - Can now be blamed or not blamed
+- Updated orbital gun 
+    - non-silenced
+    - silenced
+- Updated auto repair again (you win ghostone)
+- Updated fix vehicle to fix engine if destroyed
+- Updated Bail from session
+- Fixed HIDE_FEED to actually show the feed when you disable it
+- Renamed recovery submenu to business manager v2
+- Remove notify engine health (sorry pro notify engine health users)
 
-# Changelog v2.5.1
-- Renamed back to Femboy.lua not FemboyScript.lua :angry:
+- Thank you Ghostone and Proddy for help with the spawned objects
+
+# Included Files in femboyluafolder.zip
+- femboyluafolder
+    - custom_spam_messages.ini
+        - Messages that can be spammed with `online > network chat options > custom chat spam messages`
+    - saved_car_colours.ini 
+        - Vehicle colour profiles that can be loaded in `vehicle > vehicle customisation > colour customisation > saved colours`
+    - saved_neons.ini
+        - Neon colours that can be equiped at `vehicle > vehicle customisation > neon customisation > saved neons`
+    - Femboy.ini 
+        - Created when you first save your settings in the script at `settings > save settings`
+- Femboy.lua
