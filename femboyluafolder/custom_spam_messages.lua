@@ -1,0 +1,1 @@
+return {"R* gay", "Who was in paris?"}

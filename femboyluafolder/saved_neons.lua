@@ -1,0 +1,18 @@
+return {
+{colour= 16776960, name="Yellow"},
+{colour= 16777215, name="White"},
+{colour= 65407, name="Spring Green"},
+{colour= 16711680, name="Red"},
+{colour= 4793311, name="Pastel purple"},
+{colour= 16770816, name="Neon Yellow"},
+{colour= 15728895, name="Neon Pink"},
+{colour= 7663125, name="Neon Green"},
+{colour= 5107434, name="Neon Blue"},
+{colour= 65280, name="Green"},
+{colour= 2098569, name="Deep Purple"},
+{colour= 16716947, name="Deep Pink"},
+{colour= 8388608, name="Dark Red"},
+{colour= 255, name="Blue"},
+{colour= 0, name="Black"},
+{colour= 65535, name="Aqua"},
+}
